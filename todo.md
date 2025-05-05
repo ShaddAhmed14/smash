@@ -1,0 +1,10 @@
+- write video part
+    - functions to get segmentation and pose
+    - backend function to fetch processed video
+    - frontend to show these videos
+    - try using mp4 instead of another codec
+- write audio part
+    - show waveform (where to store it? locally as well? waveforms?)
+    - backend and frontend code
+- look into gestures part
+- add samurai, sapients etc.
