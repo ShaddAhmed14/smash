@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 from glob import glob as glob
-import subprocess 
 import json
 import os
 from dotenv import load_dotenv
@@ -17,16 +16,22 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
-
-# send videos metadata
 @app.get("/")
-def get_videos():
-    file_path = os.path.join(os.environ["VIDEO_DIR"], "metadata.json")
+def home():
+    return JSONResponse(content={"message": "Hello World" }) 
+
+@app.get("/get_metadata")
+def get_metadata():
+    # print("fetching metadata")
+    file_path = os.path.join("/materials", "metadata.json")
+    # print(os.getcwd())
+    # print(file_path)
+    # print(os.listdir("/materials"))
     if not os.path.exists(file_path):
-        return JSONResponse(content={"message": "Metadata File not Found" })
+        return JSONResponse(content={"message": "Metadata File not Found" }, status_code=404)
     with open(file_path) as f:
         data = json.load(f)
-    print(data)
+    # print(data)
     return JSONResponse(content=data)
 
 # send selected full video
