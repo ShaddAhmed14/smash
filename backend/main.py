@@ -4,6 +4,9 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from glob import glob as glob
 import json
 import os
+from utils import setup_materials
+
+from urllib3 import request
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,13 +23,15 @@ app.add_middleware(
 def home():
     return JSONResponse(content={"message": "Hello World" }) 
 
-@app.get("/get_metadata")
-def get_metadata():
-    # print("fetching metadata")
+@app.get("/setup")
+def setup():
+    setup_materials("/materials")
+    return JSONResponse(content={"message": "Creating Materials using Videos found" }) 
+
+
+@app.get("/fetch_metadata")
+def fetch_metadata():
     file_path = os.path.join("/materials", "metadata.json")
-    # print(os.getcwd())
-    # print(file_path)
-    # print(os.listdir("/materials"))
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Metadata File not Found" }, status_code=404)
     with open(file_path) as f:
@@ -34,15 +39,36 @@ def get_metadata():
     # print(data)
     return JSONResponse(content=data)
 
-# send selected full video
-@app.get("/video/{video_name}")
-def get_full_video(video_name: str, request: Request):
-    print(video_name)
-    video_path = os.path.join(os.environ["VIDEO_DIR"], video_name + ".mp4")
-    if not os.path.exists(video_path):
-        return {"message": "Video Not Found"}, 404
+
+@app.get("/fetch_transcript/")
+def fetch_transcript(video_name: str):
+    file_path = os.path.join("/materials", f"{video_name}_transcript.txt")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Transcript file not found"}, status_code=404)
     
-    video_file_size = os.path.getsize(video_path)
+    with open(file_path) as f:
+        data = f.read()
+    return JSONResponse(content={"transcript": data})
+
+@app.get("/fetch_waveform/")
+def fetch_waveform(video_name: str):
+    file_path = os.path.join("/materials", f"{video_name}_waveform.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Waveform file not found"}, status_code=404)
+    
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
+
+@app.get("/fetch_video/")
+def fetch_video(video_name: str, model_name: str,request: Request):
+    video_file_name = f"{video_name}_{model_name}.mp4" if model_name else f"{video_name}.mp4"
+    file_path = os.path.join("/materials", video_name, video_file_name)
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Video file not found"}, status_code=404)
+
+    video_file_size = os.path.getsize(file_path)
     range_header = request.headers.get("range")
     if range_header:
         start, end = range_header.replace("bytes=", "").split("-")
@@ -51,7 +77,7 @@ def get_full_video(video_name: str, request: Request):
         chunk_size = end - start + 1
 
         def chunk_stream():
-            with open(video_path, "rb") as f:
+            with open(file_path, "rb") as f:
                 f.seek(start)
                 yield f.read(chunk_size)
         return StreamingResponse(
@@ -66,7 +92,7 @@ def get_full_video(video_name: str, request: Request):
         )
     else:
         def full_stream():
-            with open(video_path, "rb") as f:
+            with open(file_path, "rb") as f:
                 yield from f
         return StreamingResponse(
             full_stream(),
@@ -76,6 +102,8 @@ def get_full_video(video_name: str, request: Request):
                 "Content-Type": "video/mp4",
             },
         ) 
+
+
 
 '''
 @app.get("/{video_id}")
@@ -101,9 +129,4 @@ def get_video_snippet(video_id: str):
         process.stdout,
         media_type='video/mp4'
     )
-
-@app.delete("/")
-def delete_videos():
-    result = db.videos.delete_many({})
-    return {"message": "Video deleted successfully"}
 '''

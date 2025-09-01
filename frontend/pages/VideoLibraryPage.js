@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import VideoCard from "./VideoCard"
+import VideoCard from "../components/VideoCard"
 
 const VideoLibrary = () => {
   const [videoMetadata, setVideoMetadata] = useState(null)
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/get_metadata"
+    let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_metadata"
     console.log("url", url)
     fetch(url)
       .then(response => {
@@ -29,15 +29,15 @@ const VideoLibrary = () => {
   } //
 
   return (
-    <div>
+    <div className="m-3">
       <div>
-        <h1>Video Library</h1>
+        <h1 className="text-3xl">Video Library</h1>
       </div>
-      <div>
+      <div className="flex flex-row justify-between my-3">
         <p>filter</p>
         <p>search bar</p>
       </div>
-      <div>
+      <div className="grid grid-cols-3 gap-4">
         {
           videoMetadata.map((video_info, idx) => (
             <VideoCard key={idx} video_info={video_info} />

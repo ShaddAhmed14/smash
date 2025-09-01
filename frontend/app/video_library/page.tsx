@@ -1,4 +1,4 @@
-import VideoLibrary from "@/components/VideoLibrary"
+import VideoLibrary from "@/pages/VideoLibraryPage"
 
 const page = () => {
   return (
