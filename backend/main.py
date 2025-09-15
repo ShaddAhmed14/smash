@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from glob import glob as glob
 import json
 import os
+import numpy as np
+import pandas as pd
 from utils import setup_materials
 
 from urllib3 import request
@@ -42,17 +44,15 @@ def fetch_metadata():
 
 @app.get("/fetch_transcript/")
 def fetch_transcript(video_name: str):
-    file_path = os.path.join("/materials", f"{video_name}_transcript.txt")
+    file_path = os.path.join("/materials", video_name, f"{video_name}_transcript.srt")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Transcript file not found"}, status_code=404)
     
-    with open(file_path) as f:
-        data = f.read()
-    return JSONResponse(content={"transcript": data})
+    return FileResponse(file_path, media_type='text/plain', filename=f"{video_name}_transcript.srt")
 
 @app.get("/fetch_waveform/")
 def fetch_waveform(video_name: str):
-    file_path = os.path.join("/materials", f"{video_name}_waveform.json")
+    file_path = os.path.join("/materials", video_name,  f"{video_name}_waveform.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Waveform file not found"}, status_code=404)
     
@@ -60,6 +60,63 @@ def fetch_waveform(video_name: str):
         data = json.load(f)
     return JSONResponse(content=data)
 
+@app.get("/fetch_audio_features/")
+def fetch_audio_features(video_name: str):
+    file_path = os.path.join("/materials", video_name,  f"{video_name}_audio_features.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Audio features file not found"}, status_code=404)
+
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
+@app.get("/fetch_kinematic_features/")
+def fetch_kinematic_features(video_name: str):
+    file_path = os.path.join("/materials", video_name,  f"{video_name}_kinematic_features.csv")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Kinematic features file not found"}, status_code=404)
+    
+    df = pd.read_csv(file_path)
+    jitter_values = [0.2 * (np.random.random() - 0.5) for _ in range(len(df['gesture_id']))]
+    df = df.drop(columns=['gesture_id', 'video_id'])
+    df = df.to_dict(orient='list')
+    data = {'x': jitter_values, 'y': df}
+    return JSONResponse(content=data)
+
+@app.get("/fetch_metadata_graph")
+async def fetch_metadata_graph():
+    file_path = os.path.join("/materials", "metadata.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Metadata Graph File not Found" }, status_code=404)
+    with open(file_path) as f:
+        data = json.load(f)
+    speaker_gender = [item['speaker_gender'] for item in data]
+    language = [item['language'] for item in data]
+    duration = [item['duration'] for item in data]
+    video_name = [item['video_name'] for item in data]
+    topics = [item['topics'] for item in data]
+
+    return JSONResponse({
+        "speaker_gender": speaker_gender,
+        "language": language,
+        "duration": duration,
+        "video_name": video_name,
+        "topics": topics
+    })
+
+@app.get("/fetch_audio")
+async def stream_audio(video_name: str, request: Request):
+    file_path = os.path.join("/materials", video_name,  f"{video_name}_audio.wav")
+    
+    def iterfile(file_path: str):
+        with open(file_path, mode="rb") as file_like:
+            yield from file_like
+    
+    return StreamingResponse(
+        iterfile(file_path),
+        media_type="audio/mpeg",
+        headers={"Accept-Ranges": "bytes"}
+    )
 
 @app.get("/fetch_video/")
 def fetch_video(video_name: str, model_name: str,request: Request):

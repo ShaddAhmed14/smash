@@ -1,8 +1,10 @@
-import React from 'react'
+import KinematicFeatures from './Gesture/KinematicFeatures'
 
 const GestureAnalysis = ({video_name}) => {
   return (
-    <div>GestureAnalysis</div>
+    <div>
+      <KinematicFeatures video_name={video_name} />
+    </div>
   )
 }
 

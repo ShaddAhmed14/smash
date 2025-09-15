@@ -1,4 +1,5 @@
 import Link from "next/link"
+import MetadataGraph from "../components/MetadataGraph"
 const Homepage = () => {
   return (
     <div className='flex flex-col gap-10 items-center justify-between m-5'>
@@ -13,7 +14,8 @@ const Homepage = () => {
         </div>
         <div className='w-full'>
             <h1 className='text-2xl font-bold'>Features:</h1>
-            <div className='grid grid-cols-2'>
+            <div className='grid grid-cols-1'>
+                <MetadataGraph />
                 <div className='bg-white border-black border-2'>Placeholder 1</div>
                 <div className='bg-white border-black border-2'>Placeholder 2</div>
                 <div className='bg-white border-black border-2'>Placeholder 3</div>
