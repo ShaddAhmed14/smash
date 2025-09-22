@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react"
 
-const AudioTranscript = ({video_name, video_ref}) => {
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_transcript" + "?video_name=" + video_name;
+const Transcript = ({videoName, videoRef}) => {
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_transcript/" + "?video_name=" + videoName;
   const transcriptRef = useRef(null);
   const [transcript, setTranscript] = useState("");
   const [currentSegmentId, setCurrentSegmentId] = useState(null);
@@ -13,7 +13,6 @@ const AudioTranscript = ({video_name, video_ref}) => {
       const response = await fetch(url);
       const data = await response.text();
       const parsed = parseSRT(data);
-      console.log("Parsed Transcript:", parsed);
       setTranscript(parsed);
     };
 
@@ -21,28 +20,21 @@ const AudioTranscript = ({video_name, video_ref}) => {
   }, [url]);
 
   useEffect(() => {
-    console.log("came in use effect")
-    const video = video_ref ? video_ref.current : null;
+    const video = videoRef ? videoRef.current : null;
     if (!video) {
-        console.log("No video reference available");
         return;
     }
     if (!transcript || transcript.length === 0) {
-        console.log("Transcript not loaded yet");
         return;
     }
 
     const handleTranscriptTimeUpdate = () => {
-        console.log("called update time")
       const currentTime = video.currentTime;
-      console.log(transcript ? transcript : "No transcript available");
       const activeSegment = transcript?.find(
         segment => currentTime >= segment.start && currentTime < segment.end
       );
-      console.log("Current Time:", currentTime, "Active Segment:", activeSegment);
       
       if (activeSegment && activeSegment.id !== currentSegmentId) {
-        console.log("Active Segment ID:", activeSegment.id);
         setCurrentSegmentId(activeSegment.id);
         
         // Auto-scroll to current segment
@@ -50,15 +42,9 @@ const AudioTranscript = ({video_name, video_ref}) => {
         const activeElement = transcriptContainer?.querySelector(`[data-segment-id="${activeSegment.id}"]`);
         
         if (activeElement && transcriptContainer) {
-          const containerHeight = transcriptContainer.clientHeight;
-          const elementTop = activeElement.offsetTop;
-          const elementHeight = activeElement.clientHeight;
-          
-          // Calculate scroll position to center the active element
-          const scrollTop = elementTop - (containerHeight / 2) + (elementHeight / 2);
-          
+              
           transcriptContainer.scrollTo({
-            top: scrollTop,
+            top: Math.min(activeElement.scrollHeight+activeElement.clientHeight/2, transcriptContainer.clientHeight),
             behavior: 'smooth'
           });
         }
@@ -71,7 +57,7 @@ const AudioTranscript = ({video_name, video_ref}) => {
       video.removeEventListener('timeupdate', handleTranscriptTimeUpdate)
       video.removeEventListener('play', handleTranscriptTimeUpdate)
     };
-  }, [video_ref, currentSegmentId, transcript]);
+  }, [videoRef, currentSegmentId, transcript]);
 
    const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -107,10 +93,8 @@ const timeToSeconds = (timeStr) => {
   return (
         transcript ? <div 
           ref={transcriptRef}
-          className="flex-1 overflow-y-auto p-4 space-y-3"
-          style={{ maxHeight: 'calc(100vh - 100px)' }}
+          className="flex flex-col my-2 overflow-y-auto"
         >
-            <p>current segment id: {currentSegmentId}</p>
           {transcript.map((segment) => (
             <div
               key={segment.id}
@@ -142,4 +126,4 @@ const timeToSeconds = (timeStr) => {
         </div> : <div>Loading transcript...</div>
       )}
 
-export default AudioTranscript
+export default Transcript

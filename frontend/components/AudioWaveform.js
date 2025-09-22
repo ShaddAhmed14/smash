@@ -1,17 +1,18 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, memo} from 'react'
 
 import WaveSurfer from 'wavesurfer.js'
 import Timeline from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 
-const AudioWaveform = ({video_name, video_ref}) => {
-  const waveform_ref = useRef(null);
-  const wavesurfer_ref = useRef(null);
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_audio" + "?video_name=" + video_name;
+const AudioWaveform = memo(function AudioWaveform({videoName, videoRef}) {
+  console.log("in audio", videoName, videoRef)
+  const waveformRef = useRef(null);
+  const wavesurferRef = useRef(null);
   
   useEffect(() => {
-    wavesurfer_ref.current = WaveSurfer.create({
-      container: waveform_ref.current,
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_audio/" + "?video_name=" + videoName
+    wavesurferRef.current = WaveSurfer.create({
+      container: waveformRef.current,
       waveColor: '#4F46E5',
       progressColor: '#06B6D4',
       cursorColor: '#EF4444',
@@ -33,25 +34,24 @@ const AudioWaveform = ({video_name, video_ref}) => {
       ]
     });
     
-    wavesurfer_ref.current.load(url);
-   
-    return () => {
-      if (wavesurfer_ref.current) {
-        wavesurfer_ref.current.destroy();
-      }
-    };
-  }, [url]);
+    wavesurferRef.current.load(url);
+  }, [videoName]);
 
   useEffect(() => {
-    if (!video_ref?.current || !wavesurfer_ref.current) return;
+    if (!videoRef?.current || !wavesurferRef.current) return;
 
-    const video = video_ref.current;
-    const wavesurfer = wavesurfer_ref.current;
+    const video = videoRef.current;
+    const wavesurfer = wavesurferRef.current;
     wavesurfer.setVolume(0)
 
     const syncWaveformToVideo = () => {
-      const progress = video.currentTime / video.duration;
-      wavesurfer.seekTo(progress);
+      const currentTime = video?.currentTime;
+      const duration = video?.duration;
+      
+      if (duration && isFinite(currentTime) && isFinite(duration)) {
+        const progress = currentTime / duration;
+        wavesurfer.seekTo(progress);
+      }
     };
 
     const handleWaveformPlay = () => wavesurfer.play();
@@ -72,17 +72,21 @@ const AudioWaveform = ({video_name, video_ref}) => {
       video.removeEventListener('play', handleWaveformPlay);
       video.removeEventListener('pause', handleWaveformPause);
       wavesurfer.un('seek', handleWaveformSeek);
+      wavesurfer.destroy()
     };
-  }, [video_ref]);
+  }, [videoRef]);
 
   return (
     <div className="w-full">
+      {wavesurferRef ? 
       <div 
-        ref={waveform_ref} 
-        className="w-full border rounded-lg bg-gray-50"
-      />
+        ref={waveformRef} 
+        className="w-full"
+      /> :
+      <p>Loading Waveform</p>
+      }
     </div>
   )
-}
+})
 
 export default AudioWaveform

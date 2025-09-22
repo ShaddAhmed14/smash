@@ -5,14 +5,16 @@ from glob import glob as glob
 import json
 import os
 import numpy as np
+import base64
 import pandas as pd
 from utils import setup_materials
-
-from urllib3 import request
 from dotenv import load_dotenv
 
 load_dotenv()
 app = FastAPI()
+
+VIDEO_TYPES = ["Original", "YoloPose", "MediaPipePose", "OpenPose", "MaskAnyoneAPI-MediaPipePose", "MaskAnyoneAPI-OpenPose", "MaskAnyoneUI-MediaPipePose", "MaskAnyoneUI-OpenPose"]
+DEFAULT_VIDEO = "TED-kid"
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,6 +46,7 @@ def fetch_metadata():
 
 @app.get("/fetch_transcript/")
 def fetch_transcript(video_name: str):
+    video_name = DEFAULT_VIDEO if not video_name else video_name
     file_path = os.path.join("/materials", video_name, f"{video_name}_transcript.srt")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Transcript file not found"}, status_code=404)
@@ -52,6 +55,7 @@ def fetch_transcript(video_name: str):
 
 @app.get("/fetch_waveform/")
 def fetch_waveform(video_name: str):
+    video_name = DEFAULT_VIDEO if not video_name else video_name
     file_path = os.path.join("/materials", video_name,  f"{video_name}_waveform.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Waveform file not found"}, status_code=404)
@@ -106,6 +110,7 @@ async def fetch_metadata_graph():
 
 @app.get("/fetch_audio")
 async def stream_audio(video_name: str, request: Request):
+    video_name = DEFAULT_VIDEO if not video_name else video_name
     file_path = os.path.join("/materials", video_name,  f"{video_name}_audio.wav")
     
     def iterfile(file_path: str):
@@ -118,11 +123,42 @@ async def stream_audio(video_name: str, request: Request):
         headers={"Accept-Ranges": "bytes"}
     )
 
+@app.get("/fetch_models/")
+def fetch_models():
+    return JSONResponse(content={"models": VIDEO_TYPES})
+
+@app.get("/fetch_thumbnails/")
+def fetch_thumbnails(video_name: str, selectedModel: str):
+    video_name = DEFAULT_VIDEO if not video_name else video_name
+    file_path = os.path.join("/materials", video_name, "thumbnails")
+    thumbnails = {}
+    for model_name in VIDEO_TYPES:
+        thumbnails[model_name] = os.path.join(file_path, f"{video_name}_{model_name}_thumbnail.jpg")
+
+    for name, path in thumbnails.items():
+        if os.path.exists(path):
+            with open(path, "rb") as img_file:
+                image_extension = path.split('.')[-1].lower()
+                mime_type = f"image/{image_extension}" if image_extension in ["jpeg", "jpg", "png", "gif"] else "image/jpeg"
+                b64_string = base64.b64encode(img_file.read()).decode('utf-8')
+                thumbnails[name] = f"data:{mime_type};base64,{b64_string}"
+        else:
+            print("thumbnail not found", name, path)
+            thumbnails[name] = None
+    
+    del thumbnails[selectedModel] # send all thumbnails except selected one
+    return JSONResponse(content=thumbnails)
+
 @app.get("/fetch_video/")
-def fetch_video(video_name: str, model_name: str,request: Request):
-    video_file_name = f"{video_name}_{model_name}.mp4" if model_name else f"{video_name}.mp4"
-    file_path = os.path.join("/materials", video_name, video_file_name)
+def fetch_video(video_name: str, model_name: str, request: Request):
+    video_name = DEFAULT_VIDEO if not video_name else video_name
+    if model_name == "Original":
+        file_path = os.path.join("/materials", video_name, f"{video_name}_{model_name}.mp4")
+    else:
+        file_path = os.path.join("/materials", video_name, "coded_processed_videos", f"{video_name}_{model_name}.mp4")
+
     if not os.path.exists(file_path):
+        print("video not found", file_path)
         return JSONResponse(content={"message": "Video file not found"}, status_code=404)
 
     video_file_size = os.path.getsize(file_path)
@@ -159,31 +195,3 @@ def fetch_video(video_name: str, model_name: str,request: Request):
                 "Content-Type": "video/mp4",
             },
         ) 
-
-
-
-'''
-@app.get("/{video_id}")
-def get_video_snippet(video_id: str):
-    video_path = os.path.join(os.environ["VIDEO_DIR"], f"{video_id}.mp4")
-    if not os.path.exists(video_path):
-        return {"error": "Video file not found"}, 404
-    
-    command = [
-        'ffmpeg',
-        '-i', video_path,
-        '-t', '5',                  # Duration: 5 seconds
-        '-c:v', 'libx264',
-        '-preset', 'ultrafast',     # Faster encoding
-        '-f', 'mp4',
-        '-movflags', 'frag_keyframe+empty_moov+default_base_moof',  # For streaming MP4
-        'pipe:1'
-    ]
-
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-
-    return StreamingResponse(
-        process.stdout,
-        media_type='video/mp4'
-    )
-'''

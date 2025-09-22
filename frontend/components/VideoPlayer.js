@@ -1,18 +1,34 @@
 'use client'
-import {memo, forwardRef} from "react"
+import VideoThumbnail from "./VideoThumbnail"
+import { useState, memo, useMemo} from "react"
+import { GrGallery } from "react-icons/gr"
 
-const VideoPlayer = memo(forwardRef(
-  function VideoPlayer({video_name, model_name, handlePlay=null, handlePause=null, handleSeek=null}, ref) {
+const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, setChangeVideo}) {
+  const [selectedModel, setSelectedModel] = useState("Original");
+  const url = useMemo(() => process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_video/" + "?video_name=" + videoName + "&model_name=" + selectedModel, [videoName, selectedModel]) 
   
-  let original_video = model_name === "Original"
-  let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_video" + "?video_name=" + video_name + "&model_name=" + model_name
   return (
-    <div className="flex flex-col">
-      <p>{model_name}</p>
-      {original_video ? 
-      <video src={url} ref={ref} onPlay={handlePlay} onPause={handlePause} onSeeked={handleSeek} controls></video> 
-      : <video src={url} ref={ref} ></video>}
+    <div className='flex flex-col justify-start'>
+      <div className="align-middle m-auto">
+        <p className="text-l font-bold text-black">{videoName}_{selectedModel}</p>
+      </div>
+
+      <div className="relative inline-block">
+        <video preload="none" src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} className="w-auto w-full h-auto rounded-lg" controls/>
+          <div title="Change Video">
+            <GrGallery className="absolute top-4 left-4 text-white cursor-pointer" onClick={() => setChangeVideo(true)} />
+          </div>
+      
+
+      </div>
+      <div className="my-4">
+        <VideoThumbnail videoName={videoName} selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
+      </div>
     </div>
-  )}))
+  )
+})
 
 export default VideoPlayer
+// keep a list of models
+// selected video shows model name/ org and send the rest to thumbnail component
+// u could get models from backend too. 

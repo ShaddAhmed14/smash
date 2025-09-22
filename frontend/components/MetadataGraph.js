@@ -1,8 +1,10 @@
 'use client'
-import {useState, useEffect} from 'react'
-import Plot from 'react-plotly.js';
+import {useState, useEffect, memo} from 'react'
+import dynamic from 'next/dynamic'
 
-const MetadataGraph = () => {
+const Plot = dynamic(() => import('react-plotly.js'), {ssr:false})
+
+const MetadataGraph = memo(function MetadataGraph() {
   const [videoMetadata, setVideoMetadata] = useState(null)
   useEffect(() => {
     let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_metadata_graph"
@@ -11,11 +13,9 @@ const MetadataGraph = () => {
         if (!response.ok) {
           throw new Error("Network response was not ok", response);
         }
-        console.log("setting data")
         return response.json();
       })
       .then(data => {
-        console.log("data:", data)
         setVideoMetadata(data)})
       .catch(error => {
         console.error("Error fetching metadata:", error);
@@ -63,6 +63,6 @@ const MetadataGraph = () => {
         />
     </div>
   )
-}
+})
 
 export default MetadataGraph

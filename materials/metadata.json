@@ -1,7 +1,7 @@
 [
-    {"video_name": "conversation1_t3-cam22", "duration":6, "topics": ["AI, ENV"], "speaker_gender": "Male", "language": "English"},
-    {"video_name": "2", "duration":4, "topics": ["DS, ENV"], "speaker_gender": "Female", "language": "English"},
-    {"video_name": "3", "duration":5, "topics": ["AI, Gesture"], "speaker_gender": "Male", "language": "French"},
+    {"video_name": "TED-kid", "duration":6, "topics": ["AI, ENV"], "speaker_gender": "Male", "language": "English"},
+    {"video_name": "TED-curiosity-chunk", "duration":4, "topics": ["DS, ENV"], "speaker_gender": "Female", "language": "English"},
+    {"video_name": "TT-interactive1_t1-cam06", "duration":5, "topics": ["AI, Gesture"], "speaker_gender": "Male", "language": "French"},
     {"video_name": "4", "duration":3, "topics": ["AI, Behaviour"], "speaker_gender": "Female", "language": "Spanish"},
     {"video_name": "5", "duration":1, "topics": ["AI, DS"], "speaker_gender": "Male", "language": "French"}
 ]

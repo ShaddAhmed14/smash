@@ -4,13 +4,52 @@ import json
 import librosa
 # import whisper
 import numpy as np
+import glob
 
 def setup_materials(folder_path:str):
     video_names = [name for name in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, name))]
     for video_name in video_names:
         print("Setting up for video:", video_name)
         video_folder_path = os.path.join(folder_path, video_name)
-        audio_analysis(video_name, video_folder_path)
+        # create_thumbnail(video_name, video_folder_path)
+        fix_codex(os.path.join(video_folder_path, "processed_videos"), os.path.join(video_folder_path, "coded_processed_videos"))
+        # audio_analysis(video_name, video_folder_path)
+
+def fix_codex(video_folder_path:str, new_folder_path: str):
+    os.makedirs(new_folder_path, exist_ok=True)
+    video_paths = glob.glob(os.path.join(video_folder_path, "*.mp4"))
+    for video in video_paths:
+        output_path = os.path.join(new_folder_path, os.path.basename(video)) 
+        print("fixing codex of", video, output_path)
+        command = [
+            "ffmpeg",
+            "-y",  # Overwrite output file if it exists
+            "-i", video,
+            "-c:v", "libx264",
+            "-preset", "fast",
+            "-c:a", "aac",
+            "-b:a", "128k",
+            output_path
+        ]
+        subprocess.run(command, check=True)
+
+def create_thumbnail(video_name:str, video_folder_path:str):
+    os.makedirs(os.path.join(video_folder_path, "thumbnails"), exist_ok=True)
+    video_paths = glob.glob(os.path.join(video_folder_path, f"{video_name}*.mp4"))
+    for video_path in video_paths:
+        base_name = os.path.basename(video_path).replace(".mp4", "")
+        thumbnail_path = os.path.join(video_folder_path, "thumbnails", f"{base_name}_thumbnail.jpg")
+        command = [
+            'ffmpeg',
+            '-y', '-i', video_path,
+            '-ss', '00:00:01.000',
+            '-vframes', '1',
+            thumbnail_path
+        ]
+        subprocess.run(command, check=True)
+        print(f"Created Thumbnail for {base_name}")
+    
+    print("Created Thumbnail")
 
 def create_transcript(video_name:str, video_folder_path:str):
     audio_path = os.path.join(video_folder_path, f"{video_name}_audio.wav")
@@ -40,9 +79,9 @@ def audio_analysis(video_name:str, video_folder_path:str):
     y, sr = librosa.load(audio_path, sr=None) 
     print("Processing Audio")
 
-    get_audio_features(y, sr, audio_path.replace("_audio.wav", "_audio_features.json"))
+    # get_audio_features(y, sr, audio_path.replace("_audio.wav", "_audio_features.json"))
 
-    # get_waveform(y, sr, audio_path.replace("_audio.wav", "_waveform.json"))
+    get_waveform(y, sr, audio_path.replace("_audio.wav", "_waveform.json"))
     # get_volume_features(y, sr, audio_path.replace("_audio.wav", "_volume_features.json"))
     # get_pitch_features(y, sr, audio_path.replace("_audio.wav", "_pitch_features.json"))
     # get_spectral_features(y, sr, audio_path.replace("_audio.wav", "_spectral_features.json"))
@@ -50,7 +89,6 @@ def audio_analysis(video_name:str, video_folder_path:str):
     # get_advanced_features(y, sr, audio_path.replace("_audio.wav", "_advanced_features.json"))
 
     print("Completed Audio Feature Extraction")
-
 
 def get_audio_features(y, sr, file_save_path: str):
     hop_length = 512

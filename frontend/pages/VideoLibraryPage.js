@@ -1,9 +1,8 @@
 'use client'
-
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo } from "react"
 import VideoCard from "../components/VideoCard"
 
-const VideoLibrary = () => {
+const VideoLibrary = memo(function VideoLibrary() {
   const [videoMetadata, setVideoMetadata] = useState(null)
   useEffect(() => {
     let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_metadata"
@@ -33,10 +32,6 @@ const VideoLibrary = () => {
       <div>
         <h1 className="text-3xl">Video Library</h1>
       </div>
-      <div className="flex flex-row justify-between my-3">
-        <p>filter</p>
-        <p>search bar</p>
-      </div>
       <div className="grid grid-cols-3 gap-4">
         {
           videoMetadata.map((video_info, idx) => (
@@ -46,11 +41,6 @@ const VideoLibrary = () => {
       </div>
     </div>
   )
-}
+})
 
-export default VideoLibrary;
-
-// load metadata and make list of videos
-// they can click video to watch it/ or a clip of it
-// click process button to go next page
-// add filters and search button
+export default VideoLibrary
