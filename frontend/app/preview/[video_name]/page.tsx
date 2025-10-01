@@ -1,4 +1,4 @@
-import AnalysisPillar from '@/pages/AnalysisPillar'
+import PreviewPillar from '@/pages/PreviewPillar'
 
 interface PageProps {
   params: {
@@ -10,7 +10,7 @@ const page = async ({ params }: PageProps) => {
   const { video_name } = await params
 
   return (
-    <AnalysisPillar video_name={video_name} />
+    <PreviewPillar video_name={video_name} />
   )
 }
 

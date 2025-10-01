@@ -11,7 +11,7 @@ const PreviewPillar = () => {
   const [videoName, setVideoName] = useState("")
   const [changeVideo, setChangeVideo] = useState(false)
   const videoRef = useRef(null)
-  const border_css = "border-4 border-blue-400 rounded-lg p-2"
+  const border_css = "border-4 border-red-700 rounded-lg p-2"
   return (
     changeVideo ?
     <VideoContext.Provider value={{setChangeVideo, setVideoName}}>

@@ -43,6 +43,31 @@ def fetch_metadata():
     # print(data)
     return JSONResponse(content=data)
 
+@app.get("/fetch_dtw/")
+def fetch_dtw():
+    file_path = os.path.join("/materials", "gesture_visualization.csv")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "DTW File not Found" }, status_code=404)
+    df = pd.read_csv(file_path)
+    return JSONResponse(content=df.to_dict(orient='list'))
+
+@app.get("/fetch_gesture_segment")
+def fetch_gesture_segment(video_name: str):
+    file_path = os.path.join("/materials", video_name.split(".")[0], "gesture_segments", video_name + ".mp4")
+    print(file_path)
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Gesture Segment Video not Found" }, status_code=404)
+    def full_stream():
+            with open(file_path, "rb") as f:
+                yield from f
+    return StreamingResponse(
+            full_stream(),
+            media_type="video/mp4",
+            headers={
+                # "Content-Length": str(video_file_size),
+                "Content-Type": "video/mp4",
+            })
+    # return FileResponse(file_path, media_type='video/mp4', filename=video_name)
 
 @app.get("/fetch_transcript/")
 def fetch_transcript(video_name: str):
