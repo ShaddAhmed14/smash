@@ -32,6 +32,16 @@ def setup():
     setup_materials("/materials")
     return JSONResponse(content={"message": "Creating Materials using Videos found" }) 
 
+@app.get("/audio_peaks")
+def fetch_audio_peaks(video_name: str):
+    video_name = DEFAULT_VIDEO if not video_name else video_name
+    file_path = os.path.join("/materials", video_name,  f"{video_name}_peaks.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Audio Peaks file not found"}, status_code=404)
+    
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
 
 @app.get("/fetch_metadata")
 def fetch_metadata():

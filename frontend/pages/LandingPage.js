@@ -22,14 +22,14 @@ const LandingPage = () => {
         </p>
         <div className="grid lg:grid-cols-3 lg:grid-rows-1 justify-evenly gap-16 m-4 mt-10 grid-rows-3 grid-cols-1 w-3/4">
             <div className={big_button}>
-                <Link href="/preview/ted_kid" className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#dc2626] to-[#ef4444] shadow-[0_8px_20px_rgba(220,38,38,0.3)]`} >
+                <Link href="/loading/preview/ted_kid" className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#dc2626] to-[#ef4444] shadow-[0_8px_20px_rgba(220,38,38,0.3)]`} >
                     <FaVideo />
                 </Link>
                 <p className={big_button_title}>Source <br /> Material</p>
                 <p className={big_button_subtitle}>Input & Preprocessing</p>
             </div>
             <div className={big_button}>
-                <Link href="/analysis/ted_kid" className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#059669] to-[#10b981] shadow-[0_8px_20px_rgba(5,150,105,0.3)]`}>
+                <Link href="/loading/analysis/ted_kid" className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#059669] to-[#10b981] shadow-[0_8px_20px_rgba(5,150,105,0.3)]`}>
                     <FaBrain />
                 </Link>
                 <p className={big_button_title}>Analysis <br />Modules</p>

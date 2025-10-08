@@ -8,9 +8,8 @@ const AudioWaveform = memo(function AudioWaveform({videoName, videoRef}) {
   console.log("in audio", videoName, videoRef)
   const waveformRef = useRef(null);
   const wavesurferRef = useRef(null);
-  
+
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_audio/" + "?video_name=" + videoName
     wavesurferRef.current = WaveSurfer.create({
       container: waveformRef.current,
       waveColor: '#4F46E5',
@@ -34,7 +33,21 @@ const AudioWaveform = memo(function AudioWaveform({videoName, videoRef}) {
       ]
     });
     
-    wavesurferRef.current.load(url);
+  }, []);
+
+  useEffect(() => {
+    const audio_peaks_url = process.env.NEXT_PUBLIC_BACKEND_URL + "/audio_peaks?video_name=" + videoName
+    const audio_url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_audio?video_name=" + videoName
+    
+    fetch(audio_peaks_url) 
+      .then(response => response.json())
+      .then(data => {
+        wavesurferRef.current.load(audio_url, data)
+      })
+      .catch(error => {
+        console.error("Error fetching audio peaks:", error)
+      })
+
   }, [videoName]);
 
   useEffect(() => {

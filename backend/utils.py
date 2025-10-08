@@ -11,9 +11,21 @@ def setup_materials(folder_path:str):
     for video_name in video_names:
         print("Setting up for video:", video_name)
         video_folder_path = os.path.join(folder_path, video_name)
+        try:
+            fetch_peaks(video_name, video_folder_path)
+        except Exception as e:
+            print("Error:", e)
+            continue
         # create_thumbnail(video_name, video_folder_path)
-        fix_codex(os.path.join(video_folder_path, "processed_videos"), os.path.join(video_folder_path, "coded_processed_videos"))
+        # fix_codex(os.path.join(video_folder_path, "processed_videos"), os.path.join(video_folder_path, "coded_processed_videos"))
         # audio_analysis(video_name, video_folder_path)
+
+def fetch_peaks(video_name:str, video_folder_path:str):
+    y, sr = librosa.load(os.path.join(video_folder_path, f"{video_name}_audio.wav"), sr=None)
+    block_size = len(y) // 1000
+    peaks = [float(np.max(np.abs(y[i*block_size:(i+1)*block_size]))) for i in range(1000)]
+    with open(os.path.join(video_folder_path, f"{video_name}_peaks.json"), 'w') as f:
+        json.dump(peaks, f)
 
 def fix_codex(video_folder_path:str, new_folder_path: str):
     os.makedirs(new_folder_path, exist_ok=True)

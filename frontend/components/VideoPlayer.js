@@ -12,9 +12,9 @@ const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, setChangeVid
       <div className="align-middle m-auto">
         <p className="text-l font-bold text-black">{videoName}_{selectedModel}</p>
       </div>
-
+      {/* preload="none"  volume={0.0} */}
       <div className="relative inline-block">
-        <video preload="none" src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} className="w-auto w-full h-auto rounded-lg" controls/>
+        <video src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} className="w-auto w-full h-auto rounded-lg" controls/>
           <div title="Change Video">
             <GrGallery className="absolute top-4 left-4 text-white cursor-pointer" onClick={() => setChangeVideo(true)} />
           </div>
