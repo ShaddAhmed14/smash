@@ -1,11 +1,7 @@
 import VideoLibrary from "@/pages/VideoLibraryPage"
 
 const page = () => {
-  return (
-    <div>
-      <VideoLibrary />
-    </div>
-  )
+  return <VideoLibrary />
 }
 
 export default page

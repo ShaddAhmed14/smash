@@ -9,7 +9,7 @@ const DTW = memo(function DTW() {
   const videoRef2 = useRef(null)
 
   const layout={
-    title: 'Dynamic Time Warping (DTW) Analysis',
+    title: {text: 'Dynamic Time Warping (DTW) Analysis'},
     xaxis: {title: 'x'},
     yaxis: {title: 'y'},
     autosize: true,
@@ -67,8 +67,8 @@ const DTW = memo(function DTW() {
             : <div>Loading DTW Graph...</div>
           }
         <div className="flex flex-col items-center  gap-y-4 align-middle justify-center w-1/3">
-            {videos[0] ? <video title={videos[0]} ref={videoRef1} src={url+videos[0]} controls /> : <p>Select upto 2 Videos to Preview</p>}
-            {videos[1] ? <video title={videos[1]} ref={videoRef2} src={url+videos[1]} controls /> : <p></p>}
+            {videos[0] ? <video loop title={videos[0]} ref={videoRef1} src={url+videos[0]} controls /> : <p>Select upto 2 Videos to Preview</p>}
+            {videos[1] ? <video loop e={videos[1]} ref={videoRef2} src={url+videos[1]} controls /> : <p></p>}
         </div>
     </div>
   )

@@ -2,6 +2,7 @@
 import VideoThumbnail from "./VideoThumbnail"
 import { useState, memo, useMemo} from "react"
 import { GrGallery } from "react-icons/gr"
+import Link from "next/link"
 
 const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, setChangeVideo}) {
   const [selectedModel, setSelectedModel] = useState("Original");
@@ -14,9 +15,12 @@ const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, setChangeVid
       </div>
       {/* preload="none"  volume={0.0} */}
       <div className="relative inline-block">
-        <video src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} className="w-auto w-full h-auto rounded-lg" controls/>
+        <video preload="none" src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} className="w-auto w-full h-auto rounded-lg" controls/>
           <div title="Change Video">
-            <GrGallery className="absolute top-4 left-4 text-white cursor-pointer" onClick={() => setChangeVideo(true)} />
+            {/* <GrGallery className="absolute top-4 left-4 text-white cursor-pointer" onClick={() => setChangeVideo(true)} /> */}
+            <Link href={'/video_library'} className="absolute top-4 left-4 text-white cursor-pointer">
+              <GrGallery />
+            </Link>
           </div>
       
 

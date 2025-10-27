@@ -8,7 +8,6 @@ const LandingPage = () => {
     const big_button_title = "text-2xl font-[700] mb-[1rem] text-black transition-all duration-[0.3s] ease-linear"
     const big_button_subtitle = "text-lg font-[500] text-[#666] transition-all duration-[0.3s] ease-linear"
     const big_button_icon = "w-[120px] h-[120px] mb-[2rem] flex text-white text-[48px] rounded-[20px] items-center justify-center transition-all duration-[0.3s] ease-linear"
-    
   return (
     <div className='flex flex-col items-center mx-auto py-10 min-h-screen justify-center font-[Inter] bg-gradient-to-b from-[#f8fafc] to-[#e2e8f0] '>
         <div className={system_logo}>
@@ -22,21 +21,21 @@ const LandingPage = () => {
         </p>
         <div className="grid lg:grid-cols-3 lg:grid-rows-1 justify-evenly gap-16 m-4 mt-10 grid-rows-3 grid-cols-1 w-3/4">
             <div className={big_button}>
-                <Link href="/loading/preview/ted_kid" className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#dc2626] to-[#ef4444] shadow-[0_8px_20px_rgba(220,38,38,0.3)]`} >
+                <Link href={'/video_library/'} className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#dc2626] to-[#ef4444] shadow-[0_8px_20px_rgba(220,38,38,0.3)]`} >
                     <FaVideo />
                 </Link>
                 <p className={big_button_title}>Source <br /> Material</p>
                 <p className={big_button_subtitle}>Input & Preprocessing</p>
             </div>
             <div className={big_button}>
-                <Link href="/loading/analysis/ted_kid" className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#059669] to-[#10b981] shadow-[0_8px_20px_rgba(5,150,105,0.3)]`}>
+                <Link href={'/loading/analysis'} className={`${big_button_icon} align-middle bg-linear-[135deg] from-[#059669] to-[#10b981] shadow-[0_8px_20px_rgba(5,150,105,0.3)]`}>
                     <FaBrain />
                 </Link>
                 <p className={big_button_title}>Analysis <br />Modules</p>
                 <p className={big_button_subtitle}>Core Processing Engine</p>
             </div>
             <div className={big_button}>
-                <Link href="/analytics/ted_kid" className={`${big_button_icon} bg-[#2563eb] bg-linear-[135deg] from-[#2563eb] to-[#3b82f6] shadow-[0_8px_20px_rgba(37,99,235,0.3)]`}>
+                <Link href={'/loading/analytics'} className={`${big_button_icon} bg-[#2563eb] bg-linear-[135deg] from-[#2563eb] to-[#3b82f6] shadow-[0_8px_20px_rgba(37,99,235,0.3)]`}>
                     <FaChartPie />
                 </Link>
                 <p className={big_button_title}>Summary <br />Analytics</p>

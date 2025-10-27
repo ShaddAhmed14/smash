@@ -9,11 +9,12 @@ import base64
 import pandas as pd
 from utils import setup_materials
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 app = FastAPI()
 
-VIDEO_TYPES = ["Original", "YoloPose", "MediaPipePose", "OpenPose", "MaskAnyoneAPI-MediaPipePose", "MaskAnyoneAPI-OpenPose", "MaskAnyoneUI-MediaPipePose", "MaskAnyoneUI-OpenPose"]
+VIDEO_TYPES = ["Original", "YoloPose", "MediaPipePose", "OpenPose", "MaskAnyoneAPI-MediaPipe", "MaskAnyoneAPI-OpenPose"]
 DEFAULT_VIDEO = "TED-kid"
 
 app.add_middleware(
@@ -31,6 +32,61 @@ def home():
 def setup():
     setup_materials("/materials")
     return JSONResponse(content={"message": "Creating Materials using Videos found" }) 
+
+@app.get("/fetch_video_distribution")
+def fetch_video_distribution():
+    file_path = os.path.join("/materials", "video_distribution.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Video Distribution File not Found" }, status_code=404)
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
+@app.get("/fetch_topic_interdistance")
+def fetch_topic_interdistance():
+    file_path = os.path.join("/materials", "topic_interdistance.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Topic Interdistance File not Found" }, status_code=404)
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
+@app.get("/fetch_average_audio_features")
+def fetch_average_audio_features():
+    file_path = os.path.join("/materials", "average_audio_features.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Average Audio Features file not found"}, status_code=404)
+
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
+@app.get("/fetch_world_cloud")
+def fetch_world_cloud():
+    file_path = os.path.join("/materials", "word_cloud.png")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Word Cloud File not Found" }, status_code=404)
+    return FileResponse(file_path, media_type='image/png', filename="word_cloud.png")
+
+@app.get("/fetch_audio_spectogram_embeddings")
+def fetch_audio_spectogram_embeddings():
+    file_path = os.path.join("/materials", "audio_spectogram_embeddings.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Audio Spectogram Embeddings file not found"}, status_code=404)
+
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
+
+@app.get("/fetch_max_audio_features")
+def fetch_max_audio_features():
+    file_path = os.path.join("/materials", "max_audio_features.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "max Audio Features file not found"}, status_code=404)
+
+    with open(file_path) as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
 
 @app.get("/audio_peaks")
 def fetch_audio_peaks(video_name: str):
@@ -63,10 +119,17 @@ def fetch_dtw():
 
 @app.get("/fetch_gesture_segment")
 def fetch_gesture_segment(video_name: str):
-    file_path = os.path.join("/materials", video_name.split(".")[0], "gesture_segments", video_name + ".mp4")
+    # video_name = 1607._In_the_opioid_crisis,_here_s_what_it_takes_to_save_a_life___Jan_Rader.mp4_segment_188_Gesture_833.17_833.58
+    file_path = os.path.join("/materials", video_name.split(".mp4")[0], "gesture_segments", video_name + ".mp4")
     print(file_path)
     if not os.path.exists(file_path):
-        return JSONResponse(content={"message": "Gesture Segment Video not Found" }, status_code=404)
+        print("not found in materials")
+        # 1426._The_power_to_think_ahead_in_a_reckless_age___Bina_Venkataraman.mp4
+        file_path = os.path.join("/envisionhgdetector_output/gesture_segments", video_name.split("_segment")[0], video_name + ".mp4")
+        print(file_path)
+        if not os.path.exists(file_path):
+            print("not found in envision")
+            return JSONResponse(content={"message": "Gesture Segment Video not Found" }, status_code=404)
     def full_stream():
             with open(file_path, "rb") as f:
                 yield from f
@@ -190,7 +253,7 @@ def fetch_video(video_name: str, model_name: str, request: Request):
     if model_name == "Original":
         file_path = os.path.join("/materials", video_name, f"{video_name}_{model_name}.mp4")
     else:
-        file_path = os.path.join("/materials", video_name, "coded_processed_videos", f"{video_name}_{model_name}.mp4")
+        file_path = os.path.join("/materials", video_name, "processed", f"{video_name}_{model_name}.mp4")
 
     if not os.path.exists(file_path):
         print("video not found", file_path)

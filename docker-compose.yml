@@ -10,13 +10,14 @@ services:
     volumes:
       - ./backend:/app  
       - ${MATERIALS_FOLDER}:/materials
+      - ${ENVISIONHGDETECTOR_OUTPUT}:/envisionhgdetector_output
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3050:3050"
     depends_on:
       - backend
     env_file: 
