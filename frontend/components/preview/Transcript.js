@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 
 const Transcript = ({videoName, videoRef}) => {
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_transcript/" + "?video_name=" + videoName;
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName;
   const transcriptRef = useRef(null);
   const [transcript, setTranscript] = useState("");
   const [currentSegmentId, setCurrentSegmentId] = useState(null);

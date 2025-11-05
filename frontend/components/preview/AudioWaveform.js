@@ -5,7 +5,6 @@ import WaveSurfer from 'wavesurfer.js'
 import Timeline from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 
 const AudioWaveform = memo(function AudioWaveform({videoName, videoRef}) {
-  console.log("in audio", videoName, videoRef)
   const waveformRef = useRef(null);
   const wavesurferRef = useRef(null);
 
@@ -36,10 +35,10 @@ const AudioWaveform = memo(function AudioWaveform({videoName, videoRef}) {
   }, []);
 
   useEffect(() => {
-    const audio_peaks_url = process.env.NEXT_PUBLIC_BACKEND_URL + "/audio_peaks?video_name=" + videoName
-    const audio_url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_audio?video_name=" + videoName
-    
-    fetch(audio_peaks_url) 
+    const audio_peaks_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/audio_peaks?video_name=" + videoName
+    const audio_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_audio?video_name=" + videoName
+
+    fetch(audio_peaks_url)
       .then(response => response.json())
       .then(data => {
         wavesurferRef.current.load(audio_url, data)

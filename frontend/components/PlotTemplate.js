@@ -1,7 +1,7 @@
 'use client'
 import {useEffect, useRef, memo} from 'react'
 
-const PlotTemplate = memo(function PlotTemplate({layout, config, data}) {
+const PlotTemplate = memo(function PlotTemplate({layout, config, data, handleClick=null, selectedVideos=[], currentTime=null}) {
     const plotlyRef = useRef(null)
     const containerRef = useRef(null)
     const isInitialized = useRef(false)
@@ -13,9 +13,13 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data}) {
             const Plotly = await import('plotly.js-dist-min')
             const PlotlyInstance = Plotly.default || Plotly || window.Plotly
             plotlyRef.current = PlotlyInstance
+            PlotlyInstance.react(containerRef.current, data, layout, config)
             if (!isInitialized.current) {
-              PlotlyInstance.newPlot(containerRef.current, data, layout, config)
+              // PlotlyInstance.newPlot(containerRef.current, data, layout, config)
               isInitialized.current = true
+              if (handleClick) {
+                containerRef.current.on('plotly_click', handleClick)
+              }
             }
           } catch (error) {
             console.error("Error loading Plotly:", error)
@@ -23,7 +27,18 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data}) {
       }}
       loadPlotly()
         
-    }, [data, layout, config])
+    }, [data, layout, config, currentTime])
+
+    useEffect(() => {
+      if (selectedVideos.length > 0 && isInitialized.current && plotlyRef?.current && containerRef?.current) {
+        const newColors = data[0].text.map((video_name, index) => { return selectedVideos.includes(video_name) ? "red" : (data[0].marker.color[index] || data[0].marker.color) })
+      const newSizes = data[0].text.map((video_name, index) => { return selectedVideos.includes(video_name) ? 12 : 6 })
+      plotlyRef.current.restyle(containerRef.current, {
+        'marker.color': [newColors],
+        'marker.size': [newSizes]
+      }, 0)
+    }
+    }, [selectedVideos, data])
 
     useEffect(() => {
     return () => {

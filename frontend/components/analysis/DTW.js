@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect, memo, useRef } from 'react'
+import { useState, useEffect, memo, useRef, useMemo } from 'react'
 import DTWGraph from './DTWGraph'
+import PlotTemplate from '../PlotTemplate'
 
 const DTW = memo(function DTW() {
   const [dtwData, setDtwData] = useState(null)
@@ -14,11 +15,24 @@ const DTW = memo(function DTW() {
     yaxis: {title: 'y'},
     autosize: true,
   }
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+    displaylogo: false,
+    toImageButtonOptions: {
+      format: 'png',
+      filename: "DTW Graph",
+      height: 500,
+      width: 700,
+      scale: 1
+    }
+  }
 
-  let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_gesture_segment/?video_name="
+  let url = process.env.NEXT_PUBLIC_BACKEND_URL  + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_gesture_segment/?video_name="
 
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_dtw/"
+    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_dtw/"
     fetch(url)
       .then(response => response.json())
       .then(data => {
@@ -33,7 +47,7 @@ const DTW = memo(function DTW() {
   }, [])
 
   const handleClick = (e) => {
-    console.log("clicked")
+    console.log("clicked", e)
     const video_name = e.points[0]?.text
     setVideos(prev => {
       if (prev.includes(video_name)) {
@@ -45,24 +59,32 @@ const DTW = memo(function DTW() {
       else return [...prev, video_name] // add the new video
   })}
 
-  const config = {
-    responsive: true,
-    displayModeBar: true,
-    modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-    displaylogo: false,
-    toImageButtonOptions: {
-      format: 'png',
-      filename: "DTW Graph",
-      height: 500,
-      width: 700,
-      scale: 1
-    }
-  }
+  const processedData = useMemo(() => {
+      if (!dtwData) return {}
+      console.log("processing data", dtwData)
+      let returnData = {
+        x: dtwData.x || [],
+        y: dtwData.y || [],
+        text: dtwData.text || [],
+        type: 'scatter',
+        mode: 'markers',
+        marker: {
+          color: dtwData.text?.map((video_name, index) => { return videos.includes(video_name) ? "red" : "blue" }) || 'blue',
+          size: dtwData.text?.map((video_name, index) => { return videos.includes(video_name) ? 12 : 6 }) || 6,
+        },
+        hovertemplate: "X: %{x}<br>Y: %{y}<br>Gesture: %{text}"
+      }
+      console.log("returning", returnData)
+      return [returnData]
+    }, [dtwData, videos])
+
+
   return (
     <div className="flex flex-row h-full w-full justify-between">
         {dtwData ? 
         <div className="w-2/3">
-          <DTWGraph data={dtwData} selectedVideos={videos} config={config} layout={layout} handleClick={handleClick} />
+          <PlotTemplate layout={layout} config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
+          {/* <DTWGraph data={processedData} selectedVideos={videos} config={config} layout={layout} handleClick={handleClick} /> */}
         </div>
             : <div>Loading DTW Graph...</div>
           }

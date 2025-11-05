@@ -1,6 +1,6 @@
 'use client'
 import {useEffect, useState, useMemo, memo} from 'react'
-import PlotTemplate from './PlotTemplate'
+import PlotTemplate from '../PlotTemplate'
 
 const VideoDistribution = memo(function VideoDistribution() {
     const [data, setData] = useState(null)
@@ -26,7 +26,7 @@ const VideoDistribution = memo(function VideoDistribution() {
     }
 
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_video_distribution"
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_video_distribution"
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {

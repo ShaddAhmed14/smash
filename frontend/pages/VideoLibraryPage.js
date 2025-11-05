@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect, memo } from "react"
-import VideoCard from "../components/VideoCard"
+import VideoCard from "../components/preview/VideoCard"
 
 const VideoLibrary = memo(function VideoLibrary() {
   const [videoMetadata, setVideoMetadata] = useState(null)
   
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_metadata"
+    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW +  "/fetch_metadata"
     fetch(url)
       .then(response => {
         if (!response.ok) {

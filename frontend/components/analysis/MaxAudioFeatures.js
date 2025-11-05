@@ -1,11 +1,11 @@
 'use client'
 import {useEffect, useState, memo, useMemo} from 'react'
-import PlotTemplate from './PlotTemplate'
+import PlotTemplate from '../PlotTemplate'
 
-const AverageAudioFeatures = memo(function AverageAudioFeatures() {
+const MaxAudioFeatures = memo(function MaxAudioFeatures() {
     const [data, setData] = useState(null)
     const layout={
-    title: {text: 'Average Audio Features'},
+    title: {text: 'Max Audio Features'},
     scene: { // needed for 3d plot
         xaxis: {title: {text:'Pitch'}},
         yaxis: {title: {text:'Volume'}},
@@ -21,7 +21,7 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
     displaylogo: false,
     toImageButtonOptions: {
       format: 'png',
-      filename: "Average Audio Features",
+      filename: "Max Audio Features",
       height: 500,
       width: 700,
       scale: 1
@@ -29,7 +29,7 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
     }
 
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_average_audio_features"
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_max_audio_features"
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {
@@ -37,7 +37,7 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
                 setData(fetchedData)
             })
             .catch(error => {
-                console.error("Error fetching average audio features:", error)
+                console.error("Error fetching max audio features:", error)
             })
     }, [])
 
@@ -45,9 +45,9 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
         if (!data || data == null) return {}
         
         let returnData = {
-            x: data.avg_pitch || [],
-            y: data.avg_volume || [],
-            z: data.avg_tempo || [],
+            x: data.max_pitch || [],
+            y: data.max_volume || [],
+            z: data.max_tempo || [],
             text: data.titles || [],
             type: 'scatter3d',
             mode: 'markers',
@@ -67,4 +67,4 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
     )
 })
 
-export default AverageAudioFeatures
+export default MaxAudioFeatures

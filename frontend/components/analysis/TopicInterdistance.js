@@ -1,6 +1,6 @@
 'use client'
 import {useEffect, useState, useMemo, memo} from 'react'
-import PlotTemplate from './PlotTemplate'
+import PlotTemplate from '../PlotTemplate'
 
 const TopicInterdistance = memo(function TopicInterdistance() {
     const [data, setData] = useState(null)
@@ -26,7 +26,7 @@ const TopicInterdistance = memo(function TopicInterdistance() {
     }
 
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_topic_interdistance"
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_topic_interdistance"
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {

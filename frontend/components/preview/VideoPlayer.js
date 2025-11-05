@@ -4,14 +4,14 @@ import { useState, memo, useMemo} from "react"
 import { GrGallery } from "react-icons/gr"
 import Link from "next/link"
 
-const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, setChangeVideo}) {
+const VideoPlayer = memo(function VideoPlayer({videoName, videoRef}) {
   const [selectedModel, setSelectedModel] = useState("Original");
-  const url = useMemo(() => process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_video/" + "?video_name=" + videoName + "&model_name=" + selectedModel, [videoName, selectedModel]) 
+  const url = useMemo(() => process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_video/" + "?video_name=" + videoName + "&model_name=" + selectedModel, [videoName, selectedModel]) 
   
   return (
     <div className='flex flex-col justify-start'>
       <div className="align-middle m-auto">
-        <p className="text-l font-bold text-black">{videoName}_{selectedModel}</p>
+        <p className="text-l break-all font-bold text-black">{videoName}_{selectedModel}</p>
       </div>
       {/* preload="none"  volume={0.0} */}
       <div className="relative inline-block">

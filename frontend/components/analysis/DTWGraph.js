@@ -6,34 +6,15 @@ const DTWGraph = memo(function DTWGraph({data, selectedVideos=[], layout, config
     const containerRef = useRef(null)
     const isInitialized = useRef(false)
 
-    const processedData = useMemo(() => {
-      if (!data) return {}
-      console.log("processing data", data)
-      let returnData = {
-        x: data.x || [],
-        y: data.y || [],
-        text: data.text || [],
-        type: 'scatter',
-        mode: 'markers',
-        marker: {
-          color: data.text?.map((video_name, index) => { return selectedVideos.includes(video_name) ? "red" : "blue" }) || 'blue',
-          size: data.text?.map((video_name, index) => { return selectedVideos.includes(video_name) ? 12 : 6 }) || 6,
-        },
-        hovertemplate: "X: %{x}<br>Y: %{y}<br>Gesture: %{text}"
-      }
-      console.log("returning", returnData)
-      return [returnData]
-    }, [data, selectedVideos])
-
     useEffect(() => {
       const loadPlotly = async () => {
-        if(containerRef?.current && processedData.length > 0) {
+        if(containerRef?.current && data.length > 0) {
           try {
             const Plotly = await import('plotly.js-dist-min')
             const PlotlyInstance = Plotly.default || Plotly || window.Plotly
             plotlyRef.current = PlotlyInstance
             if (!isInitialized.current) {
-              PlotlyInstance.newPlot(containerRef.current, processedData, layout, config)
+              PlotlyInstance.newPlot(containerRef.current, data, layout, config)
               isInitialized.current = true
               containerRef.current.on('plotly_click', handleClick)
             }

@@ -1,8 +1,10 @@
-import React from 'react'
+import TemporalSentimentGraph from '../components/analytics/TemporalSentimentGraph'
 
 const AnalyticsPillar = () => {
   return (
-    <div>AnalyticsPillar</div>
+    <div>
+      <TemporalSentimentGraph />
+    </div>
   )
 }
 
