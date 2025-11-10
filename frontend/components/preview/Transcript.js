@@ -42,14 +42,22 @@ const Transcript = ({videoName, videoRef}) => {
         const activeElement = transcriptContainer?.querySelector(`[data-segment-id="${activeSegment.id}"]`);
         
         if (activeElement && transcriptContainer) {
-              
+          // since we have variable height segments, and a flex container, we need to calculate the scroll position manually
+          let scrollPosition = 0
+          const allSegments = Array.from(transcriptContainer.children)
+          const activeIndex = allSegments.indexOf(activeElement)
+          for (let i = 0; i < activeIndex; i++) {
+            scrollPosition += allSegments[i].clientHeight
+          }
+
+          scrollPosition -= (transcriptContainer.clientHeight / 2) + (activeElement.clientHeight / 2)
           transcriptContainer.scrollTo({
-            top: Math.min(activeElement.scrollHeight+activeElement.clientHeight/2, transcriptContainer.clientHeight),
+            top: Math.max(0, scrollPosition),
             behavior: 'smooth'
-          });
+          })
         }
       }
-    };
+    }
 
     video.addEventListener('timeupdate', handleTranscriptTimeUpdate);
     video.addEventListener('play', handleTranscriptTimeUpdate);
@@ -106,7 +114,7 @@ const timeToSeconds = (timeStr) => {
               }`}
             >
               <div className="flex items-start space-x-2">
-                <span className={`text-xs font-mono px-2 py-1 rounded ${
+                <span className={`text-xs font-mono px-2 py-1 ${
                   currentSegmentId === segment.id
                     ? 'bg-blue-200 text-blue-800'
                     : 'bg-gray-200 text-gray-600'

@@ -64,7 +64,8 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
                 width: 1,
             },
             fill: 'tozeroy',
-          hoverinfo: 'skip',
+        //   hoverinfo: 'skip',
+        hovertemplate: 'Time: %{x}<br>Amplitude: %{y}',
       fillcolor: 'rgba(255, 0, 0, 0.5)',
         }        
         let mirrored_peaks = {
@@ -76,7 +77,7 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
                 width: 1,
             },
             fill: 'tonexty',
-                hoverinfo: 'skip',
+        hovertemplate: 'Time: %{x}<br>Amplitude: %{y}',
 
             fillcolor: 'rgba(255, 0, 0, 0.5)',
 
