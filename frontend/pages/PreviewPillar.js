@@ -8,9 +8,6 @@ const VideoPlayer = dynamic(() => import("../components/preview/VideoPlayer"), {
   loading: () => <p>Loading Video Player...</p>
  })
 
-const AudioWaveform = dynamic(() => import("../components/preview/AudioWaveform"), { ssr: false,
-  loading: () => <p>Loading Audio Waveform...</p>
-})
 const Waveform = dynamic(() => import("../components/preview/Waveform"), { ssr: false,
   loading: () => <p>Loading Waveform...</p>
 })
@@ -30,7 +27,6 @@ const PreviewPillar = memo(function PreviewPillar({video_name}) {
         </div>
         <div className={`grid grid-rows-2 gap-4 w-4/10 ${border_css}`}>
           <Waveform videoName={video_name} videoRef={videoRef} />
-          {/* <AudioWaveform videoName={video_name} videoRef={videoRef} /> */}
           <Transcript videoName={video_name} videoRef={videoRef} />
         </div>
       </div>
