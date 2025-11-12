@@ -34,7 +34,7 @@ const RadialGraph = memo(function RadialGraph() {
 
     const processedData = useMemo(() => {
         if (!data) return {}
-        const number_of_videos = 2
+        const number_of_videos = 7
         const avg_tempo = data.avg_tempo.slice(0, number_of_videos) || []
         const avg_pitch = data.avg_pitch.slice(0, number_of_videos) || []
         let avg_volume = data.avg_volume.slice(0, number_of_videos) || []
@@ -59,48 +59,43 @@ const RadialGraph = memo(function RadialGraph() {
         // const {normalized_tempo, normalized_pitch, normalized_volume} = normalizeArray(avg_tempo, avg_pitch, avg_volume)
 
 
-        // function normalizeArray(arr) {
-        //     const min = Math.min(...arr)
-        //     const max = Math.max(...arr)
-        //     return arr.map(value => ((value - min)*10) / (max - min))
-        // }
-
-        // const normalized_tempo = normalizeArray(avg_tempo)
-        // const normalized_pitch = normalizeArray(avg_pitch)
-        // const normalized_volume = normalizeArray(avg_volume)
-
-        // console.log("Normalized Data:", normalized_tempo, normalized_pitch, normalized_volume)
-
-        let trace_1 = {
-            r: [avg_pitch[0], avg_volume[0], avg_tempo[0]],
-            theta: ['Avg Pitch', 'Avg Volume', 'Avg Tempo'],
-            type: 'scatterpolar',
-            title: titles[0],
-            name: titles[0],
-            mode: 'lines',
-            fill: 'toself',
-            color: colors,
-            hovertemplate: "Title: %{title}<extra></extra>"
+        function normalizeArray(arr) {
+            const min = Math.min(...arr)
+            const max = Math.max(...arr)
+            return arr.map(value => ((value - min)*10) / (max - min))
         }
-        let trace_2 = {
-            r: [avg_pitch[1], avg_volume[1], avg_tempo[1]],
-            theta: ['Avg Pitch', 'Avg Volume', 'Avg Tempo'],
-            type: 'scatterpolar',
-            title: titles[1],
-            name: titles[1],
-            mode: 'lines',
-            fill: 'toself',
-            color: colors,
-            hovertemplate: "Title: %{title}<extra></extra>"
+
+        const normalized_tempo = normalizeArray(avg_tempo)
+        const normalized_pitch = normalizeArray(avg_pitch)
+        const normalized_volume = normalizeArray(avg_volume)
+
+        console.log("Normalized Data:", normalized_tempo, normalized_pitch, normalized_volume)
+
+        let traces = []
+        for (let i=0; i<number_of_videos; i++) {
+            let trace = {
+                r: [normalized_pitch[i], normalized_volume[i], normalized_tempo[i]],
+                // r: [avg_pitch[i], avg_volume[i], avg_tempo[i]],
+                theta: ['Avg Pitch', 'Avg Volume', 'Avg Tempo'],
+                type: 'scatterpolar',
+                title: titles[i],
+                name: titles[i],
+                mode: 'lines',
+                fill: 'toself',
+                color: colors,
+                hovertemplate: "Title: %{title}<extra></extra>"
+            }
+            traces.push(trace)
         }
 
         const layout={
             title: {text: 'Radial Graph'},
             autosize: true,
-            showlegend:false,
+            showlegend:true,
+            legend: {orientation: 'h', x: 0, y: -0.2},
         }
         
-        return {traces: [trace_1, trace_2], layout: layout}
+        return {traces: traces, layout: layout}
     }, [data])
 
     return (

@@ -1,5 +1,6 @@
 'use client'
 import dynamic from 'next/dynamic'
+import {Suspense} from 'react'
 
 const DTW = dynamic(() => import('../components/analysis/DTW'), { ssr: false })
 const VideoDistribution = dynamic(() => import('../components/analysis/VideoDistribution'), { ssr: false, loading: () => <p>Loading Video Distribution...</p> })
@@ -16,27 +17,38 @@ const AnalysisPillar = () => {
     <div className="flex flex-col h-full w-full">
       
       <div className={containerStyle}>
-        <DTW />
+        <Suspense fallback={<div>Loading DTW...</div>}>
+          <DTW />
+        </Suspense>
       </div>
       <div className={containerStyle}>
-        <VideoDistribution />
+        <Suspense fallback={<div>Loading Video Distribution...</div>}>
+          <VideoDistribution />
+        </Suspense> 
       </div>
       <div className={containerStyle}>
-        <TopicInterdistance />
+        <Suspense fallback={<div>Loading Topic Interdistance...</div>}>
+          <TopicInterdistance />
+        </Suspense>
       </div>
       <div className={`${containerStyle} flex flex-row justify-around`}>
-        <AverageAudioFeatures />
-        <MaxAudioFeatures />
+        <Suspense fallback={<div>Loading Audio Features...</div>}>
+          <AverageAudioFeatures />
+          <MaxAudioFeatures />
+        </Suspense>
       </div>
       <div className={containerStyle}>
-        <VoronoiGraph />
+        <Suspense fallback={<div>Loading Voronoi Graph...</div>}>
+          <VoronoiGraph />
+        </Suspense>
       </div>
       <div className={containerStyle}>
         <img src={world_cloud_url} alt="World Cloud" className="w-full h-full object-within" />
       </div> 
-      
       <div className={containerStyle}>
-        <DataMap />
+        <Suspense fallback={<div>Loading Data Map...</div>}>
+          <DataMap />
+        </Suspense>
       </div>
 
       </div>

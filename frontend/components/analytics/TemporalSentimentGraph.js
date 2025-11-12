@@ -38,31 +38,24 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph() {
 
     const processedData = useMemo(() => {
         if (!data) return {}
-        let trace_1 = {
-            x: data[0].temporal_segments || [],
-            y: data[0].temporal_sentiment || [],
-            type: 'scatter',
-            mode: 'lines',
-            name: data[0].title || 'Video 1',
-            marker: {
-                color: 'red',
-                size: 6,
-            },
-            hovertemplate: "Sentiment Score: %{y}<extra></extra>"
-        }
-        let trace_2 = {
-            x: data[1].temporal_segments || [],
-            y: data[1].temporal_sentiment || [],
-            type: 'scatter',
-            mode: 'lines',
-            name: data[1].title || 'Video 2',
-            marker: {
-                color: 'blue',
-                size: 6,
-            },
-            hovertemplate: "Sentiment Score: %{y}<extra></extra>"
-        }
-        return [trace_1, trace_2]
+        let number_of_videos = 7
+        let traces = []
+        for (let i=0; i<number_of_videos; i++) {
+            let trace = {
+                x: data[i].temporal_segments || [],
+                y: data[i].temporal_sentiment || [],
+                type: 'scatter',
+                mode: 'lines',
+                name: data[i].title || `Video ${i+1}`,
+                marker: {
+                    size: 6,
+                },
+                hovertemplate: "Sentiment Score: %{y}<extra></extra>"
+            }
+            traces.push(trace)
+            }
+        
+        return traces
     }, [data])
 
     return (

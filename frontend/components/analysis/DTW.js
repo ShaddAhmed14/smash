@@ -1,14 +1,11 @@
 'use client'
 import { useState, useEffect, memo, useRef, useMemo } from 'react'
-import DTWGraph from './DTWGraph'
 import PlotTemplate from '../PlotTemplate'
 
 const DTW = memo(function DTW() {
   const [dtwData, setDtwData] = useState(null)
   const [videos, setVideos] = useState([null, null])
-  const videoRef1 = useRef(null)
-  const videoRef2 = useRef(null)
-
+  
   const layout={
     title: {text: 'Dynamic Time Warping (DTW) Analysis'},
     xaxis: {title: 'x'},
@@ -89,8 +86,8 @@ const DTW = memo(function DTW() {
             : <div>Loading DTW Graph...</div>
           }
         <div className="flex flex-col items-center  gap-y-4 align-middle justify-center w-1/3">
-            {videos[0] ? <video loop title={videos[0]} ref={videoRef1} src={url+videos[0]} controls /> : <p>Select upto 2 Videos to Preview</p>}
-            {videos[1] ? <video loop e={videos[1]} ref={videoRef2} src={url+videos[1]} controls /> : <p></p>}
+            {videos[0] ? <video loop title={videos[0]} src={url+videos[0]} controls /> : <p>Select upto 2 Videos to Preview</p>}
+            {videos[1] ? <video loop title={videos[1]} src={url+videos[1]} controls /> : <p></p>}
         </div>
     </div>
   )
