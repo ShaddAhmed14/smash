@@ -1,6 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 import {Suspense} from 'react'
+import NavBar from '../components/NavBar'
 
 const DTW = dynamic(() => import('../components/analysis/DTW'), { ssr: false })
 const VideoDistribution = dynamic(() => import('../components/analysis/VideoDistribution'), { ssr: false, loading: () => <p>Loading Video Distribution...</p> })
@@ -14,14 +15,15 @@ const AnalysisPillar = () => {
   let containerStyle = 'm-4 w-auto h-[90vh] border-green-500 border-2 rounded-lg p-4'
   const world_cloud_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_world_cloud"
   return (
-    <div className="flex flex-col h-full w-full">
-      
-      <div className={containerStyle}>
-        <Suspense fallback={<div>Loading DTW...</div>}>
-          <DTW />
-        </Suspense>
-      </div>
-      <div className={containerStyle}>
+    <>
+      <NavBar currentPage="Analysis" />
+      <div className="flex flex-col mt-16 h-full w-full">
+        <div className={containerStyle}>
+          <Suspense fallback={<div>Loading DTW...</div>}>
+            <DTW />
+          </Suspense>
+        </div>
+        <div className={containerStyle}>
         <Suspense fallback={<div>Loading Video Distribution...</div>}>
           <VideoDistribution />
         </Suspense> 
@@ -52,6 +54,7 @@ const AnalysisPillar = () => {
       </div>
 
       </div>
+    </>
         )
 }
 

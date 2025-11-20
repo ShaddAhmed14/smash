@@ -3,6 +3,7 @@ import {useRef, memo } from "react"
 
 import MetadataGraph from "../components/preview/MetadataGraph"
 import dynamic from "next/dynamic"
+import NavBar from "../components/NavBar"
 
 const VideoPlayer = dynamic(() => import("../components/preview/VideoPlayer"), { ssr: false, 
   loading: () => <p>Loading Video Player...</p>
@@ -20,7 +21,9 @@ const PreviewPillar = memo(function PreviewPillar({video_name}) {
   const videoRef = useRef(null)
   const border_css = "border-4 border-red-700 rounded-lg p-2"
   return (
-    <div className="flex flex-col m-4">
+  <>
+    <NavBar currentPage="Preview" />
+    <div className="flex flex-col mt-16 m-4">
       <div className=" max-h-[90vh] flex flex-row justify-evenly gap-x-2 overflow-y-auto">
         <div className={`w-6/10 max-h-full ${border_css}`}>
           <VideoPlayer videoName={video_name} videoRef={videoRef} />
@@ -34,6 +37,7 @@ const PreviewPillar = memo(function PreviewPillar({video_name}) {
         <MetadataGraph />
       </div>
     </div>
+  </>
   )
 })
 
