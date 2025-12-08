@@ -2,7 +2,7 @@
 import {useEffect, useState, memo, useMemo} from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const AverageAudioFeatures = memo(function AverageAudioFeatures() {
+const AverageAudioFeatures = memo(function AverageAudioFeatures({plot_name}) {
     const [data, setData] = useState(null)
     const layout={
     title: {text: 'Average Audio Features'},
@@ -33,7 +33,6 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {
-                console.log(data)
                 setData(fetchedData)
             })
             .catch(error => {
@@ -43,6 +42,8 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
 
     const processedData = useMemo(() => {
         if (!data || data == null) return {}
+        const styles = getComputedStyle(document.documentElement)
+        const pointsColor = styles.getPropertyValue('--points-color')
         
         let returnData = {
             x: data.avg_pitch || [],
@@ -52,7 +53,7 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
             type: 'scatter3d',
             mode: 'markers',
             marker: {
-                color: 'blue',
+                color: pointsColor,
                 size: 5,
             },
             hovertemplate: "Pitch: %{x}<br>Volume: %{y}<br>Tempo: %{z}<br>Title: %{text}<extra></extra>"
@@ -61,9 +62,7 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures() {
     }, [data])
 
     return (
-        <div className="w-1/2 h-full">
-            <PlotTemplate layout={layout} config={config} data={processedData} />
-        </div>
+    <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
     )
 })
 

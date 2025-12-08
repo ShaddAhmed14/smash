@@ -1,6 +1,7 @@
 'use client'
-import {useState, useEffect, memo} from 'react'
+import {useState, useEffect, memo, useMemo} from 'react'
 import dynamic from 'next/dynamic'
+import PlotTemplate from '../PlotTemplate'
 
 const Plot = dynamic(() => import('react-plotly.js'), {ssr:false})
 
@@ -35,32 +36,36 @@ const MetadataGraph = memo(function MetadataGraph() {
       scale: 1
     }
   }
-
-  return (
-    <div className='w-full h-full'>
-      <Plot
-        config={config}
-        data={[{
-          x: videoMetadata?.duration || [],
-          y: videoMetadata?.speaker_gender || [],
-          z: videoMetadata?.language || [],
-          text: videoMetadata?.video_name || [],
-          type: 'scatter3d',
-          mode: 'markers',
-          marker: {
-            size: 5 //videoMetadata ? videoMetadata.duration : 5,
-          },
-          hovertemplate: "Video Name: %{text}<br>Duration: %{x}<br>Speaker Gender: %{y}<br>Language: %{z}"
-        }]}
-        style={{ width: '100%', height: '600px', margin: 'auto' }}
-        layout={{
-          scene: {
+  const layout = {
+    scene: {
             xaxis: {title: 'Duration'},
             yaxis: {title: 'Speaker Gender'}, 
             zaxis: {title: 'Language'}
-          }
-        }}
-        />
+          },
+    autosize: true,
+    margin: {l: 20, r: 20, t: 20, b: 20}
+  }
+  const processedData = useMemo(() => {
+    if(!videoMetadata) return {}
+    
+    let trace =  {
+      x: videoMetadata.duration || [],
+      y: videoMetadata.speaker_gender || [],
+      z: videoMetadata.language || [],
+      text: videoMetadata.video_name || [],
+      type: 'scatter3d',
+      mode: 'markers',
+      marker: {size: 5},
+      hovertemplate: "Video Name: %{text}<br>Duration: %{x}<br>Speaker Gender: %{y}<br>Language: %{z}"
+    }
+
+      return [trace] 
+    }
+    , [videoMetadata])
+
+  return (
+    <div className='w-full h-full'>
+      <PlotTemplate config={config} layout={layout} data={processedData} name="Metadata" />
     </div>
   )
 })

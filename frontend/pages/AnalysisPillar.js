@@ -2,57 +2,44 @@
 import dynamic from 'next/dynamic'
 import {Suspense} from 'react'
 import NavBar from '../components/NavBar'
+import Loader from '../components/Loader'
 
 const DTW = dynamic(() => import('../components/analysis/DTW'), { ssr: false })
-const VideoDistribution = dynamic(() => import('../components/analysis/VideoDistribution'), { ssr: false, loading: () => <p>Loading Video Distribution...</p> })
-const TopicInterdistance = dynamic(() => import('../components/analysis/TopicInterdistance'), { ssr: false, loading: () => <p>Loading Topic Interdistance...</p> })
-const AverageAudioFeatures = dynamic(() => import('../components/analysis/AverageAudioFeatures'), { ssr: false, loading: () => <p>Loading Average Audio Features...</p> })
-const MaxAudioFeatures = dynamic(() => import('../components/analysis/MaxAudioFeatures'), { ssr: false, loading: () => <p>Loading Max Audio Features...</p> })
-const VoronoiGraph = dynamic(() => import('../components/analysis/VoronoiGraph'), { ssr: false, loading: () => <p>Loading Voronoi Graph...</p> })
-const DataMap = dynamic(() => import('../components/analysis/DataMap'), { ssr: false, loading: () => <p>Loading Data Map...</p> })
+const VideoDistribution = dynamic(() => import('../components/analysis/VideoDistribution'), { ssr: false, loading: () => <Loader name="Video Distribution" /> })
+const TopicInterdistance = dynamic(() => import('../components/analysis/TopicInterdistance'), { ssr: false, loading: () => <Loader name="Topic Interdistance" /> })
+const AverageAudioFeatures = dynamic(() => import('../components/analysis/AverageAudioFeatures'), { ssr: false, loading: () => <Loader name="Average Audio Features" /> })
+const MaxAudioFeatures = dynamic(() => import('../components/analysis/MaxAudioFeatures'), { ssr: false, loading: () => <Loader name="Max Audio Features" /> })
+const VoronoiGraph = dynamic(() => import('../components/analysis/VoronoiGraph'), { ssr: false, loading: () => <Loader name="Voronoi Graph" /> })
+const DataMap = dynamic(() => import('../components/analysis/DataMap'), { ssr: false, loading: () => <Loader name="Data Map" /> })
 
 const AnalysisPillar = () => {
-  let containerStyle = 'm-4 w-auto h-[90vh] border-green-500 border-2 rounded-lg p-4'
+  let containerStyle = 'm-4 w-auto h-[85vh] border-primary border-2 rounded-lg p-2'
   const world_cloud_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_world_cloud"
+  let components = {
+    "Dynamic Time Warping (DTW) Analysis": DTW,
+    "Video Distribution based on Topic Clusters": VideoDistribution,
+    "Topic Interdistance Map": TopicInterdistance,
+    "Average Audio Features": AverageAudioFeatures,
+    "Audio Spectogram Embeddings": VoronoiGraph,
+    "Data Map": DataMap
+  }
   return (
     <>
-      <NavBar currentPage="Analysis" />
+      <NavBar currentPage="Analysis" textColor={"--custom-analysis-dark"} />
       <div className="flex flex-col mt-16 h-full w-full">
-        <div className={containerStyle}>
-          <Suspense fallback={<div>Loading DTW...</div>}>
-            <DTW />
-          </Suspense>
-        </div>
-        <div className={containerStyle}>
-        <Suspense fallback={<div>Loading Video Distribution...</div>}>
-          <VideoDistribution />
-        </Suspense> 
-      </div>
-      <div className={containerStyle}>
-        <Suspense fallback={<div>Loading Topic Interdistance...</div>}>
-          <TopicInterdistance />
-        </Suspense>
-      </div>
-      <div className={`${containerStyle} flex flex-row justify-around`}>
-        <Suspense fallback={<div>Loading Audio Features...</div>}>
-          <AverageAudioFeatures />
-          <MaxAudioFeatures />
-        </Suspense>
-      </div>
-      <div className={containerStyle}>
-        <Suspense fallback={<div>Loading Voronoi Graph...</div>}>
-          <VoronoiGraph />
-        </Suspense>
-      </div>
-      <div className={containerStyle}>
-        <img src={world_cloud_url} alt="World Cloud" className="w-full h-full object-within" />
-      </div> 
-      <div className={containerStyle}>
-        <Suspense fallback={<div>Loading Data Map...</div>}>
-          <DataMap />
-        </Suspense>
-      </div>
-
+        {
+          Object.entries(components).map(([name, Component]) => (
+              <Suspense fallback={<Loader name={name} />}>
+            <div key={name} className={containerStyle}>
+              <div className="flex flex-col w-full">
+                <p className="text-lg font-semibold text-primary">{name}</p>
+                <div className="accent_line"></div>
+                <Component plot_name={name} />
+              </div>
+            </div>
+              </Suspense>
+          ))
+        }
       </div>
     </>
         )

@@ -52,7 +52,7 @@ async def stream_audio(video_name: str):
     )
 
 @router.get("/fetch_thumbnails/")
-async def fetch_thumbnails(video_name: str, selectedModel: str):
+async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails for all models except selected one
     file_path = os.path.join("/materials", video_name, "thumbnails")
     thumbnails = {}
     for model_name in VIDEO_TYPES:
@@ -66,11 +66,16 @@ async def fetch_thumbnails(video_name: str, selectedModel: str):
                 b64_string = base64.b64encode(img_file.read()).decode('utf-8')
                 thumbnails[name] = f"data:{mime_type};base64,{b64_string}"
         else:
-            print("thumbnail not found", name, path)
             thumbnails[name] = None
     
     del thumbnails[selectedModel] # send all thumbnails except selected one
     return JSONResponse(content=thumbnails)
+
+@router.get("/fetch_thumbnail/")
+async def fetch_thumbnails(video_name: str): # thumbnails for all models except selected one
+    file_path = os.path.join("/materials", video_name, "thumbnails")
+    img_file = os.path.join(file_path, f"{video_name}_Original_thumbnail.jpg")
+    return FileResponse(img_file, media_type='image/jpeg', filename=f"{video_name}_Original_thumbnail.jpg")
 
 @router.get("/fetch_video/")
 async def fetch_video(video_name: str, model_name: str, request: Request):
@@ -80,7 +85,6 @@ async def fetch_video(video_name: str, model_name: str, request: Request):
         file_path = os.path.join("/materials", video_name, "processed", f"{video_name}_{model_name}.mp4")
 
     if not os.path.exists(file_path):
-        print("video not found", file_path)
         return JSONResponse(content={"message": "Video file not found"}, status_code=404)
 
     video_file_size = os.path.getsize(file_path)

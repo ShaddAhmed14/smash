@@ -60,7 +60,7 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph() {
 
     return (
       <div>
-        <PlotTemplate layout={layout} config={config} data={processedData} />
+        <PlotTemplate layout={layout} config={config} data={processedData} name="Temporal Sentiment" />
       </div>
     )
 

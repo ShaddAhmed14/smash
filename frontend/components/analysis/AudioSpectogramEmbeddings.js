@@ -4,6 +4,8 @@ import AudioSpectogramEmbeddingsGraph from './AudioSpectogramEmbeddingsGraph'
 
 const AudioSpectogramEmbeddings = memo(function AudioSpectogramEmbeddings() {
   let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_spectogram/?spectogram_name="
+  let audio_spectogram_embeddings_url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_audio_spectogram_embeddings"
+
   const [data, setData] = useState(null)
   const [spectograms, setspectograms] = useState([null, null])
 
@@ -28,13 +30,10 @@ const AudioSpectogramEmbeddings = memo(function AudioSpectogramEmbeddings() {
     }
     }
 
-
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + "/fetch_audio_spectogram_embeddings/"
-        fetch(url)
+        fetch(audio_spectogram_embeddings_url)
             .then(response => response.json())
             .then(fetchedData => {
-                console.log(data)
                 setData(fetchedData)
             })
             .catch(error => {

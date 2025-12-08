@@ -1,6 +1,3 @@
-
-
-
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -13,6 +10,8 @@ const nextConfig: NextConfig = {
     }
     return config
   },
+  reactStrictMode: false,
+
 }
 
 export default nextConfig;

@@ -101,30 +101,30 @@ const timeToSeconds = (timeStr) => {
   return (
         transcript ? <div 
           ref={transcriptRef}
-          className="flex flex-col my-2 overflow-y-auto"
+          className="flex flex-col overflow-y-auto overflow-x-hidden rounded-lg"
         >
           {transcript.map((segment) => (
             <div
               key={segment.id}
               data-segment-id={segment.id}
-              className={`p-3 rounded-lg cursor-pointer transition-all duration-300 ${
+              className={`p-3 cursor-pointer transition-all duration-300 ${
                 currentSegmentId === segment.id
-                  ? 'bg-blue-100 border-l-4 border-blue-500 shadow-md transform scale-102'
-                  : 'bg-gray-50 hover:bg-gray-100 border-l-4 border-transparent'
+                  ? 'bg-primary border-l-4 border-secondary shadow-md transform scale-102'
+                  : 'bg-tertiary hover:bg-secondary border-l-4 border-transparent'
               }`}
             >
-              <div className="flex items-start space-x-2">
+              <div className="flex items-start space-x-2 rounded-lg">
                 <span className={`text-xs font-mono px-2 py-1 ${
                   currentSegmentId === segment.id
-                    ? 'bg-blue-200 text-blue-800'
-                    : 'bg-gray-200 text-gray-600'
+                    ? ' text-primary'
+                    : 'text-secondary'
                 }`}>
                   {formatTime(segment.start)}
                 </span>
                 <p className={`text-sm leading-relaxed flex-1 ${
                   currentSegmentId === segment.id
-                    ? 'text-blue-900 font-medium'
-                    : 'text-gray-700'
+                    ? 'text-primary font-medium'
+                    : 'text-secondary'
                 }`}>
                   {segment.text}
                 </p>

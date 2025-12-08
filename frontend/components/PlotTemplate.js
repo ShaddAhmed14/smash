@@ -1,11 +1,14 @@
 'use client'
 import {useEffect, useState, useRef, memo} from 'react'
+import {useTheme} from 'next-themes'
+import Loader from './Loader'
 
-const PlotTemplate = memo(function PlotTemplate({layout, config, data, handleClick=null, selectedVideos=[], currentTime=null}) {
+const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null,  handleClick=null, selectedVideos=[], currentTime=null}) {
     const plotlyRef = useRef(null)
     const containerRef = useRef(null)
     const isInitialized = useRef(false)
     const [loading, setLoading] = useState(false)
+    const {theme} = useTheme()
 
     useEffect(() => {
       const loadPlotly = async () => {
@@ -16,6 +19,12 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, handleCli
             const PlotlyInstance = Plotly.default || Plotly || window.Plotly
             plotlyRef.current = PlotlyInstance
             if (PlotlyInstance != null) {
+              const styles = getComputedStyle(document.documentElement)
+              layout.paper_bgcolor = styles.getPropertyValue('--background').trim()
+              layout.plot_bgcolor = styles.getPropertyValue('--chart-background').trim()
+              layout.font = { color: styles.getPropertyValue('--foreground').trim() }
+              // layout.transition = { duration: 100, easing: 'cubic-in-out' }
+
               await PlotlyInstance.react(containerRef.current, data, layout, config)
               setLoading(false)
             }
@@ -29,7 +38,7 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, handleCli
           }
       }}
       loadPlotly()
-    }, [data, layout, config, currentTime])
+    }, [data, layout, config, currentTime, theme])
 
     useEffect(() => {
       if (selectedVideos.length > 0 && plotlyRef?.current && containerRef?.current) {
@@ -51,7 +60,7 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, handleCli
 
      return (
      <>
-      {loading ? <div>Loading...</div> : null}
+      {loading ? <div>Loading {name}</div> : null}
      <div ref={containerRef} style={{width: "100%", height: "100%"}}></div>
      </>
      )

@@ -54,7 +54,7 @@ const AudioSpectogramEmbeddingsGraph = memo(function AudioSpectogramEmbeddingsGr
 
     return (
         <div>
-            <PlotTemplate layout={layout} config={config} data={processedData} handleClick={handleClick} />
+            <PlotTemplate layout={layout} config={config} data={processedData} name="Audio Spectogram Embeddings" handleClick={handleClick} />
         </div>
     )
 })

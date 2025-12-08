@@ -4,7 +4,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT}:8000"
+    command: uvicorn main:app --host 0.0.0.0 --reload
     env_file: 
           - .env
     volumes:
@@ -17,7 +18,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3050:3050"
+      - "${FRONTEND_PORT}:3000"
     depends_on:
       - backend
     env_file: 

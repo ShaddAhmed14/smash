@@ -2,14 +2,14 @@
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const VideoDistribution = memo(function VideoDistribution() {
+const VideoDistribution = memo(function VideoDistribution({plot_name}) {
     const [data, setData] = useState(null)
    
     const layout={
-    title: {text: 'Video Clusters based on Topic Distribution'},
     xaxis: {title: 'x'},
     yaxis: {title: 'y'},
     autosize: true,
+    margin: { t: 0, b: 0, l: 0, r: 0}
     }
     const config = {
     responsive: true,
@@ -36,6 +36,9 @@ const VideoDistribution = memo(function VideoDistribution() {
 
     const processedData = useMemo(() => {
         if (!data) return {}
+        const styles = getComputedStyle(document.documentElement)
+        const pointsColor = styles.getPropertyValue('--points-color')
+
         let returnData = {
             x: data.map(item => item.x) || [],
             y: data.map(item => item.y) || [],
@@ -44,7 +47,7 @@ const VideoDistribution = memo(function VideoDistribution() {
             type: 'scatter',
             mode: 'markers',
             marker: {
-                color: 'blue',
+                color: pointsColor,
                 size: 6,
             },
             hovertemplate: "X: %{x}<br>Y: %{y}<br>Video: %{text}<br>Topics: %{customdata}"
@@ -53,9 +56,7 @@ const VideoDistribution = memo(function VideoDistribution() {
     }, [data])
 
     return (
-      <div>
-        <PlotTemplate layout={layout} config={config} data={processedData} />
-      </div>
+        <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
     )
 
 })

@@ -2,14 +2,14 @@
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const TopicInterdistance = memo(function TopicInterdistance() {
+const TopicInterdistance = memo(function TopicInterdistance({plot_name}) {
     const [data, setData] = useState(null)
 
     const layout={
-    title: {text: 'Topic Interdistance Map'},
     xaxis: {title: 'x'},
     yaxis: {title: 'y'},
     autosize: true,
+    margin: { t: 20, b: 20, l: 20, r: 20}
     }
     const config = {
     responsive: true,
@@ -36,6 +36,8 @@ const TopicInterdistance = memo(function TopicInterdistance() {
 
     const processedData = useMemo(() => {
         if (!data) return {}
+        const styles = getComputedStyle(document.documentElement)
+        const pointsColor = styles.getPropertyValue('--points-color')
         const counts = data.map(item => item.Count)
         const maxCount = Math.max(...counts)
         const minCount = Math.min(...counts)
@@ -54,7 +56,7 @@ const TopicInterdistance = memo(function TopicInterdistance() {
             type: 'scatter',
             mode: 'markers',
             marker: {
-                color: 'blue',
+                color: pointsColor,
                 size: marker_sizes,
             },
             hovertemplate: "X: %{x}<br>Y: %{y}<br>Topic Number | Name: %{customdata[0]} | text<br>Top Words: %{customdata[1]}<br>Top Associated Videos: %{customdata[2]}<extra></extra>"
@@ -63,9 +65,7 @@ const TopicInterdistance = memo(function TopicInterdistance() {
     }, [data])
 
     return (
-      <div>
-        <PlotTemplate layout={layout} config={config} data={processedData} />
-      </div>
+    <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
     )
 
 })

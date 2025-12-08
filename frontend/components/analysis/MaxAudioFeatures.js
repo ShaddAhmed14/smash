@@ -33,7 +33,6 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {
-                console.log(data)
                 setData(fetchedData)
             })
             .catch(error => {
@@ -62,7 +61,7 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
 
     return (
         <div className="w-1/2 h-full">
-            <PlotTemplate layout={layout} config={config} data={processedData} />
+            <PlotTemplate name="Max Audio Features" layout={layout} config={config} data={processedData} />
         </div>
     )
 })

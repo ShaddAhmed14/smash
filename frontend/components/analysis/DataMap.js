@@ -2,7 +2,7 @@
 import { useState, useEffect, memo, useMemo } from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const DataMap = memo(function DataMap() {
+const DataMap = memo(function DataMap({plot_name}) {
   const [data, setData] = useState(null)
 
   const config = {
@@ -28,7 +28,6 @@ const DataMap = memo(function DataMap() {
 
  
   const getColoredCluster = (topic_data, colors) => {
-    console.log("got this", topic_data)
     const traces = []
     const annotations = []
     for (const topic of topic_data) {
@@ -43,7 +42,6 @@ const DataMap = memo(function DataMap() {
             hoverinfo: 'skip',
             hovertemplate: null,
         })
-        console.log("traces mid", traces)
         annotations.push({
             x: topic.centroid_x,
             y: topic.centroid_y,
@@ -80,17 +78,15 @@ const DataMap = memo(function DataMap() {
         hovertemplate: '%{text}<extra></extra>',
       }
       const [all_traces, annotations] = getColoredCluster(data.topic_data, colors)
-      console.log("traces", all_traces)
 
       const axis_layout = {showtickLabels: false, zeroline: false, showgrid: false, title:''}
       const layout={
-        title: {text: 'Data Map'},
         xaxis: axis_layout,
         yaxis: axis_layout,
         autosize: true,
         showlegend: false,
         annotations: annotations,
-        margin: {l:0, r:0, b:0, t:40}
+        margin: {l:0, r:0, b:0, t:0}
       }
 
       return {traces: [dataPoints, ...all_traces], layout: layout}
@@ -98,14 +94,7 @@ const DataMap = memo(function DataMap() {
     }, [data])
 
   return (
-    <div className="flex flex-row h-full w-full justify-between">
-        {data ? 
-        <div className="w-full">
-          <PlotTemplate layout={processedData.layout} config={config} data={processedData.traces} />
-        </div>
-            : <div>Loading Data Map Graph...</div>
-          }
-    </div>
+    <PlotTemplate layout={processedData.layout} config={config} data={processedData.traces} name={plot_name} />
   )
 })
 

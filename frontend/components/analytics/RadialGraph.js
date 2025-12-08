@@ -24,7 +24,6 @@ const RadialGraph = memo(function RadialGraph() {
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {
-                console.log(data)
                 setData(fetchedData)
             })
             .catch(error => {
@@ -42,23 +41,6 @@ const RadialGraph = memo(function RadialGraph() {
         const titles = data.titles.slice(0, number_of_videos) || []
         const colors = ['rgba(30, 0, 228, 1)', 'rgba(255, 99, 71, 0.23)']
 
-        // console.log("Data:", avg_tempo, avg_pitch, avg_volume)
-
-        // function normalizeArray(tempo, pitch, volume) {
-        //     const globalMin = Math.min(...[...tempo, ...pitch, ...volume])
-        //     const globalMax = Math.max(...[...tempo, ...pitch, ...volume])
-        //     console.log("Global Min and Max:", globalMin, globalMax)
-        //     const normalize = (value) => ((value - globalMin) * 100 / (globalMax - globalMin))
-        //     return {
-        //         normalized_tempo: tempo.map(normalize),
-        //         normalized_pitch: pitch.map(normalize),
-        //         normalized_volume: volume.map(normalize)
-        //     }
-        // }
-
-        // const {normalized_tempo, normalized_pitch, normalized_volume} = normalizeArray(avg_tempo, avg_pitch, avg_volume)
-
-
         function normalizeArray(arr) {
             const min = Math.min(...arr)
             const max = Math.max(...arr)
@@ -69,7 +51,6 @@ const RadialGraph = memo(function RadialGraph() {
         const normalized_pitch = normalizeArray(avg_pitch)
         const normalized_volume = normalizeArray(avg_volume)
 
-        console.log("Normalized Data:", normalized_tempo, normalized_pitch, normalized_volume)
 
         let traces = []
         for (let i=0; i<number_of_videos; i++) {
@@ -100,7 +81,7 @@ const RadialGraph = memo(function RadialGraph() {
 
     return (
       <div>
-        <PlotTemplate layout={processedData.layout} config={config} data={processedData.traces} />
+        <PlotTemplate layout={processedData.layout} config={config} name="Radial" data={processedData.traces} />
       </div>
     )
 

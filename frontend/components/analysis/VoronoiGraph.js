@@ -2,18 +2,19 @@
 import { useState, useEffect, memo, useMemo } from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const VoronoiGraph = memo(function VoronoiGraph() {
-    let spectrogram_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_spectrogram/?video_name="
+const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
+    let spectrogram_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_spectogram?video_name="
   const [data, setData] = useState(null)
   const [videos, setVideos] = useState([null, null])
+    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_audio_spectogram_embeddings"
 
   const axis_layout = {showtickLabels: false, zeroline: false, showgrid: false, title:''}
   const layout={
-    title: {text: 'Audio Spectrogram Embeddings'},
     xaxis: axis_layout,
     yaxis: axis_layout,
     autosize: true,
     showlegend: false,
+    margin: {l:0, r:0, b:0, t:0}
   }
   const config = {
     responsive: true,
@@ -30,14 +31,12 @@ const VoronoiGraph = memo(function VoronoiGraph() {
   }
 
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_audio_spectrogram_embeddings/"
     fetch(url)
       .then(response => response.json())
       .then(data => setData(data))
   }, [])
 
   const handleClick = (e) => {
-    console.log("clicked point\n", e)
     const video_name = e.points[0]?.text
     setVideos(prev => {
       if (prev.includes(video_name)) {
@@ -104,17 +103,12 @@ const VoronoiGraph = memo(function VoronoiGraph() {
     }, [data, videos])
 
   return (
-    <div className="flex flex-row h-full w-full justify-between">
-        {data ? 
-        <div className="w-2/3">
-          <PlotTemplate layout={layout} config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
-        </div>
-            : <div>Loading Audio Spectrogram Embeddings Graph...</div>
-          }
-        <div className="flex flex-col items-center  gap-y-4 align-middle justify-center w-1/3">
-            {videos[0] ? <img title={videos[0]} src={spectrogram_url+videos[0]} /> : <p>Select upto 2 Videos to Preview Spectogram</p>}
-            {videos[1] ? <img title={videos[1]} src={spectrogram_url+videos[1]} /> : <p></p>}
-        </div>
+    <div className="flex flex-row h-full w-full justify-between gap-4">
+      <PlotTemplate name={plot_name} layout={layout}  config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
+      <div className="flex flex-col items-center  gap-y-4 align-middle justify-center items-center w-1/3">
+          {videos[0] ? <img title={videos[0]} src={spectrogram_url+videos[0]} /> : <p>Select upto 2 Videos to Preview Spectogram</p>}
+          {videos[1] ? <img title={videos[1]} src={spectrogram_url+videos[1]} /> : <p></p>}
+      </div>
     </div>
   )
 })

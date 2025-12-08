@@ -9,7 +9,6 @@ router = APIRouter(prefix="/analytics", tags=["analytics"])
 @router.get("/fetch_gesture_segment")
 def fetch_gesture_segment(video_name: str):
     file_path = os.path.join("/materials/analytics/gesture_segments", video_name + "_tracked.mp4")
-    print(file_path)
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Gesture Segment Video not Found" }, status_code=404)
     
@@ -23,14 +22,14 @@ def fetch_gesture_segment(video_name: str):
                 "Content-Type": "video/mp4",
             })
 
-@router.get("/fetch_temporal_sentiment/")
+@router.get("/fetch_temporal_sentiment")
 def fetch_temporal_sentiment():
     file_path = os.path.join("/materials/", "temporal_sentiment_data.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Temporal Sentiment File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='application/json', filename="temporal_sentiment_data.json")
 
-@router.get("/fetch_kinematic_features/")
+@router.get("/fetch_kinematic_features")
 def fetch_kinematic_features():
     file_path = os.path.join("/materials", "kinematic_features.csv")
     if not os.path.exists(file_path):
@@ -38,7 +37,6 @@ def fetch_kinematic_features():
 
     # df = pd.read_csv(file_path).head(10)
     df = pd.read_csv(file_path)
-    print(df.shape)
 
     jitter_values = [0.2 * (np.random.random() - 0.5) for _ in range(len(df))]
     gesture_ids = df['gesture_id'].tolist()

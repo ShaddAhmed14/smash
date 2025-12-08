@@ -15,11 +15,10 @@ const VideoThumbnail = memo(function VideoThumbnail({videoName, selectedModel, s
   }, [url])
 
   return (
-    <div className="flex flex-row gap-x-2 overflow-x-auto w-full">
+    <div className="flex flex-row gap-x-2 overflow-x-auto overflow-y-hidden w-full">
       {Object.entries(images).map(([modelName, imageUrl]) => (
-        <div key={modelName} title={modelName} className="">
-          <Image width={100} height={50} className="w-auto h-auto rounded-lg" onClick={() => setSelectedModel(modelName)} key={modelName} src={imageUrl} alt={`Thumbnail for ${modelName}`} loading="lazy" />
-          {/* <img className="min-w-[150px] w-auto h-auto rounded-lg" onClick={() => setSelectedModel(modelName)} key={modelName} src={imageUrl} alt={`Thumbnail for ${modelName}`} /> */}
+        <div key={modelName} title={modelName} className="cursor-pointer hover:scale-105">
+          <Image width={50} height={50} className="object-contain w-full h-full rounded-lg" onClick={() => setSelectedModel(modelName)} key={modelName} src={imageUrl} alt={`Thumbnail for ${modelName}`} loading="lazy" />
         </div>
 
       ))}

@@ -13,7 +13,7 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
     yaxis: axis_layout,
     autosize: true,
     showlegend: false,
-    margin: {l: 20, r: 20, t: 20, b: 20}
+    margin: {l: 0, r: 0, t: 0, b: 0}
     }
     const config = {
     responsive: true,
@@ -55,31 +55,34 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
         const videoDuration = videoRef?.current?.duration || data.length
         const currentIndex = (currentTime / videoDuration) * data.length
 
+        const styles = getComputedStyle(document.documentElement)
+        const customRedDark = styles.getPropertyValue('--custom-preview-dark') || 'red'
+
         let peaks = {
             y: data || [],
             type: 'scatter',
             mode: 'lines',
             line: {
-                color: 'red',
+                color: customRedDark,
                 width: 1,
             },
             fill: 'tozeroy',
         //   hoverinfo: 'skip',
         hovertemplate: 'Time: %{x}<br>Amplitude: %{y}',
-      fillcolor: 'rgba(255, 0, 0, 0.5)',
+      fillcolor: `${customRedDark}100`,
         }        
         let mirrored_peaks = {
             y: data.map(item => -item) || [],
             type: 'scatter',
             mode: 'lines',
             line: {
-                color: 'red',
+                color: customRedDark,
                 width: 1,
             },
             fill: 'tonexty',
         hovertemplate: 'Time: %{x}<br>Amplitude: %{y}',
 
-            fillcolor: 'rgba(255, 0, 0, 0.5)',
+            fillcolor: `${customRedDark}100`,
 
         }
         let timeLine = {
@@ -99,7 +102,7 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
 
     return (
       <div className="w-full h-full">
-        <PlotTemplate layout={layout} config={config} data={processedData} currentTime={currentTime} />
+        <PlotTemplate layout={layout} name="Waveform" config={config} data={processedData} currentTime={currentTime} />
       </div>
     )
 

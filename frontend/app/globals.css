@@ -1,8 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme {
+  --font-plex-sans: "IBM Plex Sans", sans-serif; 
+  --font-plex-mono: "IBM Plex Mono", monospace;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f3f4f6;
+  --foreground: #000000;
+
+  --bg-primary: #f3f4f6;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f9fafb;
+
+  --chart-background: #f9fafb;
+  --points-color: #9f16b4;
+
+  --text-primary: #000000;
+  --text-secondary: #6b7280;
+  --border-primary: #000000;
+  --border-secondary: #e5e7eb;
+
+  --custom-preview : #fa4d56;
+  --custom-preview-dark : #e03d45;
+  --custom-analysis : #002d9c;
+  --custom-analysis-dark : #001f6b;
+  --custom-analytics : #198038;
+  --custom-analytics-dark : #146629;
+
+  --custom-gradient-red: linear-gradient(135deg, var(--custom-preview) 0%, var(--custom-preview-dark) 100%);
+  --custom-gradient-blue: linear-gradient(135deg, var(--custom-analysis) 0%, var(--custom-analysis-dark) 100%);
+  --custom-gradient-green: linear-gradient(135deg, var(--custom-analytics) 0%, var(--custom-analytics-dark) 100%);
+  --accent-line-gradient: linear-gradient(90deg, var(--text-primary) 0%, transparent 100%);
+}
+
+.dark {
+  --background: #161616;
+  --foreground: #f4f4f4;
+  --bg-primary: #161616;
+  --bg-secondary: #262626;
+  --bg-tertiary: #393939;
+  --chart-background: #393939;
+  --text-primary: #f4f4f4;
+  --text-secondary: #c6c6c6;
+  --border-primary: #525252;
+  --border-secondary: #393939;
 }
 
 @theme inline {
@@ -10,17 +57,50 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-custom-red : var(--custom-red);
+  --color-custom-blue : var(--custom-blue);
+  --color-custom-green : var(--custom-green);
+
+  --background-image-gradient-red: var(--custom-gradient-red); /* use like bg-gradient-red */
+  --background-image-gradient-blue: var(--custom-gradient-blue);
+  --background-image-gradient-green: var(--custom-gradient-green);
+  --background-image-gradient-accent-line: var(--accent-line-gradient);
+
+  --background-color-primary : var(--bg-primary);
+  --background-color-secondary : var(--bg-secondary);
+  --background-color-tertiary : var(--bg-tertiary);
+
+  --border-color-primary : var(--border-primary);
+  --border-color-secondary : var(--border-secondary);
+  --text-color-primary : var(--text-primary);
+  --text-color-secondary : var(--text-secondary);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ffffff;
-    --foreground: #000000;
+    --background: #161616;
+    --foreground: #f4f4f4;
   }
-}
+} */
+
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.info-card {
+    background-color: var(--bg-tertiary);
+    border: 2px solid var(--border-secondary);
+}
+        
+.accent_line {
+    background: var(--accent-line-gradient);
+    height: 2px;
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 12px;
 }

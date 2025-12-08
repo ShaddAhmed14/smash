@@ -7,14 +7,14 @@ import numpy as np
 router = APIRouter(prefix="/analysis", tags=["analysis"])
 
 
-@router.get("/fetch_audio_features/")
+@router.get("/fetch_audio_features")
 def fetch_audio_features(video_name: str):
     file_path = os.path.join("/materials", video_name,  f"{video_name}_audio_features.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Audio features file not found"}, status_code=404)
     return FileResponse(file_path, media_type='application/json', filename=f"{video_name}_audio_features.json")
 
-@router.get("/fetch_dtw/")
+@router.get("/fetch_dtw")
 def fetch_dtw():
     file_path = os.path.join("/materials", "gesture_visualization.csv")
     if not os.path.exists(file_path):
@@ -25,13 +25,9 @@ def fetch_dtw():
 @router.get("/fetch_gesture_segment")
 def fetch_gesture_segment(video_name: str):
     file_path = os.path.join("/materials", video_name.split(".mp4")[0], "gesture_segments", video_name + ".mp4")
-    print(file_path)
     if not os.path.exists(file_path):
-        print("not found in materials")
         file_path = os.path.join("/envisionhgdetector_output/gesture_segments", video_name.split("_segment")[0], video_name + ".mp4")
-        print(file_path)
         if not os.path.exists(file_path):
-            print("not found in envision")
             return JSONResponse(content={"message": "Gesture Segment Video not Found" }, status_code=404)
     def full_stream():
             with open(file_path, "rb") as f:
@@ -50,8 +46,8 @@ def fetch_data_map():
         return JSONResponse(content={"message": "Data Map File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='application/json', filename="datamap_data.json")
 
-@router.get("/fetch_spectrogram")
-def fetch_spectrogram(video_name: str):
+@router.get("/fetch_spectogram")
+def fetch_spectogram(video_name: str):
     file_path = os.path.join("/materials/spectrograms", video_name)
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Spectrogram File not Found" }, status_code=404)
@@ -86,8 +82,8 @@ def fetch_world_cloud():
         return JSONResponse(content={"message": "Word Cloud File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='image/png', filename="word_cloud.png")
 
-@router.get("/fetch_audio_spectrogram_embeddings")
-def fetch_audio_spectrogram_embeddings():
+@router.get("/fetch_audio_spectogram_embeddings")
+def fetch_audio_spectogram_embeddings():
     file_path = os.path.join("/materials", "spectrogram_voronoi_data.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Audio Spectrogram Embeddings file not found"}, status_code=404)
@@ -102,7 +98,7 @@ def fetch_max_audio_features():
 
     return FileResponse(file_path, media_type='application/json', filename="max_audio_features.json")
 
-@router.get("/fetch_kinematic_features/")
+@router.get("/fetch_kinematic_features")
 def fetch_kinematic_features(video_name: str):
     file_path = os.path.join("/materials", video_name,  f"{video_name}_kinematic_features.csv")
     if not os.path.exists(file_path):
