@@ -1,3 +1,4 @@
+import glob
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 import os
@@ -7,6 +8,16 @@ import base64
 router = APIRouter(prefix="/preview", tags=["preview"])
 
 VIDEO_TYPES = ["Original", "YoloPose", "MediaPipePose", "OpenPose", "MaskAnyoneAPI-MediaPipe", "MaskAnyoneAPI-OpenPose"]
+
+def id_to_name(video_id):
+    files = glob.glob("/materials/*")
+    for file_name in files:
+        folder_id = os.path.basename(file_name).split(".")[0]
+        if video_id == folder_id:
+            video_name = os.path.basename(file_name)
+            break
+    print("Fetched video name:", video_name)
+    return video_name
 
 @router.get("/")
 def preview_home():
@@ -53,6 +64,8 @@ async def stream_audio(video_name: str):
 
 @router.get("/fetch_thumbnails/")
 async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails for all models except selected one
+    # video name is video_id
+    video_name = id_to_name(video_name)
     file_path = os.path.join("/materials", video_name, "thumbnails")
     thumbnails = {}
     for model_name in VIDEO_TYPES:
@@ -73,12 +86,15 @@ async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails fo
 
 @router.get("/fetch_thumbnail/")
 async def fetch_thumbnails(video_name: str): # thumbnails for all models except selected one
+    # video name is video_id
+    video_name = id_to_name(video_name)
     file_path = os.path.join("/materials", video_name, "thumbnails")
     img_file = os.path.join(file_path, f"{video_name}_Original_thumbnail.jpg")
     return FileResponse(img_file, media_type='image/jpeg', filename=f"{video_name}_Original_thumbnail.jpg")
 
 @router.get("/fetch_video/")
 async def fetch_video(video_name: str, model_name: str, request: Request):
+    video_name = id_to_name(video_name)
     if model_name == "Original":
         file_path = os.path.join("/materials", video_name, f"{video_name}_{model_name}.mp4")
     else:
@@ -124,6 +140,7 @@ async def fetch_video(video_name: str, model_name: str, request: Request):
 
 @router.get("/audio_peaks")
 async def fetch_audio_peaks(video_name: str):
+    video_name = id_to_name(video_name)
     file_path = os.path.join("/materials", video_name,  f"{video_name}_peaks.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Audio Peaks file not found"}, status_code=404)
@@ -142,6 +159,8 @@ async def fetch_metadata():
 
 @router.get("/fetch_transcript/")
 async def fetch_transcript(video_name: str):
+    video_name = id_to_name(video_name)
+    print("Fetching transcript for video name:", video_name)
     file_path = os.path.join("/materials", video_name, f"{video_name}_transcript.srt")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Transcript file not found"}, status_code=404)
@@ -150,6 +169,7 @@ async def fetch_transcript(video_name: str):
 
 @router.get("/fetch_waveform/")
 async def fetch_waveform(video_name: str):
+    video_name = id_to_name(video_name)
     file_path = os.path.join("/materials", video_name,  f"{video_name}_waveform.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Waveform file not found"}, status_code=404)

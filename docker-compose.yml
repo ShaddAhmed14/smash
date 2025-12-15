@@ -17,12 +17,22 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_PREVIEW=${NEXT_PUBLIC_PREVIEW}
+        - NEXT_PUBLIC_ANALYSIS=${NEXT_PUBLIC_ANALYSIS}
+        - NEXT_PUBLIC_ANALYTICS=${NEXT_PUBLIC_ANALYTICS}
+        - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
     ports:
       - "${FRONTEND_PORT}:3000"
     depends_on:
       - backend
     env_file: 
           - .env
-    volumes:
-      - ./frontend:/app  
-      - /app/node_modules
+    environment:
+    - NEXT_PUBLIC_PREVIEW=${NEXT_PUBLIC_PREVIEW}
+    - NEXT_PUBLIC_ANALYSIS=${NEXT_PUBLIC_ANALYSIS}
+    - NEXT_PUBLIC_ANALYTICS=${NEXT_PUBLIC_ANALYTICS}
+    - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+    # volumes: # comment it for production build
+    #   - ./frontend:/app  
+    #   - /app/node_modules

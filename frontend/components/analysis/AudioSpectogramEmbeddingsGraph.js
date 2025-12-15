@@ -1,5 +1,5 @@
 'use client'
-import {useEffect, useState, memo, useMemo} from 'react'
+import {useEffect, memo, useMemo} from 'react'
 import PlotTemplate from '../PlotTemplate'
 
 const AudioSpectogramEmbeddingsGraph = memo(function AudioSpectogramEmbeddingsGraph({data, selectedSpectograms=[], config, layout, handleClick}) {

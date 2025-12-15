@@ -5,14 +5,13 @@ import PlotTemplate from '../PlotTemplate'
 const AverageAudioFeatures = memo(function AverageAudioFeatures({plot_name}) {
     const [data, setData] = useState(null)
     const layout={
-    title: {text: 'Average Audio Features'},
     scene: { // needed for 3d plot
         xaxis: {title: {text:'Pitch'}},
         yaxis: {title: {text:'Volume'}},
         zaxis: {title: {text:'Tempo'}},
     },
     autosize: true,
-    margin: {l:0, r:0, b:0, t:30}
+    margin: {l:0, r:0, b:0, t:0}
     }
     const config = {
     responsive: true,

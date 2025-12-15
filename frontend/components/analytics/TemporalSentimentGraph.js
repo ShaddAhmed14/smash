@@ -2,17 +2,19 @@
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const TemporalSentimentGraph = memo(function TemporalSentimentGraph() {
+const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name}) {
     const [data, setData] = useState(null)
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + "/fetch_temporal_sentiment/"
 
     const layout={
-    title: {text: 'Temporal Sentiment Analysis'},
-    xaxis: {title: 'Segment Number', unifiedhovertext: {text: ''}},
-    yaxis: {title: 'Sentiment Compound Score'},
-    autosize: true,
-    hovermode: 'x unified',
-    legend: {orientation: 'h', y: -0.2}
+        xaxis: {title: 'Segment Number', unifiedhovertext: {text: ''}},
+        yaxis: {title: 'Sentiment Compound Score'},
+        autosize: true,
+        hovermode: 'x unified',
+        legend: {orientation: 'h', y: -0.2},
+        margin: { t: 0, b: 40, l: 50, r: 20}
     }
+
     const config = {
     responsive: true,
     displayModeBar: true,
@@ -20,7 +22,7 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph() {
     displaylogo: false,
     toImageButtonOptions: {
       format: 'png',
-      filename: "Topic Interdistance Map",
+      filename: plot_name,
       height: 500,
       width: 700,
       scale: 1
@@ -28,7 +30,6 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph() {
     }
 
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + "/fetch_temporal_sentiment/"
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {
@@ -60,7 +61,7 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph() {
 
     return (
       <div>
-        <PlotTemplate layout={layout} config={config} data={processedData} name="Temporal Sentiment" />
+        <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
       </div>
     )
 

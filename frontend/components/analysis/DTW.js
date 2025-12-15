@@ -78,13 +78,25 @@ const DTW = memo(function DTW({plot_name}) {
 
   return (
 
-      <div className="flex flex-row justify-evenly gap-4">
-        {dtwData ? 
-          <PlotTemplate name={plot_name} layout={layout} config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
-          : null}
-        <div className="flex flex-col items-center gap-y-4 align-middle justify-center w-1/3">
-            {videos[0] ? <video loop title={videos[0]} src={url+videos[0]} controls /> : <p>Select upto 2 Videos to Preview</p>}
-            {videos[1] ? <video loop title={videos[1]} src={url+videos[1]} controls /> : <p></p>}
+      <div className="plot-container-plot-video">
+        <div className="plot-container-plot">
+          {dtwData ? 
+            <PlotTemplate name={plot_name} layout={layout} config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
+            : null}
+        </div>
+        <div className="plot-container-video">
+            {videos[0] ? 
+            <div className="w-full rounded-lg border border-primary">
+              <video className="object-contain rounded-lg max-w-full h-auto" loop src={url+videos[0]} controls /> 
+              <p className="break-words text-xs p-2">{videos[0]}</p>
+            </div> : <p>Select upto 2 Videos to Preview</p>
+            }
+            {videos[1] ? 
+            <div className="w-full rounded-lg border border-primary">
+              <video className="object-contain rounded-lg max-w-full h-auto" loop src={url+videos[1]} controls /> 
+              <p className="break-words text-xs p-2">{videos[1]}</p>
+            </div> : null
+            }
         </div>
       </div>
   )

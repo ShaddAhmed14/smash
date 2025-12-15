@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react"
 
-const Transcript = ({videoName, videoRef}) => {
+const Transcript = ({videoName, currentTime}) => {
+  console.log("Transcript render:", videoName, currentTime)
   const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName;
   const transcriptRef = useRef(null);
   const [transcript, setTranscript] = useState("");
@@ -20,16 +21,17 @@ const Transcript = ({videoName, videoRef}) => {
   }, [url]);
 
   useEffect(() => {
-    const video = videoRef ? videoRef.current : null;
-    if (!video) {
-        return;
-    }
+    // const video = videoRef ? videoRef.current : null;
+    // if (!video) {
+    //   console.warn("Transcript: Video ref is not available");
+    //     return;
+    // }
     if (!transcript || transcript.length === 0) {
         return;
     }
 
     const handleTranscriptTimeUpdate = () => {
-      const currentTime = video.currentTime;
+      // const currentTime = video.currentTime;
       const activeSegment = transcript?.find(
         segment => currentTime >= segment.start && currentTime < segment.end
       );
@@ -58,14 +60,15 @@ const Transcript = ({videoName, videoRef}) => {
         }
       }
     }
+    handleTranscriptTimeUpdate();
 
-    video.addEventListener('timeupdate', handleTranscriptTimeUpdate);
-    video.addEventListener('play', handleTranscriptTimeUpdate);
-    return () => {
-      video.removeEventListener('timeupdate', handleTranscriptTimeUpdate)
-      video.removeEventListener('play', handleTranscriptTimeUpdate)
-    };
-  }, [videoRef, currentSegmentId, transcript]);
+    // video.addEventListener('timeupdate', handleTranscriptTimeUpdate);
+    // video.addEventListener('play', handleTranscriptTimeUpdate);
+    // return () => {
+    //   video.removeEventListener('timeupdate', handleTranscriptTimeUpdate)
+    //   video.removeEventListener('play', handleTranscriptTimeUpdate)
+    // };
+  }, [currentSegmentId, transcript, currentTime]);
 
    const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -114,7 +117,7 @@ const timeToSeconds = (timeStr) => {
               }`}
             >
               <div className="flex items-start space-x-2 rounded-lg">
-                <span className={`text-xs font-mono px-2 py-1 ${
+                <span className={`text-xs px-2 py-1 ${
                   currentSegmentId === segment.id
                     ? ' text-primary'
                     : 'text-secondary'
@@ -123,7 +126,7 @@ const timeToSeconds = (timeStr) => {
                 </span>
                 <p className={`text-sm leading-relaxed flex-1 ${
                   currentSegmentId === segment.id
-                    ? 'text-primary font-medium'
+                    ? 'text-primary'
                     : 'text-secondary'
                 }`}>
                   {segment.text}

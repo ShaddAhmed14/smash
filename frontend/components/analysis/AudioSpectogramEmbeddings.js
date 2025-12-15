@@ -53,18 +53,26 @@ const AudioSpectogramEmbeddings = memo(function AudioSpectogramEmbeddings() {
       else return [...prev, spectogram_name] // add the new spectogram
   })}
 
-
   return (
-    <div className="flex flex-row h-full w-full justify-between">
-        {data ? 
-        <div className="w-2/3">
+    <div className="flex flex-row justify-center items-center gap-2 w-full h-full">
+        {data &&
+        <div className="w-[70%] h-full border border-primary object-contain rounded-lg overflow-hidden">
           <AudioSpectogramEmbeddingsGraph data={data} selectedSpectograms={spectograms} config={config} layout={layout} handleClick={handleClick} />
         </div>
-            : <div>Loading Audio Spectogram Graph...</div>
           }
-        <div className="flex flex-col items-center  gap-y-4 align-middle justify-center w-1/3">
-            {spectograms[0] ? <img title={spectograms[0]} src={url+spectograms[0]} controls /> : <p>Select upto 2 Spectograms to Preview</p>}
-            {spectograms[1] ? <img title={spectograms[1]} src={url+spectograms[1]} controls /> : <p></p>}
+        <div className="flex flex-col items-center gap-y-2 justify-evenly w-[25%]">
+            {spectograms[0] ? 
+            <div className="w-full rounded-lg border border-primary">
+              <img className="object-contain rounded-lg max-w-full h-auto" src={url+spectograms[0]} /> 
+              <p className="break-words text-xs p-2">{spectograms[0]}</p>
+            </div> : <p>Select upto 2 Spectograms to Preview</p>
+            }
+            {spectograms[1] ? 
+            <div className="w-full rounded-lg border border-primary">
+              <img className="object-contain rounded-lg max-w-full h-auto" src={url+spectograms[1]} /> 
+              <p className="break-words text-xs p-2">{spectograms[1]}</p>
+            </div> : null
+            }
         </div>
     </div>
   )

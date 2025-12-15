@@ -1,39 +1,57 @@
 'use client'
+import {useState, useEffect} from 'react'
 import dynamic from 'next/dynamic'
-import {Suspense} from 'react'
 import NavBar from '../components/NavBar'
 import Loader from '../components/Loader'
 
-const TemporalSentimentGraph = dynamic(() => import('../components/analytics/TemporalSentimentGraph'), { ssr: false, loading: () => <p>Loading Temporal Sentiment Graph...</p> })
-const RadialGraph = dynamic(() => import('../components/analytics/RadialGraph'), { ssr: false, loading: () => <p>Loading Radial Graph...</p> })
-const KinematicFeatures = dynamic(() => import('../components/analytics/KinematicFeatures'), { ssr: false, loading: () => <p>Loading Kinematic Features...</p> })
-
 const AnalyticsPillar = () => {
-  let containerStyle = 'm-4 w-auto h-[85vh] border-primary border-2 rounded-lg p-2'
-  let components = {
-    "Temporal Sentiment Graph": TemporalSentimentGraph,
-    "Radial Graph": RadialGraph,
-    "Kinematic Features": KinematicFeatures
+  let components = ["Temporal Sentiment Graph", "Radial Graph", "Kinematic Features"]
+  
+  const [selectedPlot, setSelectedPlot] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const loadComponent = (name) => {
+  const componentsMapping = { // maps plot names to component import functions
+      "Temporal Sentiment Graph": () => import('@/components/analytics/TemporalSentimentGraph'),
+      "Radial Graph": () => import('@/components/analytics/RadialGraph'),
+      "Kinematic Features": () => import('@/components/analytics/KinematicFeatures')   
+    }
+  return  componentsMapping[name];
+  }
+
+  const Component = selectedPlot ? dynamic(loadComponent(selectedPlot), 
+   { ssr: false, loading: () => <Loader name={selectedPlot}/> }) : null;
+
+  useEffect(() => { // simulate 5 second (5000ms) loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [])
+
+  if(isLoading){
+    return <Loader name="Analytics Pillar"/>
   }
 
   return (
     <>
-      <NavBar currentPage="Analytics" textColor={"--custom-analytics"} /> 
-      <div className="flex flex-col mt-16 h-full w-full">
+      <NavBar currentPage="Analytics" textColor={"--custom-analytics"} />
+      <p className="text-h3">Select a plot to display:</p>
+      <div className="plot-option-pill-container">
         {
-          Object.entries(components).map(([name, Component]) => (
-              <Suspense fallback={<Loader name={name} />}>
-            <div key={name} className={containerStyle}>
-              <div className="flex flex-col w-full">
-                <p className="text-lg font-semibold text-primary">{name}</p>
-                <div className="accent_line"></div>
-                <Component plot_name={name} />
-              </div>
-            </div>
-              </Suspense>
+          components.map((name, idx) => (
+            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-gradient-analytics text-white' : ''}`} key={idx}
+            onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
         }
-      </div>   
+      </div>
+      <div>
+        {Component &&
+          <div key={selectedPlot} className="pillar-container">
+            <Component plot_name={selectedPlot} />
+          </div>
+        }
+      </div>
     </>
   )
 }

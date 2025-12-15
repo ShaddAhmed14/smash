@@ -2,7 +2,7 @@
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const RadialGraph = memo(function RadialGraph() {
+const RadialGraph = memo(function RadialGraph({plot_name}) {
     const [data, setData] = useState(null)
 
     const config = {
@@ -70,18 +70,18 @@ const RadialGraph = memo(function RadialGraph() {
         }
 
         const layout={
-            title: {text: 'Radial Graph'},
             autosize: true,
-            showlegend:true,
-            legend: {orientation: 'h', x: 0, y: -0.2},
+            showlegend:false,
+            legend: {orientation: 'h', x: 0, y: -1},
+            margin: { t: 0, b: 0, l: 0, r: 0},
         }
         
         return {traces: traces, layout: layout}
     }, [data])
 
     return (
-      <div>
-        <PlotTemplate layout={processedData.layout} config={config} name="Radial" data={processedData.traces} />
+      <div className="p-3">
+        <PlotTemplate layout={processedData.layout} config={config} name={plot_name} data={processedData.traces} />
       </div>
     )
 

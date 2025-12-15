@@ -2,9 +2,10 @@
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
 
-const Waveform = memo(function Waveform({videoName, videoRef}) {
+const Waveform = memo(function Waveform({videoName, currentTime}) {
+    console.log("Waveform render:", videoName, currentTime)
     const [data, setData] = useState(null)
-    const [currentTime, setCurrentTime] = useState(5)
+    // const [currentTime, setCurrentTime] = useState(5)
 
     const axis_layout = {showgrid: false, showticklabels: false}
     const layout={
@@ -29,17 +30,17 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
     }
     }
 
-    useEffect(() => {
-        if(!videoRef.current) return
-        const video = videoRef.current
-        const timeUpdateHandler = () => {
-            setCurrentTime(video.currentTime)
-        }
-        video.addEventListener('timeupdate', timeUpdateHandler)
-        return () => {
-            video.removeEventListener('timeupdate', timeUpdateHandler)
-        }
-    }, [videoRef])
+    // useEffect(() => {
+    //     // if(!videoRef.current) return
+    //     // const video = videoRef.current
+    //     // const timeUpdateHandler = () => {
+    //     //     setCurrentTime(video.currentTime)
+    //     // }
+    //     // video.addEventListener('timeupdate', timeUpdateHandler)
+    //     // return () => {
+    //     //     video.removeEventListener('timeupdate', timeUpdateHandler)
+    //     // }
+    // }, [videoRef])
 
     useEffect(() => {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/audio_peaks?video_name=" + videoName
@@ -52,7 +53,7 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
 
     const processedData = useMemo(() => {
         if (!data) return {}
-        const videoDuration = videoRef?.current?.duration || data.length
+        const videoDuration = data.length
         const currentIndex = (currentTime / videoDuration) * data.length
 
         const styles = getComputedStyle(document.documentElement)

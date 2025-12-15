@@ -3,6 +3,8 @@ import {useEffect, useState, useRef, memo} from 'react'
 import {useTheme} from 'next-themes'
 import Loader from './Loader'
 
+// Note: Make sure your primary trace is index 0 for selectedVideos highlighting to work correctly
+
 const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null,  handleClick=null, selectedVideos=[], currentTime=null}) {
     const plotlyRef = useRef(null)
     const containerRef = useRef(null)
@@ -12,7 +14,7 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
 
     useEffect(() => {
       const loadPlotly = async () => {
-        if(containerRef?.current && data.length > 0) {
+        if(containerRef?.current && data && data.length > 0) {
           try {
             setLoading(true)
             const Plotly = await import('plotly.js-dist-min')
@@ -41,8 +43,8 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
     }, [data, layout, config, currentTime, theme])
 
     useEffect(() => {
-      if (selectedVideos.length > 0 && plotlyRef?.current && containerRef?.current) {
-        const newColors = data[0].text.map((video_name, index) => { return selectedVideos.includes(video_name) ? "red" : (data[0].marker.color[index] || data[0].marker.color) })
+      if (data && selectedVideos.length > 0 && plotlyRef?.current && containerRef?.current) {
+      const newColors = data[0].text.map((video_name, index) => { return selectedVideos.includes(video_name) ? "red" : (data[0].marker.color[index] || data[0].marker.color) })
       const newSizes = data[0].text.map((video_name, index) => { return selectedVideos.includes(video_name) ? 12 : 6 })
       plotlyRef.current.restyle(containerRef.current, {
         'marker.color': [newColors],
@@ -60,7 +62,7 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
 
      return (
      <>
-      {loading ? <div>Loading {name}</div> : null}
+      {loading ? <Loader name={name}/> : null}
      <div ref={containerRef} style={{width: "100%", height: "100%"}}></div>
      </>
      )
