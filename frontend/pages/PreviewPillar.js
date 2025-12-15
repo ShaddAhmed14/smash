@@ -20,23 +20,23 @@ const Transcript = dynamic(() => import("../components/preview/Transcript"), { s
 
 const PreviewPillar = memo(function PreviewPillar({video_name}) {
   const videoRef = useRef(null)
-  const border_css = "border-2 border-primary rounded-lg p-2"
+  const border_css = "border-2 border-primary"
   return (
   <>
     <NavBar currentPage="Preview" />
-    <div className="flex flex-col mt-18 m-4">
-      <div className=" max-h-[85vh] flex flex-row justify-evenly gap-x-2 overflow-y-auto">
+    <div className="flex flex-col mt-18 m-0">
+      <div className=" max-h-[85vh] flex flex-row justify-evenly gap-0 overflow-y-auto">
         <div className={`w-6/10 max-h-full ${border_css}`}>
           <VideoPlayer videoName={video_name} videoRef={videoRef} />
         </div>
-        <div className={`grid grid-rows-2 gap-2 w-4/10 ${border_css}`}>
+        <div className={`grid grid-rows-2 w-4/10 ${border_css}`}>
           <Waveform videoName={video_name} videoRef={videoRef} />
           <Transcript videoName={video_name} videoRef={videoRef} />
         </div>
       </div>
-      <div className={`${border_css} my-4`}>
+      {/* <div className={`${border_css} my-4`}>
         <MetadataGraph />
-      </div>
+      </div> */}
     </div>
     <Footer />  
   </>

@@ -99,39 +99,45 @@ const timeToSeconds = (timeStr) => {
 
 
   return (
-        transcript ? <div 
-          ref={transcriptRef}
-          className="flex flex-col overflow-y-auto overflow-x-hidden rounded-lg"
-        >
-          {transcript.map((segment) => (
-            <div
-              key={segment.id}
-              data-segment-id={segment.id}
-              className={`p-3 cursor-pointer transition-all duration-300 ${
-                currentSegmentId === segment.id
-                  ? 'bg-primary border-l-4 border-secondary shadow-md transform scale-102'
-                  : 'bg-tertiary hover:bg-secondary border-l-4 border-transparent'
-              }`}
-            >
-              <div className="flex items-start space-x-2 rounded-lg">
-                <span className={`text-xs font-mono px-2 py-1 ${
+        transcript && 
+        <div className="flex flex-col border-secondary border">
+          <div className="bg-secondary flex flex-row items-center justify-between p-4">
+            <p>Transcript</p>
+          </div>
+          <div 
+            ref={transcriptRef}
+            className="flex flex-col overflow-y-auto overflow-x-hidden"
+          >
+            {transcript.map((segment) => (
+              <div
+                key={segment.id}
+                data-segment-id={segment.id}
+                className={`p-3 cursor-pointer transition-all duration-300 ${
                   currentSegmentId === segment.id
-                    ? ' text-primary'
-                    : 'text-secondary'
-                }`}>
-                  {formatTime(segment.start)}
-                </span>
-                <p className={`text-sm leading-relaxed flex-1 ${
-                  currentSegmentId === segment.id
-                    ? 'text-primary font-medium'
-                    : 'text-secondary'
-                }`}>
-                  {segment.text}
-                </p>
+                    ? 'bg-primary border-l-4 border-secondary shadow-md transform scale-102'
+                    : 'bg-tertiary hover:bg-secondary border-l-4 border-transparent'
+                }`}
+              >
+                <div className="flex items-start space-x-2 rounded-lg">
+                  <span className={`text-xs font-mono px-2 py-1 ${
+                    currentSegmentId === segment.id
+                      ? ' text-primary'
+                      : 'text-secondary'
+                  }`}>
+                    {formatTime(segment.start)}
+                  </span>
+                  <p className={`text-sm leading-relaxed flex-1 ${
+                    currentSegmentId === segment.id
+                      ? 'text-primary font-medium'
+                      : 'text-secondary'
+                  }`}>
+                    {segment.text}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div> : <div>Loading transcript...</div>
+            ))}
+          </div> 
+        </div>
       )}
 
 export default Transcript

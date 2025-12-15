@@ -9,20 +9,23 @@ const VideoPlayer = memo(function VideoPlayer({videoName, videoRef}) {
   const url = useMemo(() => process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_video/" + "?video_name=" + videoName + "&model_name=" + selectedModel, [videoName, selectedModel]) 
   
   return (
-    <div className='flex flex-col justify-between gap-y-2 max-h-full mx-2'>
+    <div className='flex flex-col justify-betwee'>
       {/* Video Title */}
-      <div className="flex-[1]">
-        <p className="text-l break-all font-bold text-primary">{videoName}_{selectedModel}</p>
+      <div className="bg-secondary flex flex-row items-center justify-between p-4">
+        <p>Video Preview</p>
+        <div className="flex flex-row gap-4 items-center">
+          <Link href={'/video_library'} className="p-2 text-white cursor-pointer">
+            <GrGallery />
+          </Link>
+          <p>Video ID: {videoName}</p>
+        </div>
       </div>
       {/* Video and Gallery Button */}
-      <div className="flex-[1] relative">
-        <video preload="metadata" src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} className="object-contain rounded-lg mx-auto w-auto h-auto" controls/>
-        <Link href={'/video_library'} className="absolute top-0 p-2 z-50 text-white cursor-pointer">
-          <GrGallery />
-        </Link>
+      <div className="flex-1 p-2">
+        <video preload="metadata" src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} className="object-contain mx-auto w-[90%] h-auto" controls/>
       </div>
       {/* Video Thumbnails for Models */}
-      <div className="flex-[1] w-[90%] mx-auto">
+      <div className="flex-1 bg-secondary">
         <VideoThumbnail videoName={videoName} selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
       </div>
     </div>

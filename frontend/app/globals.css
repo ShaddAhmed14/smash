@@ -90,6 +90,7 @@ body {
   font-family: 'Inter', sans-serif;
   color: var(--text-primary);
   transition: background-color 0.3s, color 0.3s;
+  margin: 0;
 }
 
 .info-card {

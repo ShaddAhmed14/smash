@@ -2,11 +2,18 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 import os
 import json
+import glob
 import base64
 
 router = APIRouter(prefix="/preview", tags=["preview"])
 
 VIDEO_TYPES = ["Original", "YoloPose", "MediaPipePose", "OpenPose", "MaskAnyoneAPI-MediaPipe", "MaskAnyoneAPI-OpenPose"]
+
+def find_video_name(video_id: str):
+    video_folders = glob.glob(os.path.join("/materials", "*"))
+    for folder in video_folders:
+        if os.path.basename(folder).startswith(video_id):
+            return os.path.basename(folder)
 
 @router.get("/")
 def preview_home():
@@ -39,6 +46,7 @@ async def fetch_metadata_graph():
 
 @router.get("/fetch_audio")
 async def stream_audio(video_name: str):
+    video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name,  f"{video_name}_audio.wav")
     
     def iterfile(file_path: str):
@@ -53,6 +61,7 @@ async def stream_audio(video_name: str):
 
 @router.get("/fetch_thumbnails/")
 async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails for all models except selected one
+    video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name, "thumbnails")
     thumbnails = {}
     for model_name in VIDEO_TYPES:
@@ -73,12 +82,14 @@ async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails fo
 
 @router.get("/fetch_thumbnail/")
 async def fetch_thumbnails(video_name: str): # thumbnails for all models except selected one
+    video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name, "thumbnails")
     img_file = os.path.join(file_path, f"{video_name}_Original_thumbnail.jpg")
     return FileResponse(img_file, media_type='image/jpeg', filename=f"{video_name}_Original_thumbnail.jpg")
 
 @router.get("/fetch_video/")
 async def fetch_video(video_name: str, model_name: str, request: Request):
+    video_name = find_video_name(video_name)
     if model_name == "Original":
         file_path = os.path.join("/materials", video_name, f"{video_name}_{model_name}.mp4")
     else:
@@ -124,6 +135,7 @@ async def fetch_video(video_name: str, model_name: str, request: Request):
 
 @router.get("/audio_peaks")
 async def fetch_audio_peaks(video_name: str):
+    video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name,  f"{video_name}_peaks.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Audio Peaks file not found"}, status_code=404)
@@ -142,6 +154,7 @@ async def fetch_metadata():
 
 @router.get("/fetch_transcript/")
 async def fetch_transcript(video_name: str):
+    video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name, f"{video_name}_transcript.srt")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Transcript file not found"}, status_code=404)
@@ -150,6 +163,7 @@ async def fetch_transcript(video_name: str):
 
 @router.get("/fetch_waveform/")
 async def fetch_waveform(video_name: str):
+    video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name,  f"{video_name}_waveform.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Waveform file not found"}, status_code=404)

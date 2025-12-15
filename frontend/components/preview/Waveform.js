@@ -101,8 +101,13 @@ const Waveform = memo(function Waveform({videoName, videoRef}) {
     }, [data, currentTime])
 
     return (
-      <div className="w-full h-full">
-        <PlotTemplate layout={layout} name="Waveform" config={config} data={processedData} currentTime={currentTime} />
+      <div className="border-secondary border flex flex-col ">
+        <div className="bg-secondary flex flex-row items-center justify-between p-4">
+            <p>Audio Waveform</p>
+        </div>
+        <div className="p-2 w-full h-full ">
+            <PlotTemplate layout={layout} name="Waveform" config={config} data={processedData} currentTime={currentTime} />
+        </div>
       </div>
     )
 
