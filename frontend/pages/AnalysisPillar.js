@@ -1,44 +1,59 @@
 'use client'
+import {useEffect, useState} from 'react'
 import dynamic from 'next/dynamic'
-import {Suspense} from 'react'
 import NavBar from '../components/NavBar'
 import Loader from '../components/Loader'
 
-const DTW = dynamic(() => import('../components/analysis/DTW'), { ssr: false })
-const VideoDistribution = dynamic(() => import('../components/analysis/VideoDistribution'), { ssr: false, loading: () => <Loader name="Video Distribution" /> })
-const TopicInterdistance = dynamic(() => import('../components/analysis/TopicInterdistance'), { ssr: false, loading: () => <Loader name="Topic Interdistance" /> })
-const AverageAudioFeatures = dynamic(() => import('../components/analysis/AverageAudioFeatures'), { ssr: false, loading: () => <Loader name="Average Audio Features" /> })
-const MaxAudioFeatures = dynamic(() => import('../components/analysis/MaxAudioFeatures'), { ssr: false, loading: () => <Loader name="Max Audio Features" /> })
-const VoronoiGraph = dynamic(() => import('../components/analysis/VoronoiGraph'), { ssr: false, loading: () => <Loader name="Voronoi Graph" /> })
-const DataMap = dynamic(() => import('../components/analysis/DataMap'), { ssr: false, loading: () => <Loader name="Data Map" /> })
-
+// const world_cloud_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_world_cloud"
 const AnalysisPillar = () => {
-  let containerStyle = 'm-4 w-auto h-[85vh] border-primary border-2 rounded-lg p-2'
-  const world_cloud_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_world_cloud"
-  let components = {
-    "Dynamic Time Warping (DTW) Analysis": DTW,
-    "Video Distribution based on Topic Clusters": VideoDistribution,
-    "Topic Interdistance Map": TopicInterdistance,
-    "Average Audio Features": AverageAudioFeatures,
-    "Audio Spectogram Embeddings": VoronoiGraph,
-    "Data Map": DataMap
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedPlot, setSelectedPlot] = useState(null)
+  let containerStyle = 'w-auto h-[87vh] border-primary border-2 rounded-lg m-4 overflow-hidden'
+  const components = ["Dynamic Time Warping (DTW) Analysis", "Video Distribution based on Topic Clusters", "Topic Interdistance Map", "Average Audio Features", "Audio Spectogram Embeddings", "Data Map"]
+
+  const loadComponent = (name) => {
+    const componentsMapping = { // maps plot names to component import functions
+        "Dynamic Time Warping (DTW) Analysis": () => import('@/components/analysis/DTW'),
+        "Video Distribution based on Topic Clusters": () => import('@/components/analysis/VideoDistribution'),
+        "Topic Interdistance Map": () => import('@/components/analysis/TopicInterdistance'),
+        "Average Audio Features": () => import('@/components/analysis/AverageAudioFeatures'),
+        "Audio Spectogram Embeddings": () => import('@/components/analysis/VoronoiGraph'),
+        "Data Map": () => import('@/components/analysis/DataMap'),    
+      }
+    return  componentsMapping[name];
+    }
+
+  const Component = selectedPlot ? dynamic(loadComponent(selectedPlot), 
+   { ssr: false, loading: () => <Loader name={selectedPlot}/> }) : null;
+
+  useEffect(() => { // simulate 5 second (5000ms) loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [])
+
+  if(isLoading){
+    return <Loader name="Analysis Pillar"/>
   }
+
   return (
     <>
       <NavBar currentPage="Analysis" textColor={"--custom-analysis-dark"} />
-      <div className="flex flex-col mt-16 h-full w-full">
+      <p className="text-h3">Select a plot to display:</p>
+      <div className="plot-option-pill-container">
         {
-          Object.entries(components).map(([name, Component]) => (
-              <Suspense fallback={<Loader name={name} />}>
-            <div key={name} className={containerStyle}>
-              <div className="flex flex-col w-full">
-                <p className="text-lg font-semibold text-primary">{name}</p>
-                <div className="accent_line"></div>
-                <Component plot_name={name} />
-              </div>
-            </div>
-              </Suspense>
+          components.map((name, idx) => (
+            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-gradient-analysis text-white' : ''}`} key={idx}
+            onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
+        }
+      </div>
+      <div>
+        {Component &&
+            <div key={selectedPlot} className="pillar-container">
+              <Component plot_name={selectedPlot} />
+            </div>
         }
       </div>
     </>

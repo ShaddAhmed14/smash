@@ -1,7 +1,6 @@
 import AnalysisPillar from '@/pages/AnalysisPillar'
 
-const page = async () => {
-
+const page = () => {
   return (
     <AnalysisPillar />
   )

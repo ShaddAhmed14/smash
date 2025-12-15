@@ -25,7 +25,7 @@ const LoadingPage = ({pillar, video_name}) => {
         }
         return prev + 10
       })
-    }, 500)
+    }, 50)
 
     return () => {
       clearInterval(interval)
@@ -34,7 +34,7 @@ const LoadingPage = ({pillar, video_name}) => {
 
   return (
     <div className="flex flex-col justify-center align-center items-center h-screen">
-        <div className="text-xl font-bold">{progress < 80 ? text[pillar][0] : text[pillar][1]}</div>
+        {/* <div className="text-xl">{progress < 80 ? text[pillar][0] : text[pillar][1]}</div> */}
         <div className="w-3/4 bg-gray-200 rounded-full h-4 m-4">
           <div className="bg-blue-500 h-4 rounded-full transition-all duration-1000 ease-linear" style={{ width: `${progress}%` }}/>
         </div>

@@ -18,23 +18,11 @@ const NavBar = ({currentPage, textColor}) => {
             <div className=" mx-4 flex flex-row items-center gap-1">
                 <Link href={'/'} className="cursor-pointer flex flex-row items-center gap-1" >
                     <FaCube className="text-white text-5xl rounded-lg p-3" style={{backgroundColor: `var(${textColor})`}} /> 
-                    <p className={`text-2xl rounded p-2 font-plex-sans`}>SMASH /</p>
+                    <p className={`text-2xl rounded p-2`}>SMASH /</p>
                 </Link>
-                <p style={{color: `var(${textColor})`}} className={`text-lg font-plex-mono`}>{currentPage} </p>
+                <p style={{color: `var(${textColor})`}} className={`text-lg`}>{currentPage} </p>
             </div>
             <div className={`flex flex-row gap-2 items-center justify-center`}>
-                {currentPage != "Preview" ?
-                <Link href={'/video_library/'} className={style} >
-                    Preview Pillar
-                </Link> : null}
-                {currentPage != "Analysis" ?
-                <Link href={'/loading/analysis/'} className={style} >
-                    Analysis Pillar
-                </Link> : null}
-                {currentPage != "Analytics" ?
-                <Link href={'/loading/analytics/'} className={style} >
-                    Analytics Pillar
-                </Link> : null}
                 <button
                     className={`cursor-pointer`}
                     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -49,3 +37,15 @@ const NavBar = ({currentPage, textColor}) => {
 }
 
 export default NavBar
+{/* {currentPage != "Preview" ?
+                <Link href={'/video_library/'} className={style} >
+                    Preview Pillar
+                </Link> : null}
+                {currentPage != "Analysis" ?
+                <Link href={'/analysis/'} className={style} >
+                    Analysis Pillar
+                </Link> : null}
+                {currentPage != "Analytics" ?
+                <Link href={'/analytics/'} className={style} >
+                    Analytics Pillar
+                </Link> : null} */}

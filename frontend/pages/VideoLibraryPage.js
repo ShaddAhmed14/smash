@@ -2,12 +2,13 @@
 import { useState, useEffect, memo } from "react"
 import VideoCard from "../components/preview/VideoCard"
 import NavBar from "../components/NavBar"
+import Loader from "@/components/Loader"
 
 const VideoLibrary = memo(function VideoLibrary() {
   const [videoMetadata, setVideoMetadata] = useState(null)
   
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW +  "/fetch_metadata"
+    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_metadata"
     fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -24,7 +25,7 @@ const VideoLibrary = memo(function VideoLibrary() {
   }, [])
 
   if(videoMetadata == null){
-    return <div>Fetching Video Information...</div>
+    return  <Loader name={"Video Library"} />
   }
 
   return (

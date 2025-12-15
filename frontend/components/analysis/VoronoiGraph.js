@@ -103,12 +103,24 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
     }, [data, videos])
 
   return (
-    <div className="flex flex-row h-full w-full justify-between gap-4">
-      <PlotTemplate name={plot_name} layout={layout}  config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
-      <div className="flex flex-col items-center  gap-y-4 align-middle justify-center items-center w-1/3">
-          {videos[0] ? <img title={videos[0]} src={spectrogram_url+videos[0]} /> : <p>Select upto 2 Videos to Preview Spectogram</p>}
-          {videos[1] ? <img title={videos[1]} src={spectrogram_url+videos[1]} /> : <p></p>}
+    <div className="plot-container-plot-video">
+      <div className="plot-container-plot">
+        <PlotTemplate name={plot_name} layout={layout}  config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
       </div>
+      <div className="plot-container-video">
+            {videos[0] ? 
+            <div className="w-full rounded-lg border border-primary">
+              <img className="object-contain rounded-lg max-w-full h-auto" src={spectrogram_url+videos[0]} /> 
+              <p className="break-words text-xs p-2">{videos[0]}</p>
+            </div> : <p>Select upto 2 Spectograms to Preview</p>
+            }
+            {videos[1] ? 
+            <div className="w-full rounded-lg border border-primary">
+              <img className="object-contain rounded-lg max-w-full h-auto" src={spectrogram_url+videos[1]} /> 
+              <p className="break-words text-xs p-2">{videos[1]}</p>
+            </div> : null
+            }
+        </div>
     </div>
   )
 })

@@ -1,6 +1,6 @@
 import AnalyticsPillar from '@/pages/AnalyticsPillar'
 
-const page = async () => {
+const page = () => {
 
   return (
     <AnalyticsPillar />
