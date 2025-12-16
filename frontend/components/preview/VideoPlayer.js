@@ -16,13 +16,11 @@ const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, updateTime})
   return (
     <div className='flex flex-col justify-betwee'>
       {/* Video Title */}
-      <div className="bg-secondary flex flex-row items-center justify-between p-4">
-        <p>Video Preview</p>
-        <div className="flex flex-row gap-4 items-center">
-          <Link href={'/video_library'} className="p-2 text-white cursor-pointer">
-            <GrGallery />
-          </Link>
-          <p>Video ID: {videoName}</p>
+      <div className="bg-secondary border border-primary flex flex-row items-center justify-between px-4 py-3">
+        <p className="text-[0.75rem] font-semibold uppercase tracking-[0.02em] text-secondary">Video Preview</p>
+        <div className="flex flex-row gap-2.5 items-center">
+          <Link href={'/video_library'} className="text-[0.875rem] cursor-pointer"><GrGallery /></Link>
+          <p className="text-[0.75rem] text-tertiary">Video ID: {videoName}</p>
         </div>
       </div>
       {/* Video and Gallery Button */}

@@ -151,7 +151,30 @@ async def fetch_metadata():
         return JSONResponse(content={"message": "Metadata File not Found" }, status_code=404)
     with open(file_path, 'r') as f:
         data = json.load(f)
-    return JSONResponse(content=data)
+
+    num_videos = len(data)
+    unique_speakers = set(item['speaker_name'] for item in data)
+    num_speakers = len(unique_speakers)
+    years = set(item['year'] for item in data)
+    languages = set(item['language'] for item in data)
+    genders = set(item['speaker_gender'] for item in data)
+    total_duration = sum(item['duration'] for item in data)
+    
+    topics = set()
+    for item in data:
+        topics.update(item['topics'])
+
+    result =  {
+        "num_videos": num_videos,
+        "num_speakers": num_speakers,
+        "years": list(years),
+        "languages": list(languages),
+        "total_duration": total_duration,
+        "genders": list(genders),
+        "topics": list(topics),
+        "data": data
+    }
+    return JSONResponse(content=result)
 
 @router.get("/fetch_transcript/")
 async def fetch_transcript(video_name: str):

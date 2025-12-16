@@ -27,7 +27,7 @@ const NavBar = ({currentPage, textColor}) => {
             </svg>
             <span className="font-semibold text-[1rem]">SMASH</span>
             {currentPage != "Landing" && <span>/</span>}
-            {currentPage != "Landing" && <span>{currentPage}</span>}
+            {currentPage != "Landing" && <span style={{color: `var(${textColor})`}}>{currentPage}</span>}
         </Link>
         <div className={`flex flex-row gap-4 items-center justify-center`}>
             {currentPage == "Landing" && <a className="text-secondary hover:text-primary no-underline text-[0.875rem]" href="#">Documentation</a>}

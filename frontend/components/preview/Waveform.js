@@ -29,19 +29,6 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
       scale: 1
     }
     }
-
-    // useEffect(() => {
-    //     // if(!videoRef.current) return
-    //     // const video = videoRef.current
-    //     // const timeUpdateHandler = () => {
-    //     //     setCurrentTime(video.currentTime)
-    //     // }
-    //     // video.addEventListener('timeupdate', timeUpdateHandler)
-    //     // return () => {
-    //     //     video.removeEventListener('timeupdate', timeUpdateHandler)
-    //     // }
-    // }, [videoRef])
-
     useEffect(() => {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/audio_peaks?video_name=" + videoName
         fetch(url)
@@ -102,9 +89,9 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
     }, [data, currentTime])
 
     return (
-      <div className="border-secondary border flex flex-col ">
-        <div className="bg-secondary flex flex-row items-center justify-between p-4">
-            <p>Audio Waveform</p>
+      <div className="flex flex-col ">
+        <div className="bg-secondary border border-primary flex flex-row items-center justify-between px-4 py-3">
+            <p className="text-[0.75rem] font-semibold uppercase tracking-[0.02em] text-secondary">Audio Waveform</p>
         </div>
         <div className="p-2 w-full h-full ">
             <PlotTemplate layout={layout} name="Waveform" config={config} data={processedData} currentTime={currentTime} />

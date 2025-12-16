@@ -149,3 +149,19 @@ body {
   color: var(--text-secondary);
 }
 
+.filter-select {
+height: 2rem;
+padding-top: 0rem;
+padding-bottom: 0rem;
+padding-right: 2rem;
+padding-left: 0.75rem;
+background-color: var(--bg-primary);
+border-color: var(--border-secondary);
+color: var(--text-primary);
+font-size: 0.875rem;
+cursor: pointer;
+}
+.filter-select:hover {
+  border-color: var(--border-primary);
+}
+

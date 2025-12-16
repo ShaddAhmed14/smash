@@ -1,39 +1,18 @@
-FROM node:18-alpine AS base
+FROM node:18-alpine
 
-FROM base AS deps
 WORKDIR /app
+
 COPY package*.json ./
+RUN rm -rf node_modules
 RUN npm i
+# RUN npm ci
 
-FROM base AS builder
-WORKDIR /app
-
-ARG NEXT_PUBLIC_PREVIEW
-ARG NEXT_PUBLIC_ANALYSIS
-ARG NEXT_PUBLIC_ANALYTICS
-ARG NEXT_PUBLIC_BACKEND_URL
-ENV NEXT_PUBLIC_PREVIEW=$NEXT_PUBLIC_PREVIEW
-ENV NEXT_PUBLIC_ANALYSIS=$NEXT_PUBLIC_ANALYSIS
-ENV NEXT_PUBLIC_ANALYTICS=$NEXT_PUBLIC_ANALYTICS
-ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
-
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY next.config.ts ./next.config.ts
 
+ENV TURBOPACK_BINDING_NAME=turbopack
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+ENV WATCHPACK_POLLING=true
+ENV CHOKIDAR_USEPOLLING=true
 
-FROM base AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-CMD ["node", "server.js"]
+CMD ["npm", "run", "dev"]
