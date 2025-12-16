@@ -5,114 +5,70 @@ import Link from 'next/link'
 import Footer from '@/components/Footer'
 
 const LandingPage = () => {
-    const system_logo = "w-[100px] h-[100px] rounded-[20px] text-[40px] mx-auto mt-0 mb-[2rem] flex items-center justify-center text-white bg-gradient-to-r from-[#1f2937] to-[#374151] shadow-[0_10px_25px_rgba(0,0,0,0.15)]"
-    // const accent_line = "w-full mb-6 bg-gradient-accent-line h-[2px]"
-    const big_button = "bg-secondary border-foreground border-[4px] flex flex-col items-center justify-start text-center p-8 cursor-pointer transition-all duration-[0.4s] ease-[cubic-bezier(0.175,0.885,0.32,1.275)] rounded-lg hover:scale-[1.05]"
-    const big_button_title = "text-2xl font-[700] mb-[1rem] text-text-primary transition-all duration-[0.3s] ease-linear"
-    const big_button_subtitle = "text-lg font-[500] text-text-secondary transition-all duration-[0.3s] ease-linear"
-    const big_button_icon = "w-[120px] h-[120px] mb-[2rem] flex text-white text-[48px] rounded-[20px] items-center justify-center transition-all duration-[0.3s] ease-linear"
   return (
     <>
         <NavBar currentPage="Landing" textColor={'--custom-preview-dark'} />
-        <div className='m-15 flex flex-col items-center mx-auto py-10 min-h-screen justify-center'>
+        <div className='flex flex-col items-center min-h-screen justify-center px-12 py-6 pt-24'>
             {/* Header */}
-            <div className='mx-auto flex flex-col items-center mb-16 items-center align-middle'>
-                <div className={system_logo}>
-                    <FaCube />
-                </div>
-                <p className='text-5xl md:text-6xl mb-6'>SMASH</p>
-                <div className="accent_line"></div>
-                <p className="text-xl md:text-2xl text-center text-text-primary mb-4">Synthesis and Multimodal Analytics System</p>
-                <p className="text-lg text-text-secondary max-w-2xl text-center mx-auto">
-                    Choose your analytical pathway
-                </p>
+            <div className='text-center mb-12'>
+                <p className='text-[2.5rem] font-extralight tracking-[-0.02em] mb-2'>SMASH</p>
+                <p className="text-[0.875rem] text-secondary">Synthesis and Multimodal Analytics System for Humanities</p>
             </div>
             {/* Pillars */}
-            <div className="grid lg:grid-cols-3 lg:grid-rows-1 justify-evenly gap-16 m-4 mt-10 grid-rows-3 grid-cols-1 w-3/4">
-                <div className={big_button}>
-                    <Link href={'/video_library/'} className={`${big_button_icon} align-middle bg-gradient-preview`} >
-                        <FaVideo />
-                    </Link>
-                    <p className={big_button_title}>Source <br /> Material</p>
-                    <div className="accent_line"></div>
-                    <p className={big_button_subtitle}>Input & Preprocessing</p>
-                </div>
-                <div className={big_button}>
-                    <Link href={'/analysis'} className={`${big_button_icon} align-middle bg-gradient-analysis`}>
-                        <FaBrain />
-                    </Link>
-                    <p className={big_button_title}>Analysis <br />Modules</p>
-                    <div className="accent_line"></div>
-                    <p className={big_button_subtitle}>Core Processing Engine</p>
-                </div>
-                <div className={big_button}>
-                    <Link href={'/analytics'} className={`${big_button_icon} bg-gradient-analytics`}>
-                        <FaChartPie />
-                    </Link>
-                    <p className={big_button_title}>Summary <br />Analytics</p>
-                    <div className="accent_line"></div>
-                    <p className={big_button_subtitle}>Insights & Reporting</p>
-                </div>
-            </div>
-            {/* About SMASH */}
-            <div className="bg-secondary border-2 border-primary rounded-lg p-12 m-10">
-                    <h3 className="text-3xl  mb-6 flex items-center">
-                        <FaInfoCircle className="mr-4" />
-                        About SMASH
-                    </h3>
-                    <div className="accent_line"></div>
-
-                    <div className="text-secondary leading-relaxed space-y-4 text-lg">
-                        <p>
-                            SMASH is a fully open-source tool that helps us better understand the composition of non-verbal communication aspects, like body language, facial expressions, and the melodic aspects of speech. It combines data masking for privacy protection with analysis modules that inform about how speakers communicated beyond the words uttered.
-                        </p>
+            <div className="flex flex-row justify-center items-center gap-16">
+                <div className="relative w-[750px] h-[800px]">
+                    <svg className="w-full h-full overflow-visible" viewBox="0 0 100 110">
+                        <path className="face-outline" id="outline-preview" d="M50 20 L20 38 L20 72 L50 90 Z" fill="none" stroke="#0f62fe" strokeWidth="0.5" opacity="0"/>
+                        <path className="face-outline" id="outline-analytics" d="M50 20 L80 38 L80 72 L50 90 Z" fill="none" stroke="#0f62fe" strokeWidth="0.5" opacity="0"/>
+                        <path className="face-outline" id="outline-analysis" d="M50 20 L80 38 L50 55 L20 38 Z" fill="none" stroke="#0f62fe" strokeWidth="0.5" opacity="0"/>
                         
-                        <p>
-                            By integrating body language, facial expressions, voice, and content in an easily understandable way, SMASH allows a detailed zoomed-out view of the full gamut of communication modes. The tool offers standard baselines based on already analyzed speaker databases and options for data export for customized analysis.
-                        </p>
-                    </div>
-                    <div className="mt-12 pt-8 border-t-2 border-secondary">
-                        <h4 className="text-xl  mb-4">Project Information</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <p className="text-sm text-secondary mb-1">Duration</p>
-                                <p className="">7 December 2024 until 7 December 2025</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-secondary mb-1">Organization</p>
-                                <p className="">Radboud University, Hasso Plattner Institute</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-secondary mb-1">Project Members</p>
-                                <p className="">Wim Pouw, Babajide Owoyele, Sharjeel Shaikh, Gerard de Melo</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-secondary mb-1">Funding</p>
-                                <p className="">NWO (Netherlands Organisation for Scientific Research)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-                        <div className="text-center p-6 flex flex-col items-center info-card rounded-lg">
-                            <FaShield className="mb-4 text-4xl" />
-                            <h4 className=" mb-2">Privacy-First</h4>
-                            <p className="text-sm text-secondary">Built-in masking tools to protect participant privacy</p>
-                        </div>
-                        <div className="text-center p-6 flex flex-col items-center info-card rounded-lg">
-                            <FaCode className="mb-4 text-4xl" />
-                            <h4 className=" mb-2">Open Source</h4>
-                            <p className="text-sm text-secondary">Fully transparent and accessible to all researchers</p>
-                        </div>
-                        <div className="text-center p-6 flex flex-col items-center info-card rounded-lg">
-                            <FaUsers className="mb-4 text-4xl" />
-                            <h4 className=" mb-2">User-Friendly</h4>
-                            <p className="text-sm text-secondary">No programming experience required</p>
-                        </div>
-                    </div>
+                        <Link href="/video_library">
+                            <path className="cursor-pointer transition-[filter] duration-200 stroke-transparent stroke-0 hover:brightness-110" d="M50 20 L20 38 L20 72 L50 90 Z" fill="#E05A7A"/>
+                                <text className="font-semibold text-[12px] pointer-events-none fill-[rgba(255,255,255,0.9)]" id="num-preview" x="33" y="62" textAnchor="middle" dominantBaseline="central">1</text>
+                            <g id="icon-preview" opacity="0">
+                                <path d="M25 62 Q29 52, 33 62 Q37 72, 41 62" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+                            </g>
+                        </Link>
+                        
+                        <Link href="/analytics">
+                            <path className="cursor-pointer transition-[filter] duration-200 stroke-transparent stroke-0 hover:brightness-110" d="M50 20 L80 38 L80 72 L50 90 Z" fill="#FFC166" />
+                                <text className="font-semibold text-[12px] pointer-events-none fill-[rgba(255,255,255,0.9)]" id="num-analytics" x="67" y="62" textAnchor="middle" dominantBaseline="central">3</text>
+                            <g id="icon-analytics" opacity="0">
+                                <circle cx="67" cy="62" r="7" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5"/>
+                                <circle cx="67" cy="62" r="2.5" fill="rgba(255,255,255,0.7)"/>
+                            </g>
+                        </Link>
+                        
+                        <Link href="/analysis">
+                            <path className="cursor-pointer transition-[filter] duration-200 stroke-transparent stroke-0 hover:brightness-110" d="M50 20 L80 38 L50 55 L20 38 Z" fill="#3ddbd9" />
+                                <text className="font-semibold text-[12px] pointer-events-none fill-[rgba(255,255,255,0.9)]" id="num-analysis" x="50" y="38" textAnchor="middle" dominantBaseline="central">2</text>
+                            <g id="icon-analysis" opacity="0">
+                                <path d="M38 38 Q50 28, 62 38" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+                                <circle cx="62" cy="38" r="2.5" fill="rgba(255,255,255,0.7)"/>
+                            </g>
+                        </Link>
+                    </svg>
+                </div>
+                <div className="w-[340px] min-h-[300px] bg-secondary border border-primary p-8 transition-[opacity,transform] duration-300 " id="infoPanel">
+                    <div className="text-[0.75rem] font-semibold tracking-[0.05em] mb-2 uppercase" id="infoStep">Step 1 of 3</div>
+                    <h2 className="text-[1.5rem] font-normal mb-3" id="infoTitle">Preview Module</h2>
+                    <div className="w-10 h-0.5 mb-4 bg-[#E05A7A]" id="infoDivider"></div>
+                    <p className="text-[0.875rem]/[1.6] text-secondary mb-6 " id="infoDesc">
+                        Upload and preview your audiovisual recordings. Prepare source material for multimodal analysis with automatic transcription and waveform visualization.
+                    </p>
+                    <Link href="/video_library">
+                        <button className="py-3 px-6 text-[0.875rem] font-medium no-underline border-none cursor-pointer transition-opacity duration-200 inline-block text-white hover:opacity-90 bg-[#E05A7A]" id="infoBtn">
+                            Begin →
+                        </button>
+                    </Link>
+                </div>
             </div>
+            <p className="mt-12 text-center text-[0.75rem] text-tertiary">Click a face of the cube to explore each module</p>
+            <div className="mt-12 text-center text-[0.75rem] text-tertiary">
+                <p>Radboud University · Donders Institute for Brain, Cognition and Behaviour</p>
+            </div>
+
         </div>
-        <Footer />
     </>
   )
 }

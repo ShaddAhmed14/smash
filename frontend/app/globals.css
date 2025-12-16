@@ -1,37 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
 
-@theme {
-  --font-plex-sans: "IBM Plex Sans", sans-serif; 
-  --font-plex-mono: "IBM Plex Mono", monospace;
-}
-
 :root {
-  --background: #f3f4f6;
-  --foreground: #000000;
-
-  --bg-primary: #f3f4f6;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f9fafb;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f4;
 
   --chart-background: #f9fafb;
   --points-color: #9f16b4;
 
-  --text-primary: #000000;
-  --text-secondary: #6b7280;
-  --border-primary: #000000;
-  --border-secondary: #e5e7eb;
+  --text-primary: #161616;
+  --text-secondary: #525252;
+  --text-tertiary: #8d8d8d;
 
-  --custom-preview : #fa4d56;
-  --custom-preview-dark : #e03d45;
-  --custom-analysis : #002d9c;
-  --custom-analysis-dark : #001f6b;
-  --custom-analytics : #198038;
-  --custom-analytics-dark : #146629;
+  --border-primary: #e0e0e0;
+  --border-secondary: #8d8d8d;
+
+  --custom-preview : #F5C4CF;
+  --custom-preview-dark : #E05A7A;
+  --custom-analysis : #A8EDED;
+  --custom-analysis-dark : #3ddbd9;
+  --custom-analytics : #FCE0A8;
+  --custom-analytics-dark : #FFC166;
 
   --custom-gradient-red: linear-gradient(135deg, var(--custom-preview) 0%, var(--custom-preview-dark) 100%);
   --custom-gradient-blue: linear-gradient(135deg, var(--custom-analysis) 0%, var(--custom-analysis-dark) 100%);
@@ -41,16 +30,22 @@
 }
 
 .dark {
-  --background: #161616;
-  --foreground: #f4f4f4;
   --bg-primary: #161616;
   --bg-secondary: #262626;
-  --bg-tertiary: #393939;
+
   --chart-background: #393939;
+
   --text-primary: #f4f4f4;
   --text-secondary: #c6c6c6;
-  --border-primary: #525252;
-  --border-secondary: #393939;
+  --text-tertiary: #8d8d8d;
+
+  --border-primary: #393939;
+  --border-secondary: #6f6f6f;
+}
+
+@theme {
+  --font-family-sans: 'IBM Plex Sans', sans-serif;
+  --font-family-mono: 'IBM Plex Mono', monospace;
 }
 
 @theme inline {
@@ -81,44 +76,19 @@
   --border-color-secondary : var(--border-secondary);
   --text-color-primary : var(--text-primary);
   --text-color-secondary : var(--text-secondary);
+  --text-color-tertiary : var(--text-tertiary);
 }
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #161616;
-    --foreground: #f4f4f4;
-  }
-} */
-
 
 body {
   background-color: var(--bg-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-plex-sans), sans-serif;
   color: var(--text-primary);
   transition: background-color 0.3s, color 0.3s;
-  margin: 0;
-}
-
-.info-card {
-    background-color: var(--bg-tertiary);
-    border: 2px solid var(--border-secondary);
-}
-        
-.accent_line {
-    background: var(--accent-line-gradient);
-    height: 2px;
-    width: 100%;
-    margin-top: 6px;
-    margin-bottom: 12px;
 }
 
 .pillar-container {
   overflow: hidden; 
-  margin: 1rem; 
-  border-radius: 0.5rem; 
-  border-width: 2px; 
-  width: auto; 
-  height: 87vh; 
+  height: 90vh; 
 }
 
 .plot-container-plot-video {
@@ -126,17 +96,15 @@ body {
   padding: 0.5rem; 
   flex-direction: row; 
   gap: 0.5rem; 
-  justify-content: space-between; 
-  align-items: center; 
+  justify-content: center; 
+  align-items: start; 
   width: 100%; 
   height: 100%; 
 }
 
 .plot-container-plot {
   object-fit: contain; 
-  overflow: hidden; 
-  border-radius: 0.5rem; 
-  border-width: 1px; 
+  overflow: auto; 
   height: 100%; 
   width: 70%;
 }
@@ -145,40 +113,39 @@ body {
   display: flex; 
   flex-direction: column; 
   row-gap: 0.5rem; 
-  justify-content: space-between; 
+  justify-content: center; 
   align-items: center; 
   width: 30%;
 }
-
 .plot-option-pill { 
-  padding: 0.5rem; 
-  border-radius: 0.5rem; 
+  padding: 0 16px; 
+  height: 36px; 
   border-width: 1px; 
   font-size: 1.125rem;
   line-height: 1.75rem; 
-  text-align: center; 
-  cursor: pointer; 
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  transition: all 0.15s ease-in-out; 
+  cursor: pointer;
+  vertical-align: middle;
 }
 .plot-option-pill:hover {
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
-
 .plot-option-pill-container {
-  display: grid; 
-  overflow-x: auto; 
-  margin: 0.75rem; 
-  grid-template-columns: repeat(3, minmax(0, 1fr)); 
-  gap: 0.5rem; 
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; 
+  margin-top: 56px; 
+  gap: 12px; 
   justify-content: center; 
   align-items: center; 
 }
 
 .text-h3 {
-  margin-top: 5rem; 
-  font-size: 1.25rem;
-  line-height: 1.75rem; 
-  text-align: center;
-  color: var(--text-primary);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
 }
 

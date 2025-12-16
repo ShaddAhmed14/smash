@@ -22,10 +22,9 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
             plotlyRef.current = PlotlyInstance
             if (PlotlyInstance != null) {
               const styles = getComputedStyle(document.documentElement)
-              layout.paper_bgcolor = styles.getPropertyValue('--background').trim()
-              layout.plot_bgcolor = styles.getPropertyValue('--chart-background').trim()
-              layout.font = { color: styles.getPropertyValue('--foreground').trim() }
-              // layout.transition = { duration: 100, easing: 'cubic-in-out' }
+              layout.paper_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
+              layout.plot_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
+              layout.font = { color: styles.getPropertyValue('--text-primary').trim() }
 
               await PlotlyInstance.react(containerRef.current, data, layout, config)
               setLoading(false)

@@ -212,8 +212,8 @@ const KinematicFeatures = memo(function KinematicFeatures() {
   }
 
   return (
-    <div className="h-full w-full flex flex-row justify-center items-center gap-2">
-      <div className="w-[70%] h-full grid grid-cols-2 gap-2 overflow-y-auto border border-primary rounded-lg object-contain overflow-hidden">
+    <div className="plot-container-plot-video">
+      <div className="plot-container-plot grid grid-cols-2 gap-2 overflow-y-scroll">
         {
             data ?
             Object.entries(data.features).map(([feature_name, feature_values], index) => {
@@ -229,16 +229,16 @@ const KinematicFeatures = memo(function KinematicFeatures() {
             : <div>No Data...</div>
           }
       </div>
-      <div className="flex flex-col items-center gap-y-2 justify-evenly w-[25%]">
+      <div className="plot-container-video">
           {videos[0] ? 
-            <div className="w-full rounded-lg border border-primary">
-              <video className="object-contain rounded-lg max-w-full h-auto" loop src={gesture_segment_url+videos[0]} controls /> 
+            <div className="w-full  border border-primary">
+              <video className="object-contain  max-w-full h-auto" loop src={gesture_segment_url+videos[0]} controls /> 
               <p className="break-words text-xs p-2">{videos[0]}</p>
             </div> : <p>Select upto 2 Videos to Preview</p>
           }
           {videos[1] ? 
-          <div className="w-full rounded-lg border border-primary">
-            <video className="object-contain rounded-lg max-w-full h-auto" loop src={gesture_segment_url+videos[1]} controls /> 
+          <div className="w-full  border border-primary">
+            <video className="object-contain max-w-full h-auto" loop src={gesture_segment_url+videos[1]} controls /> 
             <p className="break-words text-xs p-2">{videos[1]}</p>
           </div> : null
           }

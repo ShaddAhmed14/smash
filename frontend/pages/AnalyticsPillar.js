@@ -36,18 +36,19 @@ const AnalyticsPillar = () => {
   return (
     <>
       <NavBar currentPage="Analytics" textColor={"--custom-analytics"} />
-      <p className="text-h3">Select a plot to display:</p>
       <div className="plot-option-pill-container">
+      <p className="text-h3">Select a plot to display:</p>
         {
           components.map((name, idx) => (
-            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-gradient-analytics text-white' : ''}`} key={idx}
+            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-secondary font-semibold border-(--custom-analytics-dark)' : 'border-(--bg-secondary)'}`} key={idx}
             onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
         }
       </div>
-      <div>
+      <div className="m-4 bg-secondary">
         {Component &&
           <div key={selectedPlot} className="pillar-container">
+            <p className="font-semibold text-[0.9375rem] border-b-2 border-(--custom-analytics-dark) py-3 px-4">{selectedPlot}</p>
             <Component plot_name={selectedPlot} />
           </div>
         }
