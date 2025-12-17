@@ -12,6 +12,36 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
     const [loading, setLoading] = useState(false)
     const {theme} = useTheme()
 
+    const updateLayoutForTheme = (layout, theme) => {
+      const styles = getComputedStyle(document.documentElement)
+      layout.paper_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
+      layout.plot_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
+      layout.font = { color: styles.getPropertyValue('--text-primary').trim() }
+      layout.hoverlabel = {
+        bgcolor:styles.getPropertyValue('--bg-secondary').trim(),
+        bordercolor:styles.getPropertyValue('--border-secondary').trim(),
+        font: { 
+          color: styles.getPropertyValue('--text-primary').trim(),
+          family:  styles.getPropertyValue('--font-plex-sans').trim(),
+        },
+        namelength: -1
+      }
+      layout.polar = {
+        bgcolor: styles.getPropertyValue('--bg-secondary').trim(),
+        radialaxis: {
+          gridcolor: styles.getPropertyValue('--border-secondary').trim(),
+          tickcolor: styles.getPropertyValue('--text-primary').trim(),
+          tickfont: { color: styles.getPropertyValue('--text-primary').trim() }
+        },
+        angularaxis: { 
+          gridcolor: styles.getPropertyValue('--border-secondary').trim(),
+          tickcolor: styles.getPropertyValue('--text-primary').trim(),
+          tickfont: { color: styles.getPropertyValue('--text-primary').trim() }
+        }
+      }
+      return layout
+    }
+
     useEffect(() => {
       const loadPlotly = async () => {
         if(containerRef?.current && data && data.length > 0) {
@@ -21,12 +51,8 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
             const PlotlyInstance = Plotly.default || Plotly || window.Plotly
             plotlyRef.current = PlotlyInstance
             if (PlotlyInstance != null) {
-              const styles = getComputedStyle(document.documentElement)
-              layout.paper_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
-              layout.plot_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
-              layout.font = { color: styles.getPropertyValue('--text-primary').trim() }
-
-              await PlotlyInstance.react(containerRef.current, data, layout, config)
+              const updatedLayout = updateLayoutForTheme({...layout}, theme)
+              await PlotlyInstance.react(containerRef.current, data, updatedLayout, config)
               setLoading(false)
             }
             if (!isInitialized.current && handleClick) {

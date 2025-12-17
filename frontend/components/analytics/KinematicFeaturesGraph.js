@@ -28,6 +28,11 @@ const KinematicFeaturesGraph = memo(function KinematicFeaturesGraph ({feature_na
       scale: 1
     }
     }
+
+    const styles = getComputedStyle(document.documentElement)
+    const pointsColor = styles.getPropertyValue('--points-color')
+    const customAnalyticsDark = styles.getPropertyValue('--custom-analytics-dark')
+
     const traces = [
       {
         type: 'scatter',
@@ -36,7 +41,7 @@ const KinematicFeaturesGraph = memo(function KinematicFeaturesGraph ({feature_na
         y: feature_values,
         text: gesture_ids,
         marker: {
-          color: gesture_ids?.map((video_name, index) => { return videos.includes(video_name) ? "red" : "blue" }) || 'blue',
+          color: gesture_ids?.map((video_name, index) => { return videos.includes(video_name) ? customAnalyticsDark : pointsColor }) || pointsColor,
           size: gesture_ids?.map((video_name, index) => { return videos.includes(video_name) ? 12 : 6 }) || 6,
         },
         hovertemplate: '<b>Title:</b> %{text}<br><b>X:</b> %{x}<br><b>Y:</b> %{y}<extra></extra>'

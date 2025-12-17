@@ -25,10 +25,16 @@ const Transcript = ({videoName, currentTime}) => {
     }
 
     const handleTranscriptTimeUpdate = () => {
-      const activeSegment = transcript?.find(
-        segment => currentTime >= segment.start && currentTime < segment.end
-      );
-      
+      let activeSegment
+      if(currentTime >= transcript[transcript.length - 1].end){
+        activeSegment = transcript[transcript.length - 1]
+      }
+      else {
+        activeSegment = transcript?.find(
+          segment => currentTime >= segment.start && currentTime < segment.end
+        )
+      }
+
       if (activeSegment && activeSegment.id !== currentSegmentId) {
         setCurrentSegmentId(activeSegment.id);
         
@@ -41,7 +47,7 @@ const Transcript = ({videoName, currentTime}) => {
           let scrollPosition = 0
           const allSegments = Array.from(transcriptContainer.children)
           const activeIndex = allSegments.indexOf(activeElement)
-          for (let i = 0; i < activeIndex+2; i++) {
+          for (let i = 0; i < activeIndex; i++) {
             scrollPosition += allSegments[i].clientHeight
           }
 

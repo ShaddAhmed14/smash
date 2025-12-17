@@ -107,17 +107,17 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
       <div className="plot-container-plot">
         <PlotTemplate name={plot_name} layout={layout}  config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
       </div>
-      <div className="plot-container-video">
+      <div className="video-panel">
             {videos[0] ? 
-            <div className="w-full rounded-lg border border-primary">
-              <img className="object-contain rounded-lg max-w-full h-auto" src={spectrogram_url+videos[0]} /> 
-              <p className="break-words text-xs p-2">{videos[0]}</p>
+            <div className="video-panel-video-container">
+              <img className="video-panel-video" src={spectrogram_url+videos[0]} /> 
+              <p className="video-panel-text">{videos[0]}</p>
             </div> : <p>Select upto 2 Spectograms to Preview</p>
             }
             {videos[1] ? 
-            <div className="w-full rounded-lg border border-primary">
-              <img className="object-contain rounded-lg max-w-full h-auto" src={spectrogram_url+videos[1]} /> 
-              <p className="break-words text-xs p-2">{videos[1]}</p>
+            <div className="video-panel-video-container">
+              <img className="video-panel-video" src={spectrogram_url+videos[1]} /> 
+              <p className="video-panel-text">{videos[1]}</p>
             </div> : null
             }
         </div>

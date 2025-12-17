@@ -39,12 +39,12 @@ const AnalysisPillar = () => {
 
   return (
     <>
-      <NavBar currentPage="Analysis" />
+      <NavBar currentPage="Analysis" textColor={"--custom-analysis-dark"} />
       <div className="plot-option-pill-container">
         <p className="text-[0.875rem] text-secondary">Select Visualization:</p>
         {
           components.map((name, idx) => (
-            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-secondary font-semibold border-2 border-[--custom-analysis-dark]' : ''}`} key={idx}
+            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-secondary font-semibold border-2 border-(--button-primary)' : ''}`} key={idx}
             onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
         }

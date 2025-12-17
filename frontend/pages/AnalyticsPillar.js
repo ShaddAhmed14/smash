@@ -35,12 +35,12 @@ const AnalyticsPillar = () => {
 
   return (
     <>
-      <NavBar currentPage="Analytics" textColor={"--custom-analytics"} />
+      <NavBar currentPage="Analytics" textColor={"--custom-analytics-dark"} />
       <div className="plot-option-pill-container">
       <p className="text-h3">Select a plot to display:</p>
         {
           components.map((name, idx) => (
-            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-secondary font-semibold border-(--custom-analytics-dark)' : 'border-(--bg-secondary)'}`} key={idx}
+            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-secondary font-semibold border-(--button-primary)' : 'border-(--bg-secondary)'}`} key={idx}
             onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
         }

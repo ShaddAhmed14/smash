@@ -165,6 +165,9 @@ const KinematicFeatures = memo(function KinematicFeatures() {
       scale: 1
     }
     }
+    const styles = getComputedStyle(document.documentElement)
+    const pointsColor = styles.getPropertyValue('--points-color')
+    const customAnalyticsDark = styles.getPropertyValue('--custom-analytics-dark')
     const trace_1 = {
       type: 'scatter',
       mode: 'markers',
@@ -172,7 +175,7 @@ const KinematicFeatures = memo(function KinematicFeatures() {
       y: feature_values,
       text: gesture_ids,
       marker: {
-        color: gesture_ids?.map((video_name, index) => { return videos.includes(video_name) ? "red" : "blue" }) || 'blue',
+        color: gesture_ids?.map((video_name, index) => { return videos.includes(video_name) ? customAnalyticsDark : pointsColor }) || pointsColor,
         size: gesture_ids?.map((video_name, index) => { return videos.includes(video_name) ? 12 : 6 }) || 6,
       },
       hovertemplate: '<b>Title:</b> %{text}<br><b>X:</b> %{x}<br><b>Y:</b> %{y}<extra></extra>'
@@ -229,18 +232,22 @@ const KinematicFeatures = memo(function KinematicFeatures() {
             : <div>No Data...</div>
           }
       </div>
-      <div className="plot-container-video">
-          {videos[0] ? 
-            <div className="w-full  border border-primary">
-              <video className="object-contain  max-w-full h-auto" loop src={gesture_segment_url+videos[0]} controls /> 
-              <p className="break-words text-xs p-2">{videos[0]}</p>
-            </div> : <p>Select upto 2 Videos to Preview</p>
+      <div className="video-panel">
+          {videos[0] ?
+          <Suspense fallback={<div>Loading Video...</div>}>
+            <div className="video-panel-video-container">
+              <video className="video-panel-video" loop src={gesture_segment_url+videos[0]} controls /> 
+              <p className="video-panel-text">{videos[0]}</p>
+            </div> 
+            </Suspense> : <p>Select upto 2 Videos to Preview</p>
           }
           {videos[1] ? 
-          <div className="w-full  border border-primary">
-            <video className="object-contain max-w-full h-auto" loop src={gesture_segment_url+videos[1]} controls /> 
-            <p className="break-words text-xs p-2">{videos[1]}</p>
-          </div> : null
+          <Suspense fallback={<div>Loading Video...</div>}>
+          <div className="video-panel-video-container">
+            <video className="video-panel-video" loop src={gesture_segment_url+videos[1]} controls /> 
+            <p className="video-panel-text">{videos[1]}</p>
+          </div> 
+          </Suspense> : null
           }
       </div>
     </div>

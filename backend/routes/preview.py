@@ -138,6 +138,7 @@ async def fetch_video(video_name: str, model_name: str, request: Request):
 async def fetch_audio_peaks(video_name: str):
     video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name,  f"{video_name}_peaks.json")
+    print(f"Fetching audio peaks from: {file_path}")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Audio Peaks file not found"}, status_code=404)
     

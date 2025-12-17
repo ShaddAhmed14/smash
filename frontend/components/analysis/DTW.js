@@ -84,17 +84,17 @@ const DTW = memo(function DTW({plot_name}) {
             <PlotTemplate name={plot_name} layout={layout} config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
             : null}
         </div>
-        <div className="plot-container-video">
+        <div className="video-panel">
             {videos[0] ? 
-            <div className="w-full border border-primary">
-              <video className="object-contain max-w-full h-auto" loop src={url+videos[0]} controls /> 
-              <p className="break-words text-xs p-2">{videos[0]}</p>
+            <div className="video-panel-video-container">
+              <video className="video-panel-video" loop src={url+videos[0]} controls /> 
+              <p className="video-panel-text">{videos[0]}</p>
             </div> : <p>Select upto 2 Videos to Preview</p>
             }
             {videos[1] ? 
-            <div className="w-full border border-primary">
-              <video className="object-contain max-w-full h-auto" loop src={url+videos[1]} controls /> 
-              <p className="break-words text-xs p-2">{videos[1]}</p>
+            <div className="video-panel-video-container">
+              <video className="video-panel-video" loop src={url+videos[1]} controls /> 
+              <p className="video-panel-text">{videos[1]}</p>
             </div> : null
             }
         </div>

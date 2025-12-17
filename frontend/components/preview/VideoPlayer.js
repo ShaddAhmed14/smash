@@ -23,11 +23,11 @@ const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, updateTime})
           <p className="text-[0.75rem] text-tertiary">Video ID: {videoName}</p>
         </div>
       </div>
-      {/* Video and Gallery Button */}
-      <div className="flex-1 p-2">
+      {/* Video */}
+      <div className="flex-1">
         <video onTimeUpdate={handleTimeUpdate}
          preload="metadata" src={url} onError={(e) => console.error('Video element error:', e)} ref={videoRef} 
-         className="object-contain mx-auto w-[90%] h-auto" controls/>
+         className="object-contain mx-auto h-auto" controls/>
       </div>
       {/* Video Thumbnails for Models */}
       <div className="flex-1 bg-secondary">
