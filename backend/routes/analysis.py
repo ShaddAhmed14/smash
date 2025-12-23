@@ -48,9 +48,11 @@ def fetch_data_map():
 
 @router.get("/fetch_spectogram")
 def fetch_spectogram(video_name: str):
-    file_path = os.path.join("/materials/spectrograms", video_name)
+    file_path = os.path.join("/materials", video_name, f"{video_name}_spectrogram.png")
     if not os.path.exists(file_path):
-        return JSONResponse(content={"message": "Spectrogram File not Found" }, status_code=404)
+        file_path = os.path.join("/materials/spectrograms", video_name)
+        if not os.path.exists(file_path):
+            return JSONResponse(content={"message": "Spectrogram File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='image/png', filename=video_name)
 
 @router.get("/fetch_video_distribution")

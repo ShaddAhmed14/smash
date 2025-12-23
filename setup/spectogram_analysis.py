@@ -1,36 +1,25 @@
-from huggingface_hub import login
 import json
-import numpy as np
-from transformers import AutoImageProcessor, AutoModel
+import os
+import glob
 import torch
-
-import matplotlib.pyplot as plt
+import numpy as np
+from huggingface_hub import login
 from PIL import Image
+from transformers import AutoImageProcessor, AutoModel
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from scipy.spatial import Voronoi
-import pandas as pd
-import os
-import glob
 
+login(os.getenv("HUGGINGFACE_API_KEY"))
 
-
-
-login()
-
-
-
-
-def extract_embeddings(image_folder, processor, model):
+def extract_embeddings(spectograms_list, processor, model):
     embeddings = []
     filenames = []
-    device = model.device
-    images = glob.glob(os.path.join(image_folder, "*.png"))
 
-    for img_path in images:
+    for img_path in spectograms_list:
         try:
             img = Image.open(img_path).convert('RGB')
-            inputs = processor(images=img, return_tensors="pt").to(device, dtype=torch.float32)
+            inputs = processor(images=img, return_tensors="pt").to(model.device, dtype=torch.float32)
             with torch.no_grad():
                 outputs = model(**inputs)
             cls_token_embedding = outputs.last_hidden_state[:, 0, :].squeeze().cpu().numpy()
@@ -44,51 +33,45 @@ def extract_embeddings(image_folder, processor, model):
     print(f"Extracted embeddings with shape: {embeddings.shape}")
     return embeddings, filenames
 
-def reduce_for_viz(embeddings, n_components=2):
-    """
-    Reduce embeddings to 2D for visualization.
-    """
-    pca = PCA(n_components=n_components, random_state=42)
-    reduced = pca.fit_transform(embeddings)
-    return reduced
-
 def get_voronoi_regions(vor, labels):
-        regions_by_label = {}
-        for point_idx, region_idx in enumerate(vor.point_region):
-            region = vor.regions[region_idx]
-            if not region or -1 in region:
-                continue
+    regions_by_label = {}
+    for point_idx, region_idx in enumerate(vor.point_region):
+        region = vor.regions[region_idx]
+        if not region or -1 in region:
+            continue
 
-            label = labels[point_idx]
-            polygon = [vor.vertices[i] for i in region]
+        label = labels[point_idx]
+        polygon = [vor.vertices[i] for i in region]
 
-            if label not in regions_by_label:
-                regions_by_label[label] = []
-            regions_by_label[label].append((point_idx, polygon))
+        if label not in regions_by_label:
+            regions_by_label[label] = []
+        regions_by_label[label].append((point_idx, polygon))
 
-        return regions_by_label
+    return regions_by_label
 
-
-def main():
-    IMAGE_FOLDER = "spectograms"
-
+def setup_spectogram_analysis():
     pretrained_model_name = "facebook/dinov3-vits16-pretrain-lvd1689m"
     processor = AutoImageProcessor.from_pretrained(pretrained_model_name)
     model = AutoModel.from_pretrained(
         pretrained_model_name,
-        device_map="auto",
-        torch_dtype=torch.float32 # Changed dtype to float32
+        # torch_dtype=torch.float32 # Changed dtype to float32
+        dtype=torch.float32 # Changed dtype to float32
         )
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
-    embeddings, filenames = extract_embeddings(IMAGE_FOLDER, processor, model)
-    coords_2d = reduce_for_viz(embeddings, n_components=2)
+    spectograms_list = glob.glob(os.path.join("/materials", "*", "*.png"))
+    print(f"Found {len(spectograms_list)} spectrogram images.")
+
+    embeddings, filenames = extract_embeddings(spectograms_list, processor, model)
+    pca = PCA(n_components=2, random_state=42)
+    coords_2d = pca.fit_transform(embeddings)
+    print(f"Reduced embeddings to 2D with shape: {coords_2d.shape}")
 
     kmeans = KMeans(n_clusters=5, random_state=42)
     vor = Voronoi(coords_2d)
     labels = kmeans.fit_predict(coords_2d)
+    print(f"Assigned cluster labels: {np.unique(labels)}")
 
     regions_by_label = get_voronoi_regions(vor, labels)
 
@@ -109,6 +92,7 @@ def main():
             serializable_polygon = [v.tolist() for v in polygon]
             regions_by_label_serializable[serializable_label].append((serializable_point_idx, serializable_polygon))
 
+    print("Saving spectrogram Voronoi data to JSON...")
     data_to_save = {
         'coords_2d': coords_2d_list,
         'filenames': filenames, # filenames is already a list of strings
@@ -116,5 +100,5 @@ def main():
         'regions_by_label': regions_by_label_serializable
     }
 
-    with open('spectrogram_voronoi_data.json', 'w') as f:
+    with open('/materials/spectrogram_voronoi_data.json', 'w') as f:
         json.dump(data_to_save, f, indent=4)

@@ -1,0 +1,12 @@
+services:
+  setup:
+    build:
+      context: ./setup
+    env_file: 
+          - .env
+    volumes:
+      - ./setup:/app  
+      - ${MATERIALS_FOLDER}:/materials
+      - ${ENVISIONHGDETECTOR_OUTPUT}:/envisionhgdetector_output
+      - ${DATASET_FOLDER}:/dataset
+      - ${MASKBENCH_OUTPUT_FOLDER}:/maskbench_output
