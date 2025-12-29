@@ -1,9 +1,9 @@
-import AnalyticsPillar from '@/pages/AnalyticsPillar'
+import AnalyticsModule from '@/pages/AnalyticsModule'
 
 const page = () => {
 
   return (
-    <AnalyticsPillar />
+    <AnalyticsModule />
   )
 }
 

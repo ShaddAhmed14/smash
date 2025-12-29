@@ -1,4 +1,4 @@
-import PreviewPillar from '@/pages/PreviewPillar'
+import PreviewModule from '@/pages/PreviewModule'
 
 // interface PageProps {
 //   params: Promise<{
@@ -12,7 +12,7 @@ export default async function Page({ params }) {
   console.log("Page render:", video_name)
 
   return (
-      <PreviewPillar video_name={video_name} />
-      // <PreviewPillar video_name={video_name as any} />
+      <PreviewModule video_name={video_name} />
+      // <PreviewModule video_name={video_name as any} />
   )
 }

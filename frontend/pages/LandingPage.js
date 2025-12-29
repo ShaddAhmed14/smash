@@ -14,7 +14,7 @@ const LandingPage = () => {
                 <p className='text-[2.5rem] font-extralight tracking-[-0.02em] mb-2'>SMASH</p>
                 <p className="text-[0.875rem] text-secondary">Synthesis and Multimodal Analytics System for Humanities</p>
             </div>
-            {/* Pillars */}
+            {/* Modules */}
             <div className="flex flex-row justify-center items-center gap-16">
                 <div className="relative w-[750px] h-[800px]">
                     <svg className="w-full h-full overflow-visible" viewBox="0 0 100 110">

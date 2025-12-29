@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   typescript: {
     ignoreBuildErrors: true, // Ignore TypeScript errors during build
-  }, // temp solution -- preview pillar missing types
+  }, // temp solution -- preview module missing types
   eslint: {
     ignoreDuringBuilds: true, // Ignore ESLint errors during build
   },

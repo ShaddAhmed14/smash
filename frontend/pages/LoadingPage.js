@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
-const LoadingPage = ({pillar, video_name}) => {
+const LoadingPage = ({module, video_name}) => {
   const [progress, setProgress] = useState(0)
   const router = useRouter()
   const text = {
@@ -17,10 +17,10 @@ const LoadingPage = ({pillar, video_name}) => {
       setProgress((prev) => {
         if (prev === 100) {
           clearInterval(interval)
-          if(pillar === "preview") {
-            router.push(`/${pillar}/${video_name}`)
+          if(module === "preview") {
+            router.push(`/${module}/${video_name}`)
           }
-          else {router.push(`/${pillar}/`)}
+          else {router.push(`/${module}/`)}
           return 100
         }
         return prev + 10

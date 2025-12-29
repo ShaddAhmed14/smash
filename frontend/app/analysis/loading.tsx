@@ -4,6 +4,6 @@ import Loader from '@/components/Loader'
 
 export default function Loading() {
   return (
-    <Loader name={"Analysis Pillar"} />
+    <Loader name={"Analysis Module"} />
   )
 }
