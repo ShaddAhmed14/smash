@@ -14,29 +14,39 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
 
     const updateLayoutForTheme = (layout, theme) => {
       const styles = getComputedStyle(document.documentElement)
-      layout.paper_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
-      layout.plot_bgcolor = styles.getPropertyValue('--bg-secondary').trim()
-      layout.font = { color: styles.getPropertyValue('--text-primary').trim() }
+      const textPrimary = styles.getPropertyValue('--text-primary').trim()
+      const borderSecondary = styles.getPropertyValue('--border-secondary').trim()
+      const bgSecondary = styles.getPropertyValue('--bg-secondary').trim()
+      const fontPlexSans = styles.getPropertyValue('--font-family-sans').trim()
+      const fontConfig = { 
+        color: textPrimary,
+        family: fontPlexSans,
+        size: 12
+      }
+
+      layout.paper_bgcolor = bgSecondary
+      layout.plot_bgcolor = bgSecondary
+      layout.font = fontConfig
+      layout.legend = { ...layout.legend, font: fontConfig }
       layout.hoverlabel = {
-        bgcolor:styles.getPropertyValue('--bg-secondary').trim(),
-        bordercolor:styles.getPropertyValue('--border-secondary').trim(),
-        font: { 
-          color: styles.getPropertyValue('--text-primary').trim(),
-          family:  styles.getPropertyValue('--font-plex-sans').trim(),
-        },
+        ...layout.hoverlabel,
+        bgcolor:bgSecondary,
+        bordercolor:borderSecondary,
+        font: fontConfig,
         namelength: -1
       }
       layout.polar = {
-        bgcolor: styles.getPropertyValue('--bg-secondary').trim(),
+        ...layout.polar,
+        bgcolor: bgSecondary,
         radialaxis: {
-          gridcolor: styles.getPropertyValue('--border-secondary').trim(),
-          tickcolor: styles.getPropertyValue('--text-primary').trim(),
-          tickfont: { color: styles.getPropertyValue('--text-primary').trim() }
+          gridcolor: borderSecondary,
+          tickcolor: textPrimary,
+          tickfont: fontConfig
         },
         angularaxis: { 
-          gridcolor: styles.getPropertyValue('--border-secondary').trim(),
-          tickcolor: styles.getPropertyValue('--text-primary').trim(),
-          tickfont: { color: styles.getPropertyValue('--text-primary').trim() }
+          gridcolor: borderSecondary,
+          tickcolor: textPrimary,
+          tickfont: fontConfig
         }
       }
       return layout
