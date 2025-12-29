@@ -194,7 +194,7 @@ def rename_videos(folder_path):
 '''
 def create_audio_peaks(audio_path):
     print("Creating Audio Peaks from", audio_path)
-    output_path = audio_path.replace("audio.wav", "_peaks.json")
+    output_path = audio_path.replace("audio.wav", "peaks.json")
     if os.path.exists(output_path):
         print(f"Audio peaks for {audio_path} already exists. Skipping peak extraction.")
         return
@@ -256,22 +256,22 @@ def run_envisionhgdetector():
     analysis_folder = os.path.join(envisionhgdetector_output_folder, "analysis")
 
     print("Running EnvisionHGDetector on dataset...")
-    # detector = GestureDetector(motion_threshold=0.75, gesture_threshold=0.75, min_gap_s=0.0, min_length_s=0.25, model_type="lightgbm")
-    # detector.process_folder(input_folder="/dataset", output_folder=envisionhgdetector_output_folder)
+    detector = GestureDetector(motion_threshold=0.75, gesture_threshold=0.75, min_gap_s=0.0, min_length_s=0.25, model_type="lightgbm")
+    detector.process_folder(input_folder="/dataset", output_folder=envisionhgdetector_output_folder)
 
     print("Analyzing gesture segments...")
-    # utils.cut_video_by_segments(envisionhgdetector_output_folder)
-    # if os.path.exists(gesture_segments_folder):
-    #      segment_files = [f for f in os.listdir(gesture_segments_folder) if f.endswith('.mp4')]
-    #      print(f"Found {len(segment_files)} segment files")
-    # else:
-    #      print("Gesture segments folder not found!")
+    utils.cut_video_by_segments(envisionhgdetector_output_folder)
+    if os.path.exists(gesture_segments_folder):
+         segment_files = [f for f in os.listdir(gesture_segments_folder) if f.endswith('.mp4')]
+         print(f"Found {len(segment_files)} segment files")
+    else:
+         print("Gesture segments folder not found!")
 
     print("Retracking gestures...")
-    # detector.retrack_gestures(input_folder=gesture_segments_folder, output_folder=retracked_folder)
+    detector.retrack_gestures(input_folder=gesture_segments_folder, output_folder=retracked_folder)
     print("Analyzing DTW kinematics...")
     # tracking_results["landmarks_folder"],
-    # detector.analyze_dtw_kinematics(output_folder=analysis_folder, landmarks_folder=retracked_folder)
+    detector.analyze_dtw_kinematics(output_folder=analysis_folder, landmarks_folder=retracked_folder)
 
     shutil.copy2(os.path.join(analysis_folder, "gesture_visualization.csv"), "/materials/gesture_visualization.csv")
     shutil.copy2(os.path.join(analysis_folder, "kinematic_features.csv"), "/materials/kinematic_features.csv")
@@ -280,9 +280,17 @@ def run_envisionhgdetector():
     video_list = glob.glob(os.path.join("/dataset", "*.mp4")) # get all video paths
     for video_path in video_list:
         base_video_name, ext = os.path.splitext(os.path.basename(video_path))
-        materials_video_gesture_folder = os.path.join("/materials", base_video_name, "gesture_segments")
-        os.makedirs(materials_video_gesture_folder, exist_ok=True)
-        shutil.copytree(os.path.join(gesture_segments_folder, f"{base_video_name}{ext}"), materials_video_gesture_folder, dirs_exist_ok=True)
+        
+        gesture_segments_temp = os.path.join("/materials", base_video_name, "gesture_segments_temp")
+        os.makedirs(gesture_segments_temp, exist_ok=True)
+        gesture_segments = os.path.join("/materials", base_video_name, "gesture_segments")
+        os.makedirs(gesture_segments, exist_ok=True)
+
+        matching_gesture_segment = glob.glob(os.path.join(retracked_folder, "tracked_videos", f"{base_video_name}*"))
+        for segment in matching_gesture_segment:
+            shutil.copy2(segment, gesture_segments_temp)
+        fix_codex(gesture_segments_temp, gesture_segments)
+        shutil.rmtree(gesture_segments_temp)  # remove temp folder to save space
             
 
 def setup_materials():
@@ -340,7 +348,7 @@ def setup_materials():
 
 # main execution
 os.makedirs("/materials", exist_ok=True)
-setup_materials()
-setup_transcript_analysis()
-setup_spectogram_analysis()
+# setup_materials()
+# setup_transcript_analysis()
+# setup_spectogram_analysis()
 run_envisionhgdetector()

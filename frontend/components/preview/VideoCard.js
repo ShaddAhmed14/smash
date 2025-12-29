@@ -1,14 +1,15 @@
 import {memo} from 'react'
 import Link from 'next/link'
 
-const VideoCard = memo(function VideoCard({video_info, handleClick}) {
+const VideoCard = memo(function VideoCard({video_info, handleClick, selectedVideos}) {
   const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_thumbnail/?video_name=" + video_info.video_id
   return (
     <div className="flex flex-col bg-secondary border-primary border">
       <div className="relative">
-        <img className="w-full h-[180px] object-cover" src={url} alt={`Thumbnail for ${video_info.video_name}`} loading="lazy" />
+        <img className="w-full h-[180px] object-cover" src={url || null} alt={`Thumbnail for ${video_info.video_name}`} loading="lazy" />
         <p className="absolute bottom-2 right-2 bg-black opacity-80 text-white text-[0.75rem] px-2 py-1">{video_info.duration} min</p>
-        <input type="checkbox" className="absolute top-3 right-3 w-6 h-6" onChange={() => handleClick(video_info.video_id)} />
+        <input type="checkbox" className="absolute top-3 right-3 w-6 h-6" onChange={() => handleClick(video_info.video_id)}
+         checked={selectedVideos.includes(video_info.video_id)} />
       </div>
       <div className='m-2 p-2'>
         <h1 className="text-[0.9375rem]/1.4 font-semibold wrap-break-words mb-1.5" >{video_info.video_name}</h1>

@@ -46,9 +46,9 @@ def fetch_data_map():
         return JSONResponse(content={"message": "Data Map File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='application/json', filename="datamap_data.json")
 
-@router.get("/fetch_spectogram")
-def fetch_spectogram(video_name: str):
-    file_path = os.path.join("/materials", video_name, f"{video_name}_spectrogram.png")
+@router.get("/fetch_spectrogram")
+def fetch_spectrogram(video_name: str):
+    file_path = os.path.join("/materials", video_name.replace("_spectrogram.png", ""), video_name)
     if not os.path.exists(file_path):
         file_path = os.path.join("/materials/spectrograms", video_name)
         if not os.path.exists(file_path):
@@ -84,8 +84,8 @@ def fetch_world_cloud():
         return JSONResponse(content={"message": "Word Cloud File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='image/png', filename="word_cloud.png")
 
-@router.get("/fetch_audio_spectogram_embeddings")
-def fetch_audio_spectogram_embeddings():
+@router.get("/fetch_audio_spectrogram_embeddings")
+def fetch_audio_spectrogram_embeddings():
     file_path = os.path.join("/materials", "spectrogram_voronoi_data.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Audio Spectrogram Embeddings file not found"}, status_code=404)

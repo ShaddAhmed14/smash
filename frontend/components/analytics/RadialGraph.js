@@ -4,6 +4,7 @@ import PlotTemplate from '../PlotTemplate'
 
 const RadialGraph = memo(function RadialGraph({plot_name}) {
     const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
 
     const config = {
     responsive: true,
@@ -22,13 +23,20 @@ const RadialGraph = memo(function RadialGraph({plot_name}) {
     useEffect(() => {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_average_audio_features"
         fetch(url)
-            .then(response => response.json())
-            .then(fetchedData => {
-                setData(fetchedData)
-            })
-            .catch(error => {
-                console.error("Error fetching average audio features:", error)
-            })
+        .then(response => {
+        if (!response.ok) {
+            console.log("Network response was not ok:", response);
+            setError(response.statusText);
+        }
+        else return response.json()
+        })
+        .then(fetchedData => {
+            setData(fetchedData)
+        })
+        .catch(err => {
+            console.log("Fetch error:", err);
+            setError(err.toString());
+        })      
     }, [])
 
     const processedData = useMemo(() => {
@@ -80,10 +88,17 @@ const RadialGraph = memo(function RadialGraph({plot_name}) {
     }, [data])
 
     return (
-      <div className="p-3">
+    <>
+    { 
+        error ?
+        <p className="m-2 text-md">Error loading Data Map plot: {error.toString()}</p>
+        :
+        <div className="p-3">
         <PlotTemplate layout={processedData.layout} config={config} name={plot_name} data={processedData.traces} />
-      </div>
-    )
+        </div>
+    }
+    </>
+)
 
 })
 

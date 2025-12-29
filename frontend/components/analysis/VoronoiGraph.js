@@ -3,11 +3,11 @@ import { useState, useEffect, memo, useMemo } from 'react'
 import PlotTemplate from '../PlotTemplate'
 
 const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
-    let spectrogram_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_spectogram?video_name="
+  let spectrogram_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_spectrogram?video_name="
   const [data, setData] = useState(null)
   const [videos, setVideos] = useState([null, null])
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_audio_spectogram_embeddings"
-
+  const [error, setError] = useState(null)
+  let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_audio_spectrogram_embeddings"
   const axis_layout = {showtickLabels: false, zeroline: false, showgrid: false, title:''}
   const layout={
     xaxis: axis_layout,
@@ -32,8 +32,20 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
 
   useEffect(() => {
     fetch(url)
-      .then(response => response.json())
-      .then(data => setData(data))
+    .then(response => {
+        if (!response.ok) {
+            console.log("Network response was not ok:", response);
+            setError(response.statusText);
+        }
+        else return response.json()
+    })
+    .then(fetchedData => {
+        setData(fetchedData)
+    })
+    .catch(err => {
+        console.log("Fetch error:", err);
+        setError(err.toString());
+    })
   }, [])
 
   const handleClick = (e) => {
@@ -103,25 +115,32 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
     }, [data, videos])
 
   return (
-    <div className="plot-container-plot-video">
-      <div className="plot-container-plot">
-        <PlotTemplate name={plot_name} layout={layout}  config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
-      </div>
-      <div className="video-panel">
-            {videos[0] ? 
-            <div className="video-panel-video-container">
-              <img className="video-panel-video" src={spectrogram_url+videos[0]} /> 
-              <p className="video-panel-text">{videos[0]}</p>
-            </div> : <p>Select upto 2 Spectograms to Preview</p>
-            }
-            {videos[1] ? 
-            <div className="video-panel-video-container">
-              <img className="video-panel-video" src={spectrogram_url+videos[1]} /> 
-              <p className="video-panel-text">{videos[1]}</p>
-            </div> : null
-            }
+    <>
+    {
+      error ?
+      <p className="m-2 text-md">Error loading Voronoi Graph plot: {error.toString()}</p>
+      :
+      <div className="plot-container-plot-video">
+        <div className="plot-container-plot">
+          <PlotTemplate name={plot_name} layout={layout}  config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
         </div>
-    </div>
+        <div className="video-panel">
+              {videos[0] ? 
+              <div className="video-panel-video-container">
+                <img className="video-panel-video" src={spectrogram_url+videos[0]} /> 
+                <p className="video-panel-text">{videos[0]}</p>
+              </div> : <p>Select upto 2 Spectograms to Preview</p>
+              }
+              {videos[1] ? 
+              <div className="video-panel-video-container">
+                <img className="video-panel-video" src={spectrogram_url+videos[1]} /> 
+                <p className="video-panel-text">{videos[1]}</p>
+              </div> : null
+              }
+        </div>
+      </div>
+    }
+    </>
   )
 })
 

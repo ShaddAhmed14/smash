@@ -4,6 +4,8 @@ import PlotTemplate from '../PlotTemplate'
 
 const AverageAudioFeatures = memo(function AverageAudioFeatures({plot_name}) {
     const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
+
     const layout={
     scene: { // needed for 3d plot
         xaxis: {title: {text:'Pitch'}},
@@ -30,13 +32,20 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures({plot_name}) {
     useEffect(() => {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_average_audio_features"
         fetch(url)
-            .then(response => response.json())
-            .then(fetchedData => {
-                setData(fetchedData)
-            })
-            .catch(error => {
-                console.error("Error fetching average audio features:", error)
-            })
+        .then(response => {
+            if (!response.ok) {
+                console.log("Network response was not ok:", response);
+                setError(response.statusText);
+            }
+            else return response.json()
+        })
+        .then(fetchedData => {
+            setData(fetchedData)
+        })
+        .catch(err => {
+            console.log("Fetch error:", err);
+            setError(err.toString());
+        })
     }, [])
 
     const processedData = useMemo(() => {
@@ -61,8 +70,14 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures({plot_name}) {
     }, [data])
 
     return (
-    <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
-    )
-})
+        <>
+        { 
+            error ?
+            <p className="m-2 text-md">Error loading Average Audio Features plot: {error.toString()}</p>
+            :
+            <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
+        }
+        </>
+)})
 
 export default AverageAudioFeatures

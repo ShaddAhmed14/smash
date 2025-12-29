@@ -5,6 +5,7 @@ import PlotTemplate from '../PlotTemplate'
 const DTW = memo(function DTW({plot_name}) {
   const [dtwData, setDtwData] = useState(null)
   const [videos, setVideos] = useState([null, null])
+  const [error, setError] = useState(null)
   
   const layout={
     xaxis: {title: 'x', showgrid: false},
@@ -31,7 +32,13 @@ const DTW = memo(function DTW({plot_name}) {
 
   useEffect(() => {
     fetch(dtw_url)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          console.log("Network response was not ok:", response);
+          setError(response.statusText);
+        }
+        else return response.json()
+      })
       .then(data => {
           const graph_data={
                 x: data.x || [],
@@ -80,9 +87,10 @@ const DTW = memo(function DTW({plot_name}) {
 
       <div className="plot-container-plot-video">
         <div className="plot-container-plot">
-          {dtwData ? 
-            <PlotTemplate name={plot_name} layout={layout} config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
-            : null}
+          {error ?
+            <p className="m-2 text-md">Error loading DTW plot: {error.toString()}</p> 
+            : <PlotTemplate name={plot_name} layout={layout} config={config} data={processedData} handleClick={handleClick} selectedVideos={videos} />
+            }
         </div>
         <div className="video-panel">
             {videos[0] ? 

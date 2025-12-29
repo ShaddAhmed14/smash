@@ -4,6 +4,7 @@ import PlotTemplate from '../PlotTemplate'
 
 const DataMap = memo(function DataMap({plot_name}) {
   const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
 
   const config = {
     responsive: true,
@@ -22,8 +23,21 @@ const DataMap = memo(function DataMap({plot_name}) {
   useEffect(() => {
     let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_data_map"
     fetch(url)
-      .then(response => response.json())
-      .then(data => setData(data))
+    .then(response => {
+        if (!response.ok) {
+            console.log("Network response was not ok:", response);
+            setError(response.statusText);
+        }
+        else return response.json()
+    })
+    .then(fetchedData => {
+        setData(fetchedData)
+    })
+    .catch(err => {
+        console.log("Fetch error:", err);
+        setError(err.toString());
+    })
+      
   }, [])
 
  
@@ -93,9 +107,15 @@ const DataMap = memo(function DataMap({plot_name}) {
     //   return [dataPoints]
     }, [data])
 
-  return (
-    <PlotTemplate layout={processedData.layout} config={config} data={processedData.traces} name={plot_name} />
-  )
-})
+   return (
+    <>
+    { 
+        error ?
+        <p className="m-2 text-md">Error loading Data Map plot: {error.toString()}</p>
+        :
+        <PlotTemplate layout={processedData.layout} config={config} data={processedData.traces} name={plot_name} />
+    }
+    </>
+)})
 
 export default DataMap

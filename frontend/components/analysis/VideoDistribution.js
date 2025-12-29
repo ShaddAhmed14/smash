@@ -4,6 +4,7 @@ import PlotTemplate from '../PlotTemplate'
 
 const VideoDistribution = memo(function VideoDistribution({plot_name}) {
     const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
    
     const layout={
     xaxis: {title: 'x'},
@@ -28,10 +29,20 @@ const VideoDistribution = memo(function VideoDistribution({plot_name}) {
     useEffect(() => {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_video_distribution"
         fetch(url)
-            .then(response => response.json())
-            .then(fetchedData => {
-                setData(fetchedData)
-            })
+        .then(response => {
+            if (!response.ok) {
+                console.log("Network response was not ok:", response);
+                setError(response.statusText);
+            }
+            else return response.json()
+        })
+        .then(fetchedData => {
+            setData(fetchedData)
+        })
+        .catch(err => {
+            console.log("Fetch error:", err);
+            setError(err.toString());
+        })
     }, [])
 
     const processedData = useMemo(() => {
@@ -56,9 +67,14 @@ const VideoDistribution = memo(function VideoDistribution({plot_name}) {
     }, [data])
 
     return (
+    <>
+    { 
+        error ?
+        <p className="m-2 text-md">Error loading Video Distribution plot: {error.toString()}</p>
+        :
         <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
-    )
-
-})
+    }
+    </>
+)})
 
 export default VideoDistribution

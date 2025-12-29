@@ -4,6 +4,7 @@ import PlotTemplate from '../PlotTemplate'
 
 const TopicInterdistance = memo(function TopicInterdistance({plot_name}) {
     const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
 
     const layout={
     xaxis: {title: 'x'},
@@ -28,10 +29,20 @@ const TopicInterdistance = memo(function TopicInterdistance({plot_name}) {
     useEffect(() => {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_topic_interdistance"
         fetch(url)
-            .then(response => response.json())
-            .then(fetchedData => {
-                setData(fetchedData)
-            })
+        .then(response => {
+            if (!response.ok) {
+                console.log("Network response was not ok:", response);
+                setError(response.statusText);
+            }
+            else return response.json()
+        })
+        .then(fetchedData => {
+            setData(fetchedData)
+        })
+        .catch(err => {
+            console.log("Fetch error:", err);
+            setError(err.toString());
+        })
     }, [])
 
     const processedData = useMemo(() => {
@@ -65,9 +76,15 @@ const TopicInterdistance = memo(function TopicInterdistance({plot_name}) {
     }, [data])
 
     return (
-    <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
+    <>
+    { 
+        error ?
+        <p className="m-2 text-md">Error loading Topic Interdistance plot: {error.toString()}</p>
+        :
+        <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
+    }
+    </>
     )
-
 })
 
 export default TopicInterdistance

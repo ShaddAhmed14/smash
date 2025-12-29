@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from utils import setup_materials
 from routes import analysis, preview, analytics
 
 app = FastAPI()
@@ -20,8 +19,3 @@ app.include_router(analytics.router)
 @app.get("/")
 def home():
     return "Hello World"
-
-@app.get("/setup")
-def setup():
-    setup_materials("/materials")
-    return {"message": "Creating Materials using Videos found" }

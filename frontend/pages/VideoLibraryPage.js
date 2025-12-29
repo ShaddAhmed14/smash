@@ -7,6 +7,7 @@ import Loader from "@/components/Loader"
 const VideoLibrary = memo(function VideoLibrary() {
   const [videoMetadata, setVideoMetadata] = useState(null)
   const [selectedVideos, setSelectedVideos] = useState([])
+  const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
     year: "All Years",
     topic: "All Topics",
@@ -19,9 +20,9 @@ const VideoLibrary = memo(function VideoLibrary() {
     fetch(url)
       .then(response => {
         if (!response.ok) {
-          throw new Error("Network response was not ok", response);
-        }
-        return response.json();
+          setError(response.statusText)
+        } 
+        else return response.json();
       })
       .then(data => {
         setVideoMetadata({
@@ -31,6 +32,7 @@ const VideoLibrary = memo(function VideoLibrary() {
       })
       .catch(error => {
         console.error("Error fetching metadata:", error);
+        setError(error.toString());
       });
   }, [])
 
@@ -46,18 +48,27 @@ const VideoLibrary = memo(function VideoLibrary() {
     }) 
     }, [videoMetadata, filters])
 
-    const handleClick = (video_id) => {
-      setSelectedVideos(prevSelected => {
-        if (prevSelected.includes(video_id)) {
-          return prevSelected.filter(id => id !== video_id);
-        } else {
-          return [...prevSelected, video_id];
-        }
-      });
+    const handleClick = (video_id, selectAll = false) => {
+      if (selectAll) {
+        const allIds = filteredData.map(video => video.video_id);
+        setSelectedVideos(allIds);
+      }
+      else {
+        setSelectedVideos(prevSelected => {
+          if (prevSelected.includes(video_id)) {
+            return prevSelected.filter(id => id !== video_id);
+          } else {
+            return [...prevSelected, video_id];
+          }
+        });
+      }
     }
 
   if(videoMetadata == null){
     return  <Loader name={"Video Library"} />
+  }
+  if (error) {
+    return <div className="m-6 ">Error loading video metadata: {error.toString()}</div>;
   }
 
   return (
@@ -118,7 +129,7 @@ const VideoLibrary = memo(function VideoLibrary() {
           {
             filteredData && filteredData.map((video_info, idx) => {
 
-              return <VideoCard key={idx} video_info={video_info} handleClick={handleClick} />
+              return <VideoCard key={idx} video_info={video_info} handleClick={handleClick} selectedVideos={selectedVideos} />
             }
             )
           }
@@ -128,6 +139,7 @@ const VideoLibrary = memo(function VideoLibrary() {
           <div className="text-[0.875rem] text-secondary flex flex-row items-center gap-3">
             <span><span className="font-semibold text-primary inline-block text-center transition-transform duration-150 min-w-5">{selectedVideos.length}</span> videos selected</span>
             <p className="text-[0.75rem] text-tertiary py-1 px-2 bg-primary border border-primary bump:">Max 10</p>
+            <p className={`text-[0.75rem] text-tertiary bg-none border-none cursor-pointer underline hover:text-primary`}  onClick={() => handleClick(null, true)}>Select all</p>
             <p className={`text-[0.75rem] text-tertiary bg-none border-none cursor-pointer underline hover:text-primary ${selectedVideos.length === 0 ? 'invisible' : ''}`}  onClick={() => setSelectedVideos([])}>Clear all</p>
           </div>
           <div className="flex flex-row gap-3">

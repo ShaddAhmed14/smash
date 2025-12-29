@@ -34,7 +34,7 @@ const AnalysisPillar = () => {
   }, [])
 
   if(isLoading){
-    return <Loader name="Analysis Pillar"/>
+    return <Loader name="Analysis Module"/>
   }
 
   return (

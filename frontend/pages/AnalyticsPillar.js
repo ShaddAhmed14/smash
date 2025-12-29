@@ -30,7 +30,7 @@ const AnalyticsPillar = () => {
   }, [])
 
   if(isLoading){
-    return <Loader name="Analytics Pillar"/>
+    return <Loader name="Analytics Module"/>
   }
 
   return (

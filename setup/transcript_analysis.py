@@ -57,7 +57,7 @@ def create_transcript_db():
     return df
 
 def video_cluster(document_topic_probabilities, titles, df):
-    output_path = '/materials/video_plot_data.json'
+    output_path = '/materials/video_distribution.json'
     # if os.path.exists(output_path):
     #     print(f"Video plot data already exists at {output_path}. Skipping video clustering.")
     #     return
@@ -89,7 +89,7 @@ def video_cluster(document_topic_probabilities, titles, df):
         json.dump(video_plot_data, f, indent=4)
 
 def topic_interdistance(topic_model, video_topics_df):
-    output_path = '/materials/topic_plot_data.json'
+    output_path = '/materials/topic_interdistance.json'
     # if os.path.exists(output_path):
     #     print(f"Topic plot data already exists at {output_path}. Skipping topic interdistance calculation.")
     #     return

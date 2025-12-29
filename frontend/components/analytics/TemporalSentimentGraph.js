@@ -4,6 +4,7 @@ import PlotTemplate from '../PlotTemplate'
 
 const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name}) {
     const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
     const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + "/fetch_temporal_sentiment/"
 
     const layout={
@@ -12,7 +13,7 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name})
         autosize: true,
         hovermode: 'x unified',
         legend: {orientation: 'h', y: -0.2},
-        margin: { t: 0, b: 40, l: 50, r: 20}
+        margin: { t: 20, b: 20, l: 50, r: 50}
     }
 
     const config = {
@@ -30,11 +31,21 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name})
     }
 
     useEffect(() => {
-        fetch(url)
-            .then(response => response.json())
-            .then(fetchedData => {
-                setData(fetchedData)
-            })
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+            console.log("Network response was not ok:", response);
+            setError(response.statusText);
+        }
+        else return response.json()
+    })
+    .then(fetchedData => {
+        setData(fetchedData)
+    })
+    .catch(err => {
+        console.log("Fetch error:", err);
+        setError(err.toString());
+    })
     }, [])
 
     const processedData = useMemo(() => {
@@ -60,10 +71,17 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name})
     }, [data])
 
     return (
-      <div>
-        <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
-      </div>
-    )
+    <>
+    { 
+        error ?
+        <p className="m-2 text-md">Error loading Data Map plot: {error.toString()}</p>
+        :
+        <div className="w-full h-9/10">
+            <PlotTemplate layout={layout} config={config} data={processedData} name={plot_name} />
+        </div>
+    }
+    </>
+)
 
 })
 

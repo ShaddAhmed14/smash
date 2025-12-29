@@ -4,6 +4,8 @@ import PlotTemplate from '../PlotTemplate'
 
 const Waveform = memo(function Waveform({videoName, currentTime}) {
     const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
+
     const axis_layout = {showgrid: false, showticklabels: false}
     const layout={
     title: false, 
@@ -28,17 +30,27 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
     }
     useEffect(() => {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/audio_peaks?video_name=" + videoName
-        console.log("Fetching waveform data from:", url)
         fetch(url)
-            .then(response => response.json())
-            .then(fetchedData => {
-                console.log("Fetched peaks data:", fetchedData)
-                setData(fetchedData)
-            })
+        .then(response => {
+            if (!response.ok) {
+            console.log("Network response was not ok:", response);
+            setError(response.statusText);
+            }  
+            else return response.json()
+        })
+        .then(fetchedData => setData(fetchedData))
+        .catch(err => {
+            console.error("Error fetching waveform data:", err)
+            setError(err)
+        })
     }, [])
 
     const processedData = useMemo(() => {
         if (!data) return {}
+        if (!('peaks' in data)) {
+            setError("No peaks data available")
+            return {}
+        }
         console.log("Processing data for waveform:", data)
         const peaks = data.peaks
         const currentIndex = (currentTime / data.duration) * peaks.length
@@ -94,7 +106,9 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
             <p className="text-[0.75rem] font-semibold uppercase tracking-[0.02em] text-secondary">Audio Waveform</p>
         </div>
         <div className="p-2 w-full h-[85%]">
-            <PlotTemplate layout={layout} name="Waveform" config={config} data={processedData} currentTime={currentTime} />
+            {error ? <p className="text-md">Error loading waveform: {error.toString()}</p>
+            : <PlotTemplate layout={layout} name="Waveform" config={config} data={processedData} currentTime={currentTime} />
+            }
         </div>
       </div>
     )
