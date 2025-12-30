@@ -33,18 +33,19 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures({plot_name}) {
         const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_average_audio_features"
         fetch(url)
         .then(response => {
-            if (!response.ok) {
-                console.log("Network response was not ok:", response);
-                setError(response.statusText);
-            }
-            else return response.json()
-        })
+        return response.json().then(fetchedData => {
+          if (!response.ok) {
+            throw new Error(fetchedData.message || response.statusText);
+          }
+          return fetchedData;
+        });
+      })
         .then(fetchedData => {
             setData(fetchedData)
         })
         .catch(err => {
             console.log("Fetch error:", err);
-            setError(err.toString());
+            setError(err.message || err.toString());
         })
     }, [])
 

@@ -10,17 +10,20 @@ const MetadataGraph = memo(function MetadataGraph() {
   useEffect(() => {
     let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_metadata_graph"
     fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok", response);
-        }
-        return response.json();
+        .then(response => {
+        return response.json().then(fetchedData => {
+          if (!response.ok) {
+            throw new Error(fetchedData.message || response.statusText);
+          }
+          return fetchedData;
+        });
       })
       .then(data => {
         setVideoMetadata(data)})
-      .catch(error => {
-        console.error("Error fetching metadata:", error);
-      });
+      .catch(err => {
+        console.log("Fetch error:", err);
+        setError(err.message || err.toString());
+      })
   }, [])
 
   const config = {

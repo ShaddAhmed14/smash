@@ -32,20 +32,21 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name})
 
     useEffect(() => {
     fetch(url)
-    .then(response => {
-        if (!response.ok) {
-            console.log("Network response was not ok:", response);
-            setError(response.statusText);
-        }
-        else return response.json()
-    })
+        .then(response => {
+        return response.json().then(fetchedData => {
+          if (!response.ok) {
+            throw new Error(fetchedData.message || response.statusText);
+          }
+          return fetchedData;
+        });
+      })
     .then(fetchedData => {
         setData(fetchedData)
     })
     .catch(err => {
         console.log("Fetch error:", err);
-        setError(err.toString());
-    })
+        setError(err.message || err.toString());
+      })
     }, [])
 
     const processedData = useMemo(() => {

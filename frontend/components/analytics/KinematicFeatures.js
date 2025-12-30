@@ -13,19 +13,20 @@ const KinematicFeatures = memo(function KinematicFeatures() {
   
   useEffect(() => {
       fetch(url)
-      .then(response => {
+        .then(response => {
+        return response.json().then(fetchedData => {
           if (!response.ok) {
-              console.log("Network response was not ok:", response);
-              setError(response.statusText);
+            throw new Error(fetchedData.message || response.statusText);
           }
-          else return response.json()
+          return fetchedData;
+        });
       })
       .then(fetchedData => {
           setData({"gesture_ids": fetchedData.gesture_ids, "features": fetchedData.features, "jitter_values": fetchedData.jitter_values})
       })
       .catch(err => {
-          console.log("Fetch error:", err);
-          setError(err.toString());
+        console.log("Fetch error:", err);
+        setError(err.message || err.toString());
       })
   }, [])
 

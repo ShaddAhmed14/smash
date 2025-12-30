@@ -32,12 +32,13 @@ const DTW = memo(function DTW({plot_name}) {
 
   useEffect(() => {
     fetch(dtw_url)
-      .then(response => {
-        if (!response.ok) {
-          console.log("Network response was not ok:", response);
-          setError(response.statusText);
-        }
-        else return response.json()
+        .then(response => {
+        return response.json().then(fetchedData => {
+          if (!response.ok) {
+            throw new Error(fetchedData.message || response.statusText);
+          }
+          return fetchedData;
+        });
       })
       .then(data => {
           const graph_data={
@@ -47,6 +48,11 @@ const DTW = memo(function DTW({plot_name}) {
                 }
         setDtwData(graph_data)
       })
+      .catch(err => {
+        console.log("Fetch error:", err);
+        setError(err.message || err.toString());
+      })
+
   }, [])
 
   const handleClick = useCallback((e) => {

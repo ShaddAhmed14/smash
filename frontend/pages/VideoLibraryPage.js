@@ -19,20 +19,20 @@ const VideoLibrary = memo(function VideoLibrary() {
     let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_metadata"
     fetch(url)
       .then(response => {
-        if (!response.ok) {
-          setError(response.statusText)
-        } 
-        else return response.json();
+        return response.json().then(data => {
+          if (!response.ok) {
+            throw new Error(data.message || response.statusText);
+          }
+          return data;
+        });
       })
       .then(data => {
-        setVideoMetadata({
-          ...data
-        })
+        setVideoMetadata({...data})
         console.log("Fetched video metadata:", data);
       })
       .catch(error => {
         console.error("Error fetching metadata:", error);
-        setError(error.toString());
+        setError(error.message || error.toString());
       });
   }, [])
 
@@ -64,11 +64,11 @@ const VideoLibrary = memo(function VideoLibrary() {
       }
     }
 
+    if (error) {
+      return <div className="m-6 ">Error loading video metadata: {error.toString()}</div>;
+    }
   if(videoMetadata == null){
     return  <Loader name={"Video Library"} />
-  }
-  if (error) {
-    return <div className="m-6 ">Error loading video metadata: {error.toString()}</div>;
   }
 
   return (

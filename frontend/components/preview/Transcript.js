@@ -23,18 +23,19 @@ const Transcript = ({videoName, currentTime}) => {
   useEffect(() => {
       const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName;
       fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          console.log("Network response was not ok:", response);
-          setError(response.statusText);
-        }  
-        else return response.text()
+        .then(response => {
+        return response.json().then(fetchedData => {
+          if (!response.ok) {
+            throw new Error(fetchedData.message || response.statusText);
+          }
+          return fetchedData;
+        });
       })
       .then(fetchedData => setData(fetchedData))
       .catch(err => {
-        console.error("Error fetching transcript:", err);
-        setError(err);
-      });
+        console.log("Fetch error:", err);
+        setError(err.message || err.toString());
+      })
   }, [])
 
   const processedTranscript = useMemo(() => {
