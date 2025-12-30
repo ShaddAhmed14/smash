@@ -22,7 +22,7 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
         color: textPrimary,
         family: fontPlexSans,
         size: 12
-      } 
+      } //test
 
       layout.paper_bgcolor = bgSecondary
       layout.plot_bgcolor = bgSecondary
