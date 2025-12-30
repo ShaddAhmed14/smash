@@ -21,15 +21,14 @@ const Transcript = ({videoName, currentTime}) => {
   }
   
   useEffect(() => {
-      const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName;
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName
       fetch(url)
-        .then(response => {
-        return response.json().then(fetchedData => {
-          if (!response.ok) {
-            throw new Error(fetchedData.message || response.statusText);
-          }
-          return fetchedData;
-        });
+      .then(response => {
+        if (!response.ok) {
+          let message = response.json().message || response.statusText
+          throw new Error(message)
+        }
+        return response.text()
       })
       .then(fetchedData => setData(fetchedData))
       .catch(err => {
