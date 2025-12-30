@@ -1,8 +1,8 @@
-import AnalysisPillar from '@/pages/AnalysisPillar'
+import AnalysisModule from '@/pages/AnalysisModule'
 
 const page = () => {
   return (
-    <AnalysisPillar />
+    <AnalysisModule />
   )
 }
 
