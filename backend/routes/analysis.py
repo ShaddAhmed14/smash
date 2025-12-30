@@ -24,9 +24,9 @@ def fetch_dtw():
 
 @router.get("/fetch_gesture_segment")
 def fetch_gesture_segment(video_name: str):
-    file_path = os.path.join("/materials", video_name.split(".mp4")[0], "gesture_segments", video_name + ".mp4")
+    file_path = os.path.join("/materials", video_name.split(".mp4")[0], "gesture_segments", video_name + "_tracked.mp4")
     if not os.path.exists(file_path):
-        file_path = os.path.join("/envisionhgdetector_output/gesture_segments", video_name.split("_segment")[0], video_name + ".mp4")
+        file_path = os.path.join("/envisionhgdetector_output/retracked/tracked_videos", video_name + "_tracked.mp4")
         if not os.path.exists(file_path):
             return JSONResponse(content={"message": "Gesture Segment Video not Found" }, status_code=404)
     def full_stream():
