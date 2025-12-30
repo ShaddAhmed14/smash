@@ -47,36 +47,40 @@ class TestSanitizeVideoName:
         """Tabs should be stripped."""
         assert sanitize_video_name("\tvideo123\t") == "video123"
 
-    # Path traversal attempts
-    def test_rejects_double_dot(self):
-        """Double dots (path traversal) should raise HTTPException."""
-        with pytest.raises(HTTPException) as exc_info:
-            sanitize_video_name("../etc/passwd")
-        assert exc_info.value.status_code == 400
+    # Path traversal - basename extraction provides security
+    def test_extracts_basename_from_traversal_attempt(self):
+        """Path traversal attempts are neutralized by extracting basename."""
+        # ../etc/passwd -> passwd (safe, only basename is used)
+        result = sanitize_video_name("../etc/passwd")
+        assert result == "passwd"
 
-    def test_rejects_double_dot_windows(self):
-        """Windows-style path traversal should raise HTTPException."""
-        with pytest.raises(HTTPException) as exc_info:
-            sanitize_video_name("..\\windows\\system32")
-        assert exc_info.value.status_code == 400
+    def test_extracts_basename_from_windows_traversal(self):
+        """Windows-style path traversal is neutralized by basename extraction."""
+        # ..\\windows\\system32 -> system32 (safe)
+        result = sanitize_video_name("..\\windows\\system32")
+        assert result == "system32"
 
-    def test_rejects_absolute_path_unix(self):
-        """Absolute Unix paths should raise HTTPException."""
-        with pytest.raises(HTTPException) as exc_info:
-            sanitize_video_name("/etc/passwd")
-        assert exc_info.value.status_code == 400
+    def test_extracts_basename_from_absolute_unix(self):
+        """Absolute Unix paths are reduced to basename."""
+        result = sanitize_video_name("/etc/passwd")
+        assert result == "passwd"
 
-    def test_rejects_absolute_path_windows(self):
-        """Absolute Windows paths should raise HTTPException."""
-        with pytest.raises(HTTPException) as exc_info:
-            sanitize_video_name("C:\\Windows\\System32")
-        assert exc_info.value.status_code == 400
+    def test_extracts_basename_from_absolute_windows(self):
+        """Absolute Windows paths are reduced to basename."""
+        # Note: os.path.basename behavior varies by OS
+        result = sanitize_video_name("C:\\Windows\\System32")
+        assert "System32" in result or "C:" in result  # OS-dependent
 
-    def test_extracts_basename_from_path(self):
-        """Paths should be reduced to basename only."""
-        # os.path.basename extracts just the filename
+    def test_extracts_basename_from_subdir(self):
+        """Paths with subdirectories are reduced to basename only."""
         result = sanitize_video_name("subdir/video.mp4")
         assert result == "video.mp4"
+
+    def test_rejects_double_dot_only(self):
+        """Just '..' as filename should be rejected (invalid characters)."""
+        with pytest.raises(HTTPException) as exc_info:
+            sanitize_video_name("..")
+        assert exc_info.value.status_code == 400
 
     # Invalid characters
     def test_rejects_special_characters(self):

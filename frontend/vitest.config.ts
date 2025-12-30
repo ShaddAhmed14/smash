@@ -9,10 +9,14 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/**/*.test.{ts,tsx,js,jsx}'],
+    css: false, // Disable CSS processing in tests
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
     },
+  },
+  css: {
+    postcss: {}, // Use empty PostCSS config for tests
   },
 })
