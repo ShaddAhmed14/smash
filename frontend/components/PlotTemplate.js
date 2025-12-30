@@ -98,7 +98,7 @@ const PlotTemplate = memo(function PlotTemplate({layout, config, data, name=null
      return (
      <>
       {loading ? <Loader name={name}/> : null}
-     <div ref={containerRef} style={{width: "100%", height: "100%"}}></div>
+     <div style={{width: "100%", height: "100%"}} ref={containerRef}></div>
      </>
      )
 })

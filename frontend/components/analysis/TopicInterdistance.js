@@ -10,7 +10,7 @@ const TopicInterdistance = memo(function TopicInterdistance({plot_name}) {
     xaxis: {title: 'x'},
     yaxis: {title: 'y'},
     autosize: true,
-    margin: { t: 20, b: 20, l: 20, r: 20}
+    margin: { t: 20, b: 30, l: 30, r: 20}
     }
     const config = {
     responsive: true,

@@ -167,7 +167,7 @@ export default KinematicFeatures
 {/* {data ? 
   <Grid className="h-full" columnCount={columnCount} columnWidth={'45%'} rowCount={rowCount} rowHeight={300} height="100%" width="100%"
   cellComponent={cellComponent} cellProps={{feature: featureEntries, jitter_values: data.jitter_values, gesture_ids: data.gesture_ids}} /> 
-  : null} */}
+  : null} 
   // ```
   // // const handleClick = (feature_name) => {
   // //   if (feature_name === "all") {
@@ -273,3 +273,4 @@ export default KinematicFeatures
   // //   )
   // // }
   // ```
+*/}

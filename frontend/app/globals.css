@@ -89,25 +89,28 @@ body {
 }
 
 .pillar-container {
-  overflow: hidden; 
-  height: 90vh; 
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  width: 100%;
 }
 
 .plot-container-plot-video {
   display: flex; 
+  flex-direction: row;
+  flex: 1;
   padding: 0.5rem; 
-  flex-direction: row; 
   gap: 0.5rem; 
   justify-content: center; 
   align-items: start; 
   width: 100%; 
-  height: 100%; 
+  height: 90%; 
 }
 
 .plot-container-plot {
-  object-fit: contain; 
-  overflow: auto; 
-  height: 90%; 
+  object-fit: contain;
+  height: 100%; 
   width: 70%;
 }
 
@@ -116,9 +119,9 @@ body {
   flex-direction: column; 
   row-gap: 0.5rem; 
   align-items: center; 
-  justify-content: start;
+  justify-content: space-evenly;
   width: 30%;
-  height: 95%;
+  height: 100%;
 }
 
 .video-panel-video-container {
@@ -127,7 +130,6 @@ body {
   align-items: center;
   justify-content: start;
   border: 1px solid var(--border-primary);
-  height: 45%; 
   width: 100%;
 }
 
@@ -141,6 +143,7 @@ body {
   font-size: 0.75rem;
   padding: 8px;
   background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-primary);
   overflow-wrap: break-word;
   text-align: center;
   width: 100%;
