@@ -13,12 +13,6 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   standalone: true, // Enable standalone build
   output: 'standalone',
-  typescript: {
-    ignoreBuildErrors: true, // Ignore TypeScript errors during build
-  }, // temp solution -- preview pillar missing types
-  eslint: {
-    ignoreDuringBuilds: true, // Ignore ESLint errors during build
-  },
 
 }
 

@@ -51,7 +51,7 @@ const AnalysisModule = memo(function AnalysisModule() {
       </div>
       <div className="m-4 bg-secondary">
         {Component &&
-            <div key={selectedPlot} className="pillar-container">
+            <div key={selectedPlot} className="module-container">
               <p className="font-semibold text-[0.9375rem] border-b-2 border-(--custom-analysis-dark) py-3 px-4">{selectedPlot}</p>
               <Component plot_name={selectedPlot} />
             </div>
