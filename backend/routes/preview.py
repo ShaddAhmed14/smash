@@ -61,7 +61,7 @@ async def stream_audio(video_name: str):
     )
 
 @router.get("/fetch_thumbnails/")
-async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails for all models except selected one
+async def fetch_thumbnails(video_name: str): # thumbnails for all models except selected one
     video_name = find_video_name(video_name)
     file_path = os.path.join("/materials", video_name, "thumbnails")
     thumbnails = {}
@@ -78,7 +78,6 @@ async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails fo
         else:
             thumbnails[name] = None
     
-    del thumbnails[selectedModel] # send all thumbnails except selected one
     return JSONResponse(content=thumbnails)
 
 @router.get("/fetch_thumbnail/")

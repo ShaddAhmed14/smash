@@ -5,6 +5,14 @@ import pandas as pd
 import numpy as np
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
+@router.get("/fetch_transcript")
+def fetch_transcript():
+    file_path = os.path.join("/materials", "1591._Ink_made_of_air_pollution___Anirudh_Sharma.html")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Transcript File not Found" }, status_code=404)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    return JSONResponse(content={"html": html_content}, status_code=200)
 
 @router.get("/fetch_gesture_segment")
 def fetch_gesture_segment(video_name: str):

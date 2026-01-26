@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar'
 import Loader from '../components/Loader'
 
 const AnalyticsModule = memo(function AnalyticsModule() {
-  let components = ["Temporal Sentiment Graph", "Radial Graph", "Kinematic Features"]
+  let components = ["Temporal Sentiment Graph", "Radial Graph", "Kinematic Features", "Spacy Analysis", "Semantic Network"]
   
   const [selectedPlot, setSelectedPlot] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -14,7 +14,8 @@ const AnalyticsModule = memo(function AnalyticsModule() {
   const componentsMapping = { // maps plot names to component import functions
       "Temporal Sentiment Graph": () => import('@/components/analytics/TemporalSentimentGraph'),
       "Radial Graph": () => import('@/components/analytics/RadialGraph'),
-      "Kinematic Features": () => import('@/components/analytics/KinematicFeatures')   
+      "Kinematic Features": () => import('@/components/analytics/KinematicFeatures'),
+      "Spacy Analysis": () => import('@/components/analytics/SpaceyTranscript'),
     }
   return  componentsMapping[name];
   }

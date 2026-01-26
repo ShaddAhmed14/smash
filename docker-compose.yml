@@ -16,7 +16,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile # dockerfile_build for production build
+      dockerfile:  Dockerfile # dockerfile_build # Dockerfile # dockerfile_build for production build
       args:
         - NEXT_PUBLIC_PREVIEW=${NEXT_PUBLIC_PREVIEW}
         - NEXT_PUBLIC_ANALYSIS=${NEXT_PUBLIC_ANALYSIS}
