@@ -162,10 +162,7 @@ body {
   cursor: pointer;
   vertical-align: middle;
 }
-.plot-option-pill:hover {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-}
+
 .plot-option-pill-container {
   display: flex;
   flex-direction: row;

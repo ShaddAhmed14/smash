@@ -7,12 +7,28 @@ router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 @router.get("/fetch_transcript")
 def fetch_transcript():
-    file_path = os.path.join("/materials", "1591._Ink_made_of_air_pollution___Anirudh_Sharma.html")
+    file_path = os.path.join("/materials", "1594._Why_Black_girls_are_targeted_for_punishment_at_school_--_and_how_to_change_that___Monique_W._Morris.html")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Transcript File not Found" }, status_code=404)
     with open(file_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
     return JSONResponse(content={"html": html_content}, status_code=200)
+
+@router.get("/fetch_semantic_network")
+def fetch_semantic_network(type: str):
+    if type == "tfidf":
+        file_path = os.path.join("/materials", "tfidf.json")
+    elif type == "sbert":
+        file_path = os.path.join("/materials", "sbert.json")
+    elif type == "pertalk":
+        file_path = os.path.join("/materials/per_talk", "1537._Art_that_transforms_cities_into_playgrounds_of_the_imagination___Helen_Marriage.json")
+    else: 
+        return JSONResponse(content={"message": "Invalid type parameter" }, status_code=400)
+    
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Talk Network File not Found" }, status_code=404)
+
+    return FileResponse(file_path, media_type='application/json', filename=os.path.basename(file_path))
 
 @router.get("/fetch_gesture_segment")
 def fetch_gesture_segment(video_name: str):

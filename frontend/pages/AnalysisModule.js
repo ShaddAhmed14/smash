@@ -44,7 +44,7 @@ const AnalysisModule = memo(function AnalysisModule() {
         <p className="text-[0.875rem] text-secondary">Select Visualization:</p>
         {
           components.map((name, idx) => (
-            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-secondary font-semibold border-2 border-(--button-primary)' : ''}`} key={idx}
+            <p className={`plot-option-pill hover:bg-secondary ${selectedPlot === name ? 'bg-secondary font-semibold border-2 border-(--button-primary)' : ''}`} key={idx}
             onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
         }

@@ -16,6 +16,7 @@ const AnalyticsModule = memo(function AnalyticsModule() {
       "Radial Graph": () => import('@/components/analytics/RadialGraph'),
       "Kinematic Features": () => import('@/components/analytics/KinematicFeatures'),
       "Spacy Analysis": () => import('@/components/analytics/SpaceyTranscript'),
+      "Semantic Network": () => import('@/components/analytics/SemanticNetwork'),
     }
   return  componentsMapping[name];
   }
@@ -41,7 +42,7 @@ const AnalyticsModule = memo(function AnalyticsModule() {
       <p className="text-h3">Select a plot to display:</p>
         {
           components.map((name, idx) => (
-            <p className={`plot-option-pill ${selectedPlot === name ? 'bg-secondary font-semibold border-(--button-primary)' : 'border-(--bg-secondary)'}`} key={idx}
+            <p className={`plot-option-pill hover:bg-secondary ${selectedPlot === name ? 'bg-secondary font-semibold border-(--button-primary)' : 'border-(--bg-secondary)'}`} key={idx}
             onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
         }
