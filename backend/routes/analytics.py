@@ -2,30 +2,44 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 import os
 import pandas as pd
+import glob
 import numpy as np
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
-@router.get("/fetch_transcript")
-def fetch_transcript():
-    file_path = os.path.join("/materials", "1594._Why_Black_girls_are_targeted_for_punishment_at_school_--_and_how_to_change_that___Monique_W._Morris.html")
+@router.get("/fetch_spacey")
+def fetch_spacey(video_name: str):
+    video_name = "1555._How_a_new_species_of_ancestors_is_changing_our_theory_of_human_evolution___Juliet_Brophy"
+    file_path = os.path.join("/materials", f"{video_name}.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Transcript File not Found" }, status_code=404)
-    with open(file_path, 'r', encoding='utf-8') as f:
-        html_content = f.read()
-    return JSONResponse(content={"html": html_content}, status_code=200)
+    return FileResponse(file_path, media_type='application/json', filename=os.path.basename(file_path))
+
+@router.get("/fetch_dependency_tree")
+def fetch_dependency_tree(video_name: str, sentence_id: str):
+    video_name = "1555._How_a_new_species_of_ancestors_is_changing_our_theory_of_human_evolution___Juliet_Brophy"
+    file_path = os.path.join("/materials", "dependancy_tree", video_name, f"{sentence_id}.svg")
+    if not os.path.exists(file_path):
+        print("File not found:", file_path)
+        return JSONResponse(content={"message": "Dependency Tree File not Found" }, status_code=404)
+    return FileResponse(file_path, media_type='image/svg+xml', filename=os.path.basename(file_path))
+
+@router.get("/fetch_pertalk_list")
+def fetch_pertalk_list():
+    video_list = glob.glob("/materials/per_talk/*.json")
+    video_names = [os.path.basename(video).split(".json")[0] for video in video_list]
+    return JSONResponse(content={"video_names": video_names}, status_code=200)
 
 @router.get("/fetch_semantic_network")
 def fetch_semantic_network(type: str):
-    if type == "tfidf":
+    if type == "TFIDF":
         file_path = os.path.join("/materials", "tfidf.json")
-    elif type == "sbert":
+    elif type == "SBERT":
         file_path = os.path.join("/materials", "sbert.json")
-    elif type == "pertalk":
-        file_path = os.path.join("/materials/per_talk", "1537._Art_that_transforms_cities_into_playgrounds_of_the_imagination___Helen_Marriage.json")
-    else: 
-        return JSONResponse(content={"message": "Invalid type parameter" }, status_code=400)
+    else:
+        file_path = os.path.join("/materials/per_talk", f"{type}.json")
     
     if not os.path.exists(file_path):
+        print("File not found:", file_path)
         return JSONResponse(content={"message": "Talk Network File not Found" }, status_code=404)
 
     return FileResponse(file_path, media_type='application/json', filename=os.path.basename(file_path))

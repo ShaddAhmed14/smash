@@ -166,7 +166,7 @@ function GraphLoader({data}) {
 export default memo(function SemanticNetworkTemplate({type}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null)
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + `/fetch_semantic_network?type=${type.toLowerCase()}`
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + `/fetch_semantic_network?type=${type}`
 
   useEffect(() => {
     fetch(url)
@@ -227,18 +227,17 @@ export default memo(function SemanticNetworkTemplate({type}) {
   );
 
   return (
-    error ?
-    <p className="m-2 text-md">Error loading Data Map plot: {error.toString()}</p>
-    :
-    <div className="relative w-full h-full m-2 bg-primary flex flex-col">
-      <p className="font-semibold text-[0.9375rem] border-b-2 border-(--custom-analytics-dark) py-3 px-4">{type}</p>
-      {!data ? <Loader name={type} /> : 
-      <div className="flex-1 overflow-hidden">
+    <>
+      {error ?
+      <p className="m-2 text-md">Error loading Data Map plot: {error.toString()}</p>
+      :
+      !data ? <Loader name={type} /> : 
+      <div className="relative w-full h-full flex-1 overflow-hidden">
         <SigmaContainer settings={settings} style={{height: "100%", width: "100%", backgroundColor: "var(--bg-primary)"}}>
           <GraphLoader data={data} />
         </SigmaContainer>    
       </div>
       }
-    </div>
+    </>
   )
 })

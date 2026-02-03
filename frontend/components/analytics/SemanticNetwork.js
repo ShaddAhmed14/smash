@@ -1,5 +1,6 @@
 'use client'
 import SemanticNetworkTemplate from '@/components/analytics/SemanticNetworkTemplate'
+import SemanticNetworkPerTalk from '@/components/analytics/SemanticNetworkPerTalk'
 import {useState, memo} from 'react'
 
 export default memo(function SemanticNetwork({plot_name}) {
@@ -15,12 +16,18 @@ export default memo(function SemanticNetwork({plot_name}) {
       {
         option === 'crosstalk' ?
         <div className="h-full flex flex-row justify-around">
-          {/* <SemanticNetworkTemplate type={"TFIDF"} /> */}
-          <SemanticNetworkTemplate type={"SBERT"} />
+          <div className="w-full h-full m-2 bg-primary flex flex-col">
+            <p className="font-semibold text-[0.9375rem] border-b-2 border-(--custom-analytics-dark) py-3 px-4">{"TFIDF"}</p>
+            <SemanticNetworkTemplate type={"TFIDF"} />
+          </div>
+          <div className="w-full h-full m-2 bg-primary flex flex-col">
+            <p className="font-semibold text-[0.9375rem] border-b-2 border-(--custom-analytics-dark) py-3 px-4">{"SBERT"}</p>
+            <SemanticNetworkTemplate type={"SBERT"} />
+          </div>
         </div>
         :
         <div className="h-full">
-          <SemanticNetworkTemplate type={"pertalk"} />
+          <SemanticNetworkPerTalk />
         </div>
       }  
     </div>
