@@ -27,7 +27,7 @@ export default memo(function SemanticNetworkPerTalk({}) {
 
 return (
     <>
-    <div className="h-full mx-4 m-2 bg-primary flex flex-col">
+    <div className="h-full bg-primary flex flex-col">
         <select name="Videos" onChange={(e) => setSelectedVideo(e.target.value)} defaultValue={selectedVideo} className="bg-secondary w-1/2 text-[0.875rem] border-primary m-2 py-0.5 px-2 h-8 ">
             {
                 videoList.map((video, idx) => (

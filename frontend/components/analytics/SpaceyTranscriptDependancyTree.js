@@ -30,9 +30,9 @@ export default memo(function SpaceyTranscriptDependancyTree({video_name, sentenc
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            className="w-[90%] h-full mx-auto overflow-hidden cursor-grab active:cursor-grabbing"
+            className="cursor-grab active:cursor-grabbing"
         >
-            <img src={url} alt="Dependency Tree" className="w-full h-auto object-contain" draggable={false}
+            <img src={url} alt="Dependency Tree" className="object-contain" draggable={false}
                 style={{ transform: `translate(${offset.x/zoom}px, ${offset.y/zoom}px) scale(${zoom})` }} 
             />
         </div>

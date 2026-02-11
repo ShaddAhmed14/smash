@@ -6,8 +6,8 @@ import {useState, memo} from 'react'
 export default memo(function SemanticNetwork({plot_name}) {
   const [option, setOption] = useState('pertalk')
   return (
-    <div className="w-full h-9/10 flex flex-col">
-      <div className="flex flex-row gap-4 m-4">
+    <div className="max-w-full h-9/10 flex flex-col m-4">
+      <div className="mb-2 flex flex-row gap-4">
         <h2 onClick={() => setOption('pertalk')} className={`plot-option-pill hover:bg-primary 
           ${option === 'pertalk' ? 'bg-primary font-semibold border-2 border-(--button-primary)' : 'bg-secondary border-(--bg-primary)'}`}>Per-Talk</h2>
         <h2 onClick={() => setOption('crosstalk')} className={`plot-option-pill hover:bg-primary 
