@@ -3,6 +3,7 @@ import json
 import warnings
 import nltk
 import glob
+import logging
 import pandas as pd
 import numpy as np
 from bertopic import BERTopic
@@ -58,9 +59,6 @@ def create_transcript_db():
 
 def video_cluster(document_topic_probabilities, titles, df):
     output_path = '/materials/video_distribution.json'
-    # if os.path.exists(output_path):
-    #     print(f"Video plot data already exists at {output_path}. Skipping video clustering.")
-    #     return
     doc_prob_df = pd.DataFrame(document_topic_probabilities, index=titles)
     # Group by video title and calculate the mean topic distribution for each video
     video_topic_distributions_df = doc_prob_df.groupby(level=0).mean()
@@ -70,7 +68,6 @@ def video_cluster(document_topic_probabilities, titles, df):
     video_topic_distributions = video_topic_distributions_df.values
     # Reduce dimensionality of video topic distributions to 2D for visualization
     umap_model_2d_videos = UMAP(n_components=2, metric='cosine', random_state=42)
-    print(video_topic_distributions.shape)
     video_coords = umap_model_2d_videos.fit_transform(video_topic_distributions)
 
     video_plot_data = []
@@ -90,9 +87,6 @@ def video_cluster(document_topic_probabilities, titles, df):
 
 def topic_interdistance(topic_model, video_topics_df):
     output_path = '/materials/topic_interdistance.json'
-    # if os.path.exists(output_path):
-    #     print(f"Topic plot data already exists at {output_path}. Skipping topic interdistance calculation.")
-    #     return
     topic_info = topic_model.get_topic_info()
     topic_embeddings = topic_model.topic_embeddings_
 
@@ -133,9 +127,7 @@ def topic_interdistance(topic_model, video_topics_df):
 
 def data_map(topic_model, embeddings, titles):
     output_path = '/materials/datamap_data.json'
-    # if os.path.exists(output_path):
-    #     print(f"Data map already exists at {output_path}. Skipping data map creation.")
-    #     return
+
     topics = topic_model.topics_
 
     # Reduce embeddings to 2D for visualization
@@ -172,13 +164,10 @@ def data_map(topic_model, embeddings, titles):
 
     with open(output_path, 'w') as f:
         json.dump(data_for_plot, f, indent=4)
-    pass
 
 def temporal_sentiment_analysis(df):
     output_path = '/materials/temporal_sentiment_data.json'
-    # if os.path.exists(output_path):
-    #     print(f"Temporal sentiment data already exists at {output_path}. Skipping temporal sentiment analysis.")
-    #     return
+
     analyzer = SentimentIntensityAnalyzer()
     df['sentiment_score'] = df['cleaned_transcript'].apply(lambda x: analyzer.polarity_scores(x)['compound'])
 
@@ -244,17 +233,16 @@ def run_bertopic(df):
 
     video_topics_df = df[['title', 'topics']].explode('topics')
 
-    print("Running Video Clustering..." )
+    logging.info("Running Video Clustering..." )
     video_cluster(document_topic_probabilities, titles, df)
-    print("Calculating Topic Interdistance..." )
+    logging.info("Calculating Topic Interdistance..." )
     topic_interdistance(topic_model, video_topics_df)
-    print("Creating Data Map..." )
+    logging.info("Creating Data Map..." )
     data_map(topic_model, embeddings, titles)
-    print("Performing Temporal Sentiment Analysis..." )
+    logging.info("Performing Temporal Sentiment Analysis..." )
     temporal_sentiment_analysis(df)
 
 def setup_transcript_analysis():
     df = create_transcript_db()
-    print("Transcript database created with {} entries.".format(len(df)))
-    print("Running BERTopic analysis...")
+    logging.info("Running BERTopic analysis...")
     run_bertopic(df)

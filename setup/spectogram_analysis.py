@@ -1,6 +1,7 @@
 import json
 import os
 import glob
+import logging
 import torch
 import numpy as np
 from huggingface_hub import login
@@ -26,11 +27,10 @@ def extract_embeddings(spectograms_list, processor, model):
             embeddings.append(cls_token_embedding)
             filenames.append(os.path.basename(img_path))
         except Exception as e:
-            print(f"Could not get embedding for image: {e}")
+            logging.error(f"Could not get embedding for image: {e}")
             continue
 
     embeddings = np.array(embeddings)
-    print(f"Extracted embeddings with shape: {embeddings.shape}")
     return embeddings, filenames
 
 def get_voronoi_regions(vor, labels):
@@ -61,17 +61,14 @@ def setup_spectogram_analysis():
     model.to(device)
 
     spectograms_list = glob.glob(os.path.join("/materials", "*", "*.png"))
-    print(f"Found {len(spectograms_list)} spectrogram images.")
 
     embeddings, filenames = extract_embeddings(spectograms_list, processor, model)
     pca = PCA(n_components=2, random_state=42)
     coords_2d = pca.fit_transform(embeddings)
-    print(f"Reduced embeddings to 2D with shape: {coords_2d.shape}")
 
     kmeans = KMeans(n_clusters=5, random_state=42)
     vor = Voronoi(coords_2d)
     labels = kmeans.fit_predict(coords_2d)
-    print(f"Assigned cluster labels: {np.unique(labels)}")
 
     regions_by_label = get_voronoi_regions(vor, labels)
 
@@ -92,7 +89,7 @@ def setup_spectogram_analysis():
             serializable_polygon = [v.tolist() for v in polygon]
             regions_by_label_serializable[serializable_label].append((serializable_point_idx, serializable_polygon))
 
-    print("Saving spectrogram Voronoi data to JSON...")
+    logging.info("Saving spectrogram Voronoi data to JSON...")
     data_to_save = {
         'coords_2d': coords_2d_list,
         'filenames': filenames, # filenames is already a list of strings

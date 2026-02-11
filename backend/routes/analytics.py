@@ -8,25 +8,36 @@ router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 @router.get("/fetch_spacey")
 def fetch_spacey(video_name: str):
-    video_name = "1555._How_a_new_species_of_ancestors_is_changing_our_theory_of_human_evolution___Juliet_Brophy"
-    file_path = os.path.join("/materials", f"{video_name}.json")
+    file_path = os.path.join("/materials/spacey_analysis", f"{video_name}.json")
     if not os.path.exists(file_path):
-        return JSONResponse(content={"message": "Transcript File not Found" }, status_code=404)
+        file_path = os.path.join("/materials", video_name, f"{video_name}_spacey.json")
+        if not os.path.exists(file_path):
+            return JSONResponse(content={"message": "Spacey File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='application/json', filename=os.path.basename(file_path))
 
 @router.get("/fetch_dependency_tree")
 def fetch_dependency_tree(video_name: str, sentence_id: str):
-    video_name = "1555._How_a_new_species_of_ancestors_is_changing_our_theory_of_human_evolution___Juliet_Brophy"
     file_path = os.path.join("/materials", "dependancy_tree", video_name, f"{sentence_id}.svg")
     if not os.path.exists(file_path):
-        print("File not found:", file_path)
-        return JSONResponse(content={"message": "Dependency Tree File not Found" }, status_code=404)
+        file_path = os.path.join("/materials",video_name, "dependency_trees", f"{sentence_id}.svg")
+        if not os.path.exists(file_path):
+            return JSONResponse(content={"message": "Dependency Tree File not Found" }, status_code=404)
     return FileResponse(file_path, media_type='image/svg+xml', filename=os.path.basename(file_path))
+
+@router.get("/fetch_spacey_list")
+def fetch_spacey_list():
+    video_list = glob.glob("/materials/spacey_analysis/*.json")
+    if len(video_list) == 0:
+        video_list = glob.glob("/materials/*/*_spacey.json")
+    video_names = [os.path.basename(video).split("_spacey.json")[0] for video in video_list]
+    return JSONResponse(content={"video_names": video_names}, status_code=200)
 
 @router.get("/fetch_pertalk_list")
 def fetch_pertalk_list():
     video_list = glob.glob("/materials/per_talk/*.json")
-    video_names = [os.path.basename(video).split(".json")[0] for video in video_list]
+    if len(video_list) == 0:
+        video_list = glob.glob("/materials/*/*_per_talk.json")
+    video_names = [os.path.basename(video).split("_per_talk.json")[0] for video in video_list]
     return JSONResponse(content={"video_names": video_names}, status_code=200)
 
 @router.get("/fetch_semantic_network")
@@ -37,6 +48,8 @@ def fetch_semantic_network(type: str):
         file_path = os.path.join("/materials", "sbert.json")
     else:
         file_path = os.path.join("/materials/per_talk", f"{type}.json")
+        if not os.path.exists(file_path):
+            file_path = os.path.join("/materials", type, f"{type}_per_talk.json")
     
     if not os.path.exists(file_path):
         print("File not found:", file_path)

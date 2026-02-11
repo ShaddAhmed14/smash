@@ -1,6 +1,0 @@
-envisionhgdetector
-bertopic
-torch
-torchvision
-transformers
-librosa

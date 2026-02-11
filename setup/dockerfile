@@ -8,5 +8,13 @@ WORKDIR /app
 RUN pip install torch torchvision
 RUN pip install envisionhgdetector
 RUN pip install bertopic transformers librosa nltk openai-whisper
+RUN pip install sentence-transformers networkx pyvis scikit-learn
+
+# Install spacy and download language models
+RUN pip install spacy
+RUN python -m spacy download en_core_web_sm -q
+RUN python -m spacy download en_core_web_md -q
+RUN python -m spacy download en_core_web_lg -q
+
 
 CMD ["python", "-u", "prepare_materials.py"]

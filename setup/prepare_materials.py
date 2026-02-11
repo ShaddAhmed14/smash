@@ -1,17 +1,25 @@
 import os
 import glob
+import random
 import subprocess
 import librosa
 import json
 import shutil
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime
+import logging
+
+current_session = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+logging.basicConfig(level=logging.INFO, format='%(funcName)s:%(lineno)d - %(message)s', filename=f'{current_session}_smash_setup.log')
 
 from envisionhgdetector import GestureDetector
 from envisionhgdetector import utils
 
 from transcript_analysis import setup_transcript_analysis
 from spectogram_analysis import setup_spectogram_analysis
+from spacy_analysis import setup_spacy_analysis
+from semantic_network_analysis import setup_semantic_network_analysis
 
 '''
 def batch_create_wav(video_folder_path, output_path):
@@ -24,9 +32,8 @@ def batch_create_wav(video_folder_path, output_path):
         create_wav(video, audio_save_path)
 '''
 def create_wav(video_path, audio_path):
-    print("Extracting Audio from", video_path)
+    logging.info(f"Extracting audio from {video_path}")
     if os.path.exists(audio_path):
-        print(f"Audio file {audio_path} already exists. Skipping extraction.")
         return
     command = [
         'ffmpeg',
@@ -48,11 +55,10 @@ def batch_create_transcript(video_folder_path, output_path):
         create_transcript(audio_path, output_path)
 '''
 def create_transcript(audio_path, video_folder):
-    print("Generating Transcript from", audio_path)
+    logging.info(f"Generating Transcript from {audio_path}")
     default_path = audio_path.replace(".wav", ".srt")
     transcript_path = default_path.replace("audio", "transcript")
     if os.path.exists(transcript_path):
-        print(f"Transcript for {audio_path} already exists. Skipping transcription.")
         return
     
     command = [ 'python', 
@@ -87,10 +93,9 @@ def batch_create_spectograms(audio_folder_path, output_path):
 '''
 
 def create_spectogram(audio_path):
-    print("Generating Spectrogram from", audio_path)
+    logging.info(f"Generating Spectrogram from {audio_path}")
     output_path = audio_path.replace("audio.wav", "spectrogram.png")
     if os.path.exists(output_path):
-        print(f"Spectrogram for {audio_path} already exists. Skipping generation.")
         return
 
     y, sr = librosa.load(audio_path, sr=None)
@@ -103,10 +108,9 @@ def create_spectogram(audio_path):
     plt.close()
 
 def create_audio_features(audio_path):
-    print("Creating Audio Features from", audio_path)
+    logging.info(f"Creating Audio Features from {audio_path}")
     output_path = audio_path.replace("audio.wav", "audio_features.json")
     if os.path.exists(output_path):
-        print(f"Audio features for {audio_path} already exists. Skipping feature extraction.")
         return
     
     y, sr = librosa.load(audio_path, sr=None)
@@ -156,11 +160,10 @@ def batch_create_audio_features(audio_folder_path, output_path):
 '''
 
 def average_audio_features():
-    print("Creating Average Audio Features for all materials")
+    logging.info("Creating Average Audio Features for all materials")
     audio_features_list = glob.glob(os.path.join("/materials", "*", "*_audio_features.json")) 
     file_save_path = "/materials/average_audio_features.json"
-    if os.path.exists(file_save_path):
-        print(f"Average audio features file {file_save_path} already exists. Skipping creation.")
+    if os.path.exists(file_save_path): # if average audio features already exists, skip computation
         return
 
     titles = []
@@ -193,11 +196,11 @@ def rename_videos(folder_path):
         os.rename(video, os.path.join(folder_path, new_video_name))
 '''
 def create_audio_peaks(audio_path):
-    print("Creating Audio Peaks from", audio_path)
+    logging.info(f"Creating Audio Peaks from {audio_path}")
     output_path = audio_path.replace("audio.wav", "peaks.json")
-    if os.path.exists(output_path):
-        print(f"Audio peaks for {audio_path} already exists. Skipping peak extraction.")
-        return
+    if os.path.exists(output_path): # only create if it doesn't already exist
+        return 
+    
     y, sr = librosa.load(audio_path, sr=None)
     block_size = len(y) // 1000
     peaks = [float(np.max(np.abs(y[i*block_size:(i+1)*block_size]))) for i in range(1000)]
@@ -207,16 +210,17 @@ def create_audio_peaks(audio_path):
             "peaks": peaks
         }, f)
 
+
 def fix_codex(video_folder, codex_fixed_folder):
     os.makedirs(codex_fixed_folder, exist_ok=True)
     video_list = glob.glob(os.path.join(video_folder, "*.mp4"))
     for video in video_list:
         output_path = os.path.join(codex_fixed_folder, os.path.basename(video))
         if os.path.exists(output_path):
-            print(f"Codex fixed video for {video} already exists. Skipping.")
+            logging.info(f"Codex fixed video for {video} already exists. Skipping.")
             continue
         
-        print("Fixing Codex of", video)
+        logging.info("Fixing Codex of", video)
         command = [
             "ffmpeg",
             "-y",  # Overwrite output file if it exists
@@ -230,16 +234,16 @@ def fix_codex(video_folder, codex_fixed_folder):
         subprocess.run(command, check=True)
 
 def create_thumbnail(video_folder, thumbnail_folder):
-    print("Creating Thumbnails for videos in", video_folder)
+    logging.info(f"Creating Thumbnails for videos in {video_folder}")
     os.makedirs(thumbnail_folder, exist_ok=True)
     video_paths = glob.glob(os.path.join(video_folder, "*.mp4")) + glob.glob(os.path.join(video_folder,"*", "*.mp4"))
 
     for video in video_paths:
         base_video_name, ext = os.path.splitext(os.path.basename(video))
         thumbnail_path = os.path.join(thumbnail_folder, f"{base_video_name}_thumbnail.jpg")
-        if os.path.exists(thumbnail_path):
-            print(f"Thumbnail for {video} already exists. Skipping.")
+        if os.path.exists(thumbnail_path): # skip if thumbnail already exists
             continue
+        
         command = [
             'ffmpeg',
             '-y', '-i', video,
@@ -255,28 +259,27 @@ def run_envisionhgdetector():
     retracked_folder = os.path.join(envisionhgdetector_output_folder, "retracked")
     analysis_folder = os.path.join(envisionhgdetector_output_folder, "analysis")
 
-    print("Running EnvisionHGDetector on dataset...")
+    logging.info("Running EnvisionHGDetector on dataset...")
     detector = GestureDetector(motion_threshold=0.75, gesture_threshold=0.75, min_gap_s=0.0, min_length_s=0.25, model_type="lightgbm")
     detector.process_folder(input_folder="/dataset", output_folder=envisionhgdetector_output_folder)
 
-    print("Analyzing gesture segments...")
+    logging.info("Analyzing gesture segments...")
     utils.cut_video_by_segments(envisionhgdetector_output_folder)
     if os.path.exists(gesture_segments_folder):
          segment_files = [f for f in os.listdir(gesture_segments_folder) if f.endswith('.mp4')]
-         print(f"Found {len(segment_files)} segment files")
+         logging.info(f"Found {len(segment_files)} segment files")
     else:
-         print("Gesture segments folder not found!")
+         logging.info("Gesture segments folder not found!")
 
-    print("Retracking gestures...")
+    logging.info("Retracking gestures...")
     detector.retrack_gestures(input_folder=gesture_segments_folder, output_folder=retracked_folder)
-    print("Analyzing DTW kinematics...")
-    # tracking_results["landmarks_folder"],
+    logging.info("Analyzing DTW kinematics...")
     detector.analyze_dtw_kinematics(output_folder=analysis_folder, landmarks_folder=retracked_folder)
 
     shutil.copy2(os.path.join(analysis_folder, "gesture_visualization.csv"), "/materials/gesture_visualization.csv")
     shutil.copy2(os.path.join(analysis_folder, "kinematic_features.csv"), "/materials/kinematic_features.csv")
 
-    print("Copying gesture segments to materials folder...")
+    logging.info("Copying gesture segments to materials folder...")
     video_list = glob.glob(os.path.join("/dataset", "*.mp4")) # get all video paths
     for video_path in video_list:
         base_video_name, ext = os.path.splitext(os.path.basename(video_path))
@@ -292,16 +295,56 @@ def run_envisionhgdetector():
         fix_codex(gesture_segments_temp, gesture_segments)
         shutil.rmtree(gesture_segments_temp)  # remove temp folder to save space
             
+def get_video_duration(video_path):
+    result = subprocess.run(
+        ['ffprobe', '-v', 'quiet', '-print_format', 'json', '-show_format', video_path],
+        capture_output=True,
+        text=True
+    )
+    data = json.loads(result.stdout)
+    result = float(data['format']['duration']) // 60 # return duration in minutes
+    return result
+
+def generate_metadata():
+    topics = ["AI", "ENV", "HEALTH", "EDU", "TECH"] # placeholder topics
+    genders = ["Male", "Female"] # placeholder genders
+    languages = ["English", "Spanish", "French", "German"] # placeholder languages
+    years = [2018, 2019, 2020, 2021, 2022] # placeholder years
+
+    metadata = []
+    video_folder_list = glob.glob(f"/maskbench_output/renderings/*") # get video folder names
+    for video_folder in video_folder_list:
+        base_video_name = os.path.basename(video_folder)
+        video_id, temp = base_video_name.split("._")
+        video_name, speaker_name = temp.split("___")
+        video_path = os.path.join("/materials", base_video_name, f"{base_video_name}_Original.mp4")
+        duration = get_video_duration(video_path)
+        
+        metadata.append({
+            "video_id": video_id,
+            "video_name": video_name.replace("_", " "),
+            "speaker_name": speaker_name.replace("_", " "),
+            "duration": duration,
+            "topics": random.sample(topics, 2), # placeholder, can be updated with actual topics if needed
+            "speaker_gender": random.choice(genders), # placeholder, can be updated with actual
+            "language": random.choice(languages), # placeholder, can be updated with actual language if needed
+            "year": random.choice(years) # placeholder, can be updated with actual year if needed
+        })
+    with open("/materials/metadata.json", 'w') as f:
+        json.dump(metadata, f, indent=4)
+# 1578._The_disarming_case_to_act_right_now_on_climate_change___Greta_Thunberg
+
+        # {"video_id": "1578", "video_name": "The disarming case to act right now on climate change", "speaker_name": "Greta Thunberg", "duration":6, "topics": ["AI", "ENV"], "speaker_gender": "Female", "language": "English", "year": 2018 },
 
 def setup_materials():
     video_list = glob.glob(os.path.join("/dataset", "*.mp4")) # get all video paths
     if len(video_list) == 0:
         raise ValueError("No videos found in /dataset folder for material preparation.")
-    print(f"Found {len(video_list)} videos for material preparation.")
+    logging.info(f"Found {len(video_list)} videos for material preparation.")
     
     for video_path in video_list:
         base_video_name, ext = os.path.splitext(os.path.basename(video_path))
-        print(f"Processing video: {base_video_name}")
+        logging.info(f"Processing video: {base_video_name}")
         
         # copy original video to materials folder
         materials_video_folder = os.path.join("/materials", base_video_name)
@@ -309,30 +352,27 @@ def setup_materials():
         materials_video_path = os.path.join(materials_video_folder, f"{base_video_name}_Original.mp4")
         if not os.path.exists(materials_video_path):
             shutil.copy2(video_path, materials_video_path)
-        else:
-            print(f"Copied original video to {materials_video_path}")
+        
+        logging.info(f"Copied original video to {materials_video_path}")
         
         # copy maskbench videos to materials folder
         maskbench_video_output = os.path.join("/maskbench_output/renderings", base_video_name)
+        run_maskbench = True
         if not os.path.exists(maskbench_video_output): # if video has no maskbench output
-            raise ValueError(f"No Maskbench output found for video {base_video_name} in /maskbench_output/renderings/. Please ensure Maskbench has processed the video.")
-        maskbench_videos = glob.glob(os.path.join(maskbench_video_output, "*.mp4"))
-        
-        maskbench_folder = os.path.join(materials_video_folder, "maskbench")
-        os.makedirs(maskbench_folder, exist_ok=True)
-        for mb_video in maskbench_videos:
-            mb_video_name = os.path.basename(mb_video)
-            mb_destination_path = os.path.join(maskbench_folder, mb_video_name)
-            if not os.path.exists(mb_destination_path):
-                shutil.copy2(mb_video, mb_destination_path)
-            else:
-                print(f"Maskbench video {mb_video_name} already exists in {maskbench_folder}. Skipping copy.")
-        print(f"Copied Maskbench videos to {maskbench_folder}")
-
-        # fix codex of videos -- delete or replace videos to avoid extra storage
-        fix_codex(maskbench_folder, os.path.join(materials_video_folder, "processed"))
-        shutil.rmtree(maskbench_folder)  # remove original maskbench folder to save space
-        print(f"Fixed codex for Maskbench videos in {os.path.join(materials_video_folder, 'processed')}")
+            logging.info(f"No Maskbench output found for video {base_video_name}. Skipping Maskbench video copy.")
+            run_maskbench = False
+        if run_maskbench:
+            maskbench_videos = glob.glob(os.path.join(maskbench_video_output, "*.mp4"))
+            
+            maskbench_folder = os.path.join(materials_video_folder, "maskbench")
+            os.makedirs(maskbench_folder, exist_ok=True)
+            for mb_video in maskbench_videos:
+                mb_video_name = os.path.basename(mb_video)
+                mb_destination_path = os.path.join(maskbench_folder, mb_video_name)
+                if not os.path.exists(mb_destination_path): # skip if already copied
+                    shutil.copy2(mb_video, mb_destination_path)
+                
+            logging.info(f"Copied Maskbench videos to {maskbench_folder}")
 
         # create materials
         audio_path = materials_video_path.replace("Original.mp4", "audio.wav")
@@ -348,7 +388,10 @@ def setup_materials():
 
 # main execution
 os.makedirs("/materials", exist_ok=True)
-# setup_materials()
-# setup_transcript_analysis()
-# setup_spectogram_analysis()
+setup_materials()
+setup_transcript_analysis()
+setup_spectogram_analysis()
+# setup_spacy_analysis()
+setup_semantic_network_analysis()
 run_envisionhgdetector()
+generate_metadata()
