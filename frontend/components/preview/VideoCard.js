@@ -1,8 +1,9 @@
 import {memo} from 'react'
 import Link from 'next/link'
+import { API_ROUTES } from '../../lib/api'
 
 const VideoCard = memo(function VideoCard({video_info, handleClick, selectedVideos}) {
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_thumbnail/?video_name=" + video_info.video_id
+  const url = API_ROUTES.PREVIEW + "/fetch_thumbnail/?video_name=" + video_info.video_id
   return (
     <div className="flex flex-col bg-secondary border-primary border">
       <div className="relative">

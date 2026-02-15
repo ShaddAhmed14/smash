@@ -1,12 +1,13 @@
 import {memo, useState, useEffect} from 'react'
 import SemanticNetworkTemplate from '@/components/analytics/SemanticNetworkTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 export default memo(function SemanticNetworkPerTalk({}) {
     const [videoList, setVideoList] = useState([])
     const [selectedVideo, setSelectedVideo] = useState(null)
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + `/fetch_pertalk_list`
+    const url = API_ROUTES.ANALYTICS + `/fetch_pertalk_list`
     fetch(url)
     .then(response => {
     return response.json().then(fetchedData => {

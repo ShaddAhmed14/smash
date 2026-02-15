@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useMemo } from "react"
+import { API_ROUTES } from '../../lib/api'
 
 const Transcript = ({videoName, currentTime}) => {
   const transcriptRef = useRef(null);
@@ -21,7 +22,7 @@ const Transcript = ({videoName, currentTime}) => {
   }
   
   useEffect(() => {
-      const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName
+      const url = API_ROUTES.PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName
       fetch(url)
       .then(response => {
         if (!response.ok) {

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, memo, useMemo } from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const DataMap = memo(function DataMap({plot_name}) {
   const [data, setData] = useState(null)
@@ -21,7 +22,7 @@ const DataMap = memo(function DataMap({plot_name}) {
   }
 
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_data_map"
+    let url = API_ROUTES.ANALYSIS + "/fetch_data_map"
     fetch(url)
         .then(response => {
         return response.json().then(fetchedData => {

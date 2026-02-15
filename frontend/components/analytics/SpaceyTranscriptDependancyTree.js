@@ -1,10 +1,12 @@
 import { memo, useState } from "react"
+import { API_ROUTES } from '../../lib/api'
+
 export default memo(function SpaceyTranscriptDependancyTree({video_name, sentence_id}) {
     const [zoom, setZoom] = useState(1)
     const [offset, setOffset] = useState({x: 0, y: 0})
     const [dragging, setDragging] = useState(false)
     const [dragStart, setDragStart] = useState({x: 0, y: 0})
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + `/fetch_dependency_tree?video_name=${video_name}&sentence_id=${sentence_id}`
+    const url = API_ROUTES.ANALYTICS + `/fetch_dependency_tree?video_name=${video_name}&sentence_id=${sentence_id}`
 
     const handleWheel = (e) => {
         e.preventDefault()

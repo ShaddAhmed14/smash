@@ -1,126 +1,202 @@
-# SMASH - Synthesis and Multimodal Analytics System for Humanities
+# SMASH
 
-## Overview
+**Synthesis and Multimodal Analytics System for Humanities**
+
+An open-source platform for understanding non-verbal communication — body language, facial expressions, and speech prosody. SMASH takes audiovisual recordings as input and produces a summary of multimodal communication characteristics, integrating gesture detection, posture analysis, voice tone tracking, and semantic analysis into a single accessible platform for researchers without programming experience.
+
+Developed at the [Donders Institute for Brain, Cognition and Behaviour](https://www.ru.nl/donders), Radboud University, in partnership with [Hasso Plattner Institute](https://hpi.de). Funded by NWO.
+
+---
+
+## Modules
 
 ### Preview Module
+
+Upload and preview audiovisual recordings. Automatic transcription, waveform visualization, and multi-model pose comparison.
 
 ![smash_preview_gif](https://github.com/user-attachments/assets/bfb08a1d-25da-467a-bbb8-a210aca1b1a5)
 
 ### Analysis Module
 
+Cross-corpus visualizations for comparative analysis. Dynamic Time Warping, topic modeling, spectrogram embeddings, and DataMap overview.
+
 ![smash_analysis_gif](https://github.com/user-attachments/assets/891b9658-8ca9-4a4e-92b6-04b6baa14b82)
 
 ### Analytics Module
 
+Deep per-talk analysis with temporal sentiment tracking, SpaCy NLP, semantic network graphs, and kinematic gesture features.
+
 ![smash_analytics_gif](https://github.com/user-attachments/assets/9bd0d9e4-b32c-4209-824f-ed2044b2fc54)
 
-## Features
-- Comparison of Pose Estimators (YoloPose, MediapipePose, Openpose, [MaskAnyone](https://github.com/MaskAnyone/MaskAnyone)) using [Maskbench](https://github.com/maskbench/maskbench) 
-- Gesture Segmentation and DTW Analysis using [EnvisionHGDetector](https://github.com/WimPouw/envisionhgdetector/tree/main)
-- Sentiment Analysis using [ntlk SentinmentIntensityAnalyzer](https://www.nltk.org/howto/sentiment.html)
-- [Spacy Analysis](https://spacy.io/usage/visualizers/)
-- Topic Interdistance, Video Clustering and Data Map using [BERTopic](https://maartengr.github.io/BERTopic/index.html)
-- Audio Spectogram Clustering using [DinoV3](https://github.com/facebookresearch/dinov3)
-- Transcrip generation using [OpenAI Whisper](https://github.com/openai/whisper)
-- Semantic Network using [TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html) and [SBERT](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) and Co-Occurance Network
+---
 
-## 📦 Installation
+## Prerequisites
 
-Follow the instructions below to install and run experiments with SMASH:
+| Dependency | Version | Required for             |
+|------------|---------|--------------------------|
+| Node.js    | 18+     | Frontend                 |
+| Python     | 3.11+   | Backend                  |
+| FFmpeg     | any     | Audio extraction         |
+| Docker     | any     | Docker setup (optional)  |
 
-1. **Install Docker** and ensure the daemon is running.
-2. **Clone this repo**:
-   ```bash
-   git clone https://github.com/ShaddAhmed14/smash.git
-   ```
-3. **Switch to the git repository**
-    ```bash
-    cd smash
-    ```
-4. **Create the environment file**. This file is used to tell SMASH about your dataset, output and weights directory. Copy the .env file using:
-    ```bash
-    cp .env.dist .env
-    ```
-5. **Edit the .env file**. Open it using `vim .env` or `nano .env.`. Adjust the following variables:
-6. Setup Materials following 
-    * `MATERIALS_FOLDER:` This is where your materials are stored. For first time users, kindly follow [Setup ReadMe](/setup/readme.md) for details.
-    * `ENVISIONHGDETECTOR_OUTPUT:` This is where setup will store envisionhgdetector results for further analysis.
+---
 
-    If running Setup:
-    * `DATASET_FOLDER:` This folder contains your videos (.mp4). Kindly ensure you have more than 5 videos to allow clustering algorithms to work.
-    * `MASKBENCH_OUTPUT_FOLDER:` Store your maskbench results here.
-    * `HUGGINGFACE_API_KEY:` To use some models you need a HuggingFaceAPI key. You can get one from [here](https://huggingface.co/docs/hub/security-tokens).
+## Quick Start
 
-    In case of port conflicts:
-    * `FRONTEND_PORT:` If default frontend port is conflicting with other services, you can update the port here.
-    * `BACKEND_PORT:` If default backend port is conflicting with other services, you can update the port here.
-    * `NEXT_PUBLIC_BACKEND_URL:` By default SMASH runs on `localhost`. You can replace it with your server host name if needed.
+### Option A: Docker Compose
 
-7. **Build and run the SMASH Docker container**.
-    ```bash
-    docker compose build
-    ```
+```bash
+git clone https://github.com/ShaddAhmed14/smash.git
+cd smash
 
-    ```bash
-    docker compose up
-    ```
-8. By default you can access SMASH on `localhost:3000`. General Link is `hostname:FRONTEND_PORT`
+# Create and configure .env
+cp .env.dist .env
+# Edit .env — set MATERIALS_FOLDER and ENVISIONHGDETECTOR_OUTPUT paths
 
-# 💻 Development
-
-## Pull Requests & Contributions
-
-We welcome contributions of all kinds—bug fixes, new features, documentation improvements, or tests.
-
-Workflow:
-
-1.	Fork the repository and create a new branch from main.
-2.	Make changes following our coding style and commit with clear messages.
-3.	Push your branch and open a Pull Request (PR) against main.
-4.	In your PR description, explain the purpose, changes made, and any relevant issues (closes #123).
-5.	Wait for review and address any comments and update your branch as needed.
-
-
-
-## Commit Guideline
-We use the [Conventional Commits Specification v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/#summary) for writing commit messages. Refer to the website for instructions.
-
-### Commit Types
-
-We use the recommended commit types from the specification, namely:
-
-- `feat:` A code change that introduces a **new feature** to the codebase (this correlates with MINOR in Semantic Versioning)
-- `fix:` A code change that **patches a bug** in your codebase (this correlates with PATCH in Semantic Versioning)
-- `refactor:` A code change that **neither fixes a bug nor adds a feature**
-- `build:` Changes that **affect the build system** or external dependencies (example scopes: pip, npm)
-- `ci:` Changes to **CI configuration** files and scripts (examples: GitHub Actions)
-- `docs:` **Documentation only** changes
-- `perf:` A code change that **improves performance**
-- `test:` Adding missing **tests** or correcting existing tests
-
-### How should I voice the commit message?
-
-- `feat:` commits: use the imperative, present tense – eg. `feat: add button` not `feat: added button` nor `feat: adds button`
-- `fix:` commits: describe the bug that is being fixed – eg. `fix: button is broken` not `fix: repair broken button`
-
-### What if I introduce a breaking change?
-
-- Option 1): include an exclamation mark (`!`) after the commit type to draw attention to a breaking change
-```
-feat!: send an email to the customer when a product is shipped
-```
-- Option 2): include a breaking change footer
-```
-feat: allow provided config object to extend other configs
-
-BREAKING CHANGE: `extends` key in config file is now used for extending other config files
+docker compose up --build
 ```
 
-### What do I do if the commit conforms to more than one of the commit types?
+Frontend: `http://localhost:3070` | Backend: `http://localhost:1234`
 
-Go back and make multiple commits whenever possible. Part of the benefit of Conventional Commits is its ability to drive us to make more organized commits and PRs.
+### Option B: Local Development
 
+**Backend:**
 
-# ⚖️ License
-This project is licensed under the Mozilla Public License 2.0 (MPL 2.0). By using, modifying, or distributing this code, you agree to the terms of the MPL 2.0.
+```bash
+cd backend
+python -m venv venv
 
+# Activate virtual environment
+source venv/bin/activate        # Linux/Mac
+source venv/Scripts/activate    # Windows (Git Bash)
+
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+**Frontend:**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend: `http://localhost:3000` | Backend: `http://localhost:8000`
+
+> For local development, ensure `NEXT_PUBLIC_BACKEND_URL` in `frontend/.env.local` matches the backend port.
+
+---
+
+## Environment Variables
+
+Create a `.env` file from the template:
+
+```bash
+cp .env.dist .env
+```
+
+| Variable | Description | Required |
+| --- | --- | --- |
+| `MATERIALS_FOLDER` | Path to prepared materials directory | Yes |
+| `ENVISIONHGDETECTOR_OUTPUT` | Path to gesture detection output | Yes |
+| `DATASET_FOLDER` | Path to raw video dataset (setup only) | Setup |
+| `HUGGINGFACE_API_KEY` | HuggingFace token for spectrogram analysis | Setup |
+| `FRONTEND_PORT` | Frontend port (default: 3070) | No |
+| `BACKEND_PORT` | Backend port (default: 1234) | No |
+| `NEXT_PUBLIC_BACKEND_URL` | Backend URL for frontend API calls | No |
+
+---
+
+## Materials Folder Structure
+
+The `MATERIALS_FOLDER` path must point to a directory with this structure:
+
+```text
+materials/
+├── metadata.json
+├── video_distribution.json
+├── topic_interdistance.json
+├── temporal_sentiment_data.json
+├── datamap_data.json
+├── average_audio_features.json
+├── max_audio_features.json
+├── spectrogram_voronoi_data.json
+├── kinematic_features.csv
+├── gesture_visualization.csv
+├── word_cloud.png
+├── tfidf.json
+├── sbert.json
+│
+└── {video_name}/
+    ├── {video_name}_Original.mp4
+    ├── {video_name}_audio.wav
+    ├── {video_name}_transcript.srt
+    ├── {video_name}_audio_features.json
+    ├── {video_name}_peaks.json
+    ├── {video_name}_waveform.json
+    ├── {video_name}_spectrogram.png
+    ├── {video_name}_kinematic_features.csv
+    ├── thumbnails/
+    │   ├── {video_name}_Original_thumbnail.jpg
+    │   ├── {video_name}_YoloPose_thumbnail.jpg
+    │   └── ...
+    ├── processed/
+    │   ├── {video_name}_YoloPose.mp4
+    │   ├── {video_name}_MediaPipePose.mp4
+    │   └── ...
+    └── gesture_segments/
+        └── {video_name}_tracked.mp4
+```
+
+Use `setup/prepare_materials.py` to generate this structure from raw video files.
+
+---
+
+## Tech Stack
+
+**Frontend:** Next.js 15, React 19, Tailwind CSS v4, Plotly.js, Sigma.js, WaveSurfer.js
+
+**Backend:** FastAPI, Whisper, SpaCy, librosa, pandas
+
+**Processing:** EnvisionHGDetector, YoloPose, MediaPipe, OpenPose, Sentence-BERT, BERTopic, Dynamic Time Warping
+
+---
+
+## Project Structure
+
+```text
+smash/
+├── frontend/          # Next.js application
+│   ├── app/           # App router (layout, pages)
+│   ├── pages/         # Module pages (LandingPage, AnalyticsModule, etc.)
+│   └── components/    # React components per module
+├── backend/           # FastAPI server
+│   ├── main.py        # App entry point
+│   ├── config.py      # Centralized path configuration
+│   └── routes/        # API route handlers
+│       ├── preview.py
+│       ├── analysis.py
+│       └── analytics.py
+├── setup/             # Data preparation pipeline
+│   └── prepare_materials.py
+├── docs/              # GitHub Pages site
+└── docker-compose.yml
+```
+
+---
+
+## Team
+
+- **Babajide Owoyele** — Project Member (Radboud University / Hasso Plattner Institute)
+- **Gerard de Melo** — Project Member (Hasso Plattner Institute)
+- **Wim Pouw** — Lead Applicant (Radboud University)
+- **Shadd Ahmed** — Developer (Hasso Plattner Institute)
+
+Grant obtained tripartitely by Babajide Owoyele, Gerard de Melo, and Wim Pouw. Project duration: December 2024 – December 2025.
+
+---
+
+## License
+
+This project is developed at the Donders Institute for Brain, Cognition and Behaviour, Faculty of Social Sciences, Radboud University, Nijmegen.

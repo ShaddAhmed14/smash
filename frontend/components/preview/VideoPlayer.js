@@ -3,10 +3,11 @@ import VideoThumbnail from "./VideoThumbnail"
 import { useState, memo, useMemo} from "react"
 import { GrGallery } from "react-icons/gr"
 import Link from "next/link"
+import { API_ROUTES } from '../../lib/api'
 
 const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, updateTime}) {
   const [selectedModel, setSelectedModel] = useState("Original");
-  const url = useMemo(() => process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_video/" + "?video_name=" + videoName + "&model_name=" + selectedModel, [videoName, selectedModel]) 
+  const url = useMemo(() => API_ROUTES.PREVIEW + "/fetch_video/" + "?video_name=" + videoName + "&model_name=" + selectedModel, [videoName, selectedModel]) 
   const handleTimeUpdate = ((e) => {
     if (videoRef && videoRef.current) {
       updateTime(e.target.currentTime);

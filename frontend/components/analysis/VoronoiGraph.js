@@ -1,13 +1,14 @@
 'use client'
 import { useState, useEffect, memo, useMemo } from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
-  let spectrogram_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_spectrogram?video_name="
+  let spectrogram_url = API_ROUTES.ANALYSIS + "/fetch_spectrogram?video_name="
   const [data, setData] = useState(null)
   const [videos, setVideos] = useState([null, null])
   const [error, setError] = useState(null)
-  let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_audio_spectrogram_embeddings"
+  let url = API_ROUTES.ANALYSIS + "/fetch_audio_spectrogram_embeddings"
   const axis_layout = {showtickLabels: false, zeroline: false, showgrid: false, title:''}
   const layout={
     xaxis: axis_layout,

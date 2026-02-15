@@ -1,9 +1,10 @@
 'use client'
 import Image from "next/image"
 import { useState, useEffect, memo } from "react"
+import { API_ROUTES } from '../../lib/api'
 
 const VideoThumbnail = memo(function VideoThumbnail({videoName, selectedModel, setSelectedModel}) {
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_thumbnails/?video_name=" + videoName
+  const url = API_ROUTES.PREVIEW + "/fetch_thumbnails/?video_name=" + videoName
   const [images, setImages] = useState({})
   useEffect(() => {
     const fetchImages = async () => {

@@ -3,6 +3,7 @@ import { useState, useEffect, memo, useMemo } from "react"
 import VideoCard from "../components/preview/VideoCard"
 import NavBar from "../components/NavBar"
 import Loader from "@/components/Loader"
+import { API_ROUTES } from '../lib/api'
 
 const VideoLibrary = memo(function VideoLibrary() {
   const [videoMetadata, setVideoMetadata] = useState(null)
@@ -16,7 +17,7 @@ const VideoLibrary = memo(function VideoLibrary() {
   })
   
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_metadata"
+    let url = API_ROUTES.PREVIEW + "/fetch_metadata"
     fetch(url)
       .then(response => {
         return response.json().then(data => {

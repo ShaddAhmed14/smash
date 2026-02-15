@@ -1,6 +1,7 @@
 'use client'
 import {useEffect, useState, memo, useMemo} from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const MaxAudioFeatures = memo(function MaxAudioFeatures() {
     const [data, setData] = useState(null)
@@ -29,7 +30,7 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
     }
 
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_max_audio_features"
+        const url = API_ROUTES.ANALYSIS + "/fetch_max_audio_features"
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {

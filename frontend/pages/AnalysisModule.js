@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic'
 import NavBar from '../components/NavBar'
 import Loader from '../components/Loader'
 
-// const world_cloud_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_world_cloud"
 const AnalysisModule = memo(function AnalysisModule() {
   const [isLoading, setIsLoading] = useState(true)
   const [selectedPlot, setSelectedPlot] = useState(null)

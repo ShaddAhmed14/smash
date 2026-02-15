@@ -1,6 +1,7 @@
 'use client'
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const RadialGraph = memo(function RadialGraph({plot_name}) {
     const [data, setData] = useState(null)
@@ -21,7 +22,7 @@ const RadialGraph = memo(function RadialGraph({plot_name}) {
     }
 
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_average_audio_features"
+        const url = API_ROUTES.ANALYSIS + "/fetch_average_audio_features"
         fetch(url)
          .then(response => {
         return response.json().then(fetchedData => {

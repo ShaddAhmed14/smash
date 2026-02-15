@@ -1,6 +1,7 @@
 'use client'
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const Waveform = memo(function Waveform({videoName, currentTime}) {
     const [data, setData] = useState(null)
@@ -29,7 +30,7 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
     }
     }
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/audio_peaks?video_name=" + videoName
+        const url = API_ROUTES.PREVIEW + "/audio_peaks?video_name=" + videoName
         fetch(url)
         .then(response => {
         return response.json().then(fetchedData => {

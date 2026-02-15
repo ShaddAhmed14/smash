@@ -3,10 +3,11 @@
 import { useEffect, useState, memo, Suspense, useCallback } from "react"
 import {Grid} from 'react-window'
 import PlotTemplate from "../PlotTemplate"
+import { API_ROUTES } from '../../lib/api'
 
 const KinematicFeatures = memo(function KinematicFeatures() {
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + '/fetch_kinematic_features'
-  const gesture_segment_url = process.env.NEXT_PUBLIC_BACKEND_URL  + process.env.NEXT_PUBLIC_ANALYTICS + "/fetch_gesture_segment/?video_name="
+  const url = API_ROUTES.ANALYTICS + '/fetch_kinematic_features'
+  const gesture_segment_url = API_ROUTES.ANALYTICS + "/fetch_gesture_segment/?video_name="
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [videos, setVideos] = useState([null, null])
