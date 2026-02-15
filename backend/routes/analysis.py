@@ -48,7 +48,7 @@ def fetch_data_map():
 
 @router.get("/fetch_spectrogram")
 def fetch_spectrogram(video_name: str):
-    file_path = os.path.join("/materials", video_name.replace("_spectrogram.png", ""), video_name)
+    file_path = os.path.join("/materials", video_name, f"{video_name}_spectrogram.png")
     if not os.path.exists(file_path):
         file_path = os.path.join("/materials/spectrograms", video_name)
         if not os.path.exists(file_path):
