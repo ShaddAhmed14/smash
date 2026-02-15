@@ -1,6 +1,7 @@
-import VideoLibrary from "@/pages/VideoLibraryPage"
-const page = () => {
-  return <VideoLibrary />
-}
+import PreviewSelectionPage from "@/pages/PreviewSelectionPage";
 
-export default page
+const page = () => {
+  return <PreviewSelectionPage />;
+};
+
+export default page;

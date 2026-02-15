@@ -41,9 +41,9 @@ const PreviewPillar = memo(function PreviewPillar({video_name}) {
           <Transcript videoName={video_name} currentTime={currentTime} />
         </div>
       </div>
-      {/* {/* <div className={`${border_css} my-4`}>
+      {/* <div className={`${border_css} my-4`}>
         <MetadataGraph />
-      </div> */} */}
+      </div> */}
     </div>
     <Footer />  
   </>

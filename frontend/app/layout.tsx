@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
-import {ThemeProvider} from 'next-themes' // helps with handling dark mode
+import { ThemeProvider } from 'next-themes';
+import CarbonThemeProvider from '@/components/CarbonThemeProvider';
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -32,7 +33,9 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <ThemeProvider attribute="class" defaultTheme="system">
-          {children}
+          <CarbonThemeProvider>
+            {children}
+          </CarbonThemeProvider>
         </ThemeProvider>
       </body>
     </html>

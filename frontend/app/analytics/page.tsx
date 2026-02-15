@@ -1,10 +1,7 @@
-import AnalyticsPillar from '@/pages/AnalyticsPillar'
+import AnalyticsPage from '@/pages/AnalyticsPage';
 
 const page = () => {
+  return <AnalyticsPage />;
+};
 
-  return (
-    <AnalyticsPillar />
-  )
-}
-
-export default page
+export default page;

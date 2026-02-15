@@ -1,5 +1,23 @@
-fastapi
-uvicorn
-dotenv
-librosa
-pandas
+# Web Framework
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# Environment Configuration
+python-dotenv==1.0.1
+
+# Audio Processing
+librosa==0.10.2.post1
+soundfile==0.12.1
+
+# Data Processing
+pandas==2.2.3
+numpy==1.26.4
+
+# Optional: For video processing (if uncommented in utils.py)
+# opencv-python==4.10.0.84
+# whisper==1.1.10
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.28.1

@@ -1,7 +1,21 @@
+/* Carbon Design System Imports */
+@use '@carbon/react/scss/fonts';
+@use '@carbon/react/scss/theme' with (
+  $fallback: var(--cds-theme)
+);
+@use '@carbon/react/scss/themes';
+@use '@carbon/react';
+@use '@carbon/charts-react/styles.css';
+
+/* Tailwind CSS */
 @import "tailwindcss";
 @tailwind utilities;
 
 :root {
+  /* Carbon Design System theme - White theme (light mode) */
+  --cds-theme: white;
+
+  /* Custom color palette - aligned with Carbon tokens */
   --bg-primary: #ffffff;
   --bg-secondary: #f4f4f4;
 
@@ -15,6 +29,7 @@
   --border-primary: #e0e0e0;
   --border-secondary: #8d8d8d;
 
+  /* Module-specific colors */
   --custom-preview : #F5C4CF;
   --custom-preview-dark : #E05A7A;
   --custom-analysis : #A8EDED;
@@ -22,6 +37,7 @@
   --custom-analytics : #FCE0A8;
   --custom-analytics-dark : #FFC166;
 
+  /* Gradients */
   --custom-gradient-red: linear-gradient(135deg, var(--custom-preview) 0%, var(--custom-preview-dark) 100%);
   --custom-gradient-blue: linear-gradient(135deg, var(--custom-analysis) 0%, var(--custom-analysis-dark) 100%);
   --custom-gradient-green: linear-gradient(135deg, var(--custom-analytics) 0%, var(--custom-analytics-dark) 100%);
@@ -29,7 +45,11 @@
   --custom-gradient-logo: linear-gradient(90deg, #1f2937 0%, #374151 100%,);
 }
 
-.dark {
+.dark,
+[data-carbon-theme="g100"] {
+  /* Carbon Design System theme - Gray 100 (dark mode) */
+  --cds-theme: g100;
+
   --bg-primary: #161616;
   --bg-secondary: #262626;
 

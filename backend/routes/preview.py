@@ -1,17 +1,26 @@
 import glob
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 import os
 import json
 import glob
 import base64
+from dotenv import load_dotenv
+from utils import validate_video_name, validate_model_name, validate_file_exists
+
+load_dotenv()
 
 router = APIRouter(prefix="/preview", tags=["preview"])
 
 VIDEO_TYPES = ["Original", "YoloPose", "MediaPipePose", "OpenPose", "MaskAnyoneAPI-MediaPipe", "MaskAnyoneAPI-OpenPose"]
 
+# Get materials folder from environment variable, fallback to relative path
+_default_materials = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "materials"))
+MATERIALS_FOLDER = os.getenv("MATERIALS_FOLDER") or _default_materials
+print(f"[Preview] Using materials folder: {MATERIALS_FOLDER}")
+
 def find_video_name(video_id: str):
-    video_folders = glob.glob(os.path.join("/materials", "*"))
+    video_folders = glob.glob(os.path.join(MATERIALS_FOLDER, "*"))
     for folder in video_folders:
         if os.path.basename(folder).startswith(video_id):
             return os.path.basename(folder)
@@ -26,7 +35,7 @@ def fetch_models():
 
 @router.get("/fetch_metadata_graph")
 async def fetch_metadata_graph():
-    file_path = os.path.join("/materials", "metadata.json")
+    file_path = os.path.join(MATERIALS_FOLDER, "metadata.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Metadata Graph File not Found" }, status_code=404)
     with open(file_path) as f:
@@ -47,54 +56,105 @@ async def fetch_metadata_graph():
 
 @router.get("/fetch_audio")
 async def stream_audio(video_name: str):
-    video_name = find_video_name(video_name)
-    file_path = os.path.join("/materials", video_name,  f"{video_name}_audio.wav")
-    
-    def iterfile(file_path: str):
-        with open(file_path, mode="rb") as file_like:
-            yield from file_like
-    
-    return StreamingResponse(
-        iterfile(file_path),
-        media_type="audio/mpeg",
-        headers={"Accept-Ranges": "bytes"}
-    )
+    try:
+        # Validate input
+        video_name = validate_video_name(video_name)
+        video_name = find_video_name(video_name)
+
+        if not video_name:
+            raise HTTPException(status_code=404, detail="Video not found")
+
+        file_path = os.path.join(MATERIALS_FOLDER, video_name,  f"{video_name}_audio.wav")
+
+        # Validate file exists
+        validate_file_exists(file_path)
+
+        def iterfile(file_path: str):
+            with open(file_path, mode="rb") as file_like:
+                yield from file_like
+
+        return StreamingResponse(
+            iterfile(file_path),
+            media_type="audio/wav",
+            headers={"Accept-Ranges": "bytes"}
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/fetch_thumbnails/")
-async def fetch_thumbnails(video_name: str, selectedModel: str): # thumbnails for all models except selected one
-    video_name = find_video_name(video_name)
-    file_path = os.path.join("/materials", video_name, "thumbnails")
-    thumbnails = {}
-    for model_name in VIDEO_TYPES:
-        thumbnails[model_name] = os.path.join(file_path, f"{video_name}_{model_name}_thumbnail.jpg")
+async def fetch_thumbnails(video_name: str, selectedModel: str):
+    """Get thumbnails for all models except the selected one"""
+    try:
+        # Validate inputs
+        video_name = validate_video_name(video_name)
+        selectedModel = validate_model_name(selectedModel)
 
-    for name, path in thumbnails.items():
-        if os.path.exists(path):
-            with open(path, "rb") as img_file:
-                image_extension = path.split('.')[-1].lower()
-                mime_type = f"image/{image_extension}" if image_extension in ["jpeg", "jpg", "png", "gif"] else "image/jpeg"
-                b64_string = base64.b64encode(img_file.read()).decode('utf-8')
-                thumbnails[name] = f"data:{mime_type};base64,{b64_string}"
-        else:
-            thumbnails[name] = None
-    
-    del thumbnails[selectedModel] # send all thumbnails except selected one
-    return JSONResponse(content=thumbnails)
+        video_name = find_video_name(video_name)
+        if not video_name:
+            raise HTTPException(status_code=404, detail="Video not found")
+
+        file_path = os.path.join(MATERIALS_FOLDER, video_name, "thumbnails")
+        thumbnails = {}
+
+        for model_name in VIDEO_TYPES:
+            thumbnails[model_name] = os.path.join(file_path, f"{video_name}_{model_name}_thumbnail.jpg")
+
+        for name, path in thumbnails.items():
+            if os.path.exists(path):
+                with open(path, "rb") as img_file:
+                    image_extension = path.split('.')[-1].lower()
+                    mime_type = f"image/{image_extension}" if image_extension in ["jpeg", "jpg", "png", "gif"] else "image/jpeg"
+                    b64_string = base64.b64encode(img_file.read()).decode('utf-8')
+                    thumbnails[name] = f"data:{mime_type};base64,{b64_string}"
+            else:
+                thumbnails[name] = None
+
+        del thumbnails[selectedModel]  # send all thumbnails except selected one
+        return JSONResponse(content=thumbnails)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError:
+        # If selectedModel not in thumbnails, just return all
+        return JSONResponse(content=thumbnails)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/fetch_thumbnail/")
-async def fetch_thumbnails(video_name: str): # thumbnails for all models except selected one
-    video_name = find_video_name(video_name)
-    file_path = os.path.join("/materials", video_name, "thumbnails")
-    img_file = os.path.join(file_path, f"{video_name}_Original_thumbnail.jpg")
-    return FileResponse(img_file, media_type='image/jpeg', filename=f"{video_name}_Original_thumbnail.jpg")
+async def fetch_thumbnail(video_name: str):
+    """Get the original thumbnail for a video"""
+    try:
+        # Validate input
+        video_name = validate_video_name(video_name)
+        video_name = find_video_name(video_name)
+
+        if not video_name:
+            raise HTTPException(status_code=404, detail="Video not found")
+
+        file_path = os.path.join(MATERIALS_FOLDER, video_name, "thumbnails")
+        img_file = os.path.join(file_path, f"{video_name}_Original_thumbnail.jpg")
+
+        # Validate file exists
+        validate_file_exists(img_file)
+
+        return FileResponse(img_file, media_type='image/jpeg', filename=f"{video_name}_Original_thumbnail.jpg")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/fetch_video/")
 async def fetch_video(video_name: str, model_name: str, request: Request):
     video_name = find_video_name(video_name)
     if model_name == "Original":
-        file_path = os.path.join("/materials", video_name, f"{video_name}_{model_name}.mp4")
+        file_path = os.path.join(MATERIALS_FOLDER, video_name, f"{video_name}_{model_name}.mp4")
     else:
-        file_path = os.path.join("/materials", video_name, "processed", f"{video_name}_{model_name}.mp4")
+        file_path = os.path.join(MATERIALS_FOLDER, video_name, "processed", f"{video_name}_{model_name}.mp4")
 
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Video file not found"}, status_code=404)
@@ -137,7 +197,7 @@ async def fetch_video(video_name: str, model_name: str, request: Request):
 @router.get("/audio_peaks")
 async def fetch_audio_peaks(video_name: str):
     video_name = find_video_name(video_name)
-    file_path = os.path.join("/materials", video_name,  f"{video_name}_peaks.json")
+    file_path = os.path.join(MATERIALS_FOLDER, video_name,  f"{video_name}_peaks.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Audio Peaks file not found"}, status_code=404)
     
@@ -146,7 +206,7 @@ async def fetch_audio_peaks(video_name: str):
 @router.get("/fetch_metadata")
 async def fetch_metadata():
     # return JSONResponse(content={"message": "Metadata endpoint working"})
-    file_path = os.path.join("/materials", "metadata.json")
+    file_path = os.path.join(MATERIALS_FOLDER, "metadata.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Metadata File not Found" }, status_code=404)
     with open(file_path, 'r') as f:
@@ -156,7 +216,7 @@ async def fetch_metadata():
 @router.get("/fetch_transcript/")
 async def fetch_transcript(video_name: str):
     video_name = find_video_name(video_name)
-    file_path = os.path.join("/materials", video_name, f"{video_name}_transcript.srt")
+    file_path = os.path.join(MATERIALS_FOLDER, video_name, f"{video_name}_transcript.srt")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Transcript file not found"}, status_code=404)
     
@@ -165,7 +225,7 @@ async def fetch_transcript(video_name: str):
 @router.get("/fetch_waveform/")
 async def fetch_waveform(video_name: str):
     video_name = find_video_name(video_name)
-    file_path = os.path.join("/materials", video_name,  f"{video_name}_waveform.json")
+    file_path = os.path.join(MATERIALS_FOLDER, video_name,  f"{video_name}_waveform.json")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Waveform file not found"}, status_code=404)
 

@@ -1,0 +1,44 @@
+[
+  {
+    "video_name": "TED_Talk_AI_Future",
+    "speaker_gender": "Female",
+    "language": "English",
+    "duration": 542,
+    "topics": ["AI", "Technology", "Future"]
+  },
+  {
+    "video_name": "Science_Climate_Change",
+    "speaker_gender": "Male",
+    "language": "English",
+    "duration": 385,
+    "topics": ["Science", "Climate", "Environment"]
+  },
+  {
+    "video_name": "Health_Mental_Wellness",
+    "speaker_gender": "Female",
+    "language": "English",
+    "duration": 623,
+    "topics": ["Health", "Psychology", "Wellness"]
+  },
+  {
+    "video_name": "Tech_Innovation_2024",
+    "speaker_gender": "Male",
+    "language": "English",
+    "duration": 456,
+    "topics": ["Technology", "Innovation", "Startups"]
+  },
+  {
+    "video_name": "Education_Future_Learning",
+    "speaker_gender": "Female",
+    "language": "English",
+    "duration": 512,
+    "topics": ["Education", "Learning", "Future"]
+  },
+  {
+    "video_name": "Society_Digital_Age",
+    "speaker_gender": "Male",
+    "language": "English",
+    "duration": 398,
+    "topics": ["Society", "Digital", "Culture"]
+  }
+]

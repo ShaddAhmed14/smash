@@ -1,10 +1,107 @@
-import os 
+import os
 import subprocess
 import json
 import librosa
 # import whisper
 import numpy as np
 import glob
+import re
+from pathlib import Path
+
+# ============================================================================
+# SECURITY: Input Validation Functions
+# ============================================================================
+
+def validate_video_name(video_name: str) -> str:
+    """
+    Validate video name to prevent path traversal attacks.
+
+    Args:
+        video_name: The video name to validate
+
+    Returns:
+        The validated video name
+
+    Raises:
+        ValueError: If the video name is invalid
+    """
+    if not video_name:
+        raise ValueError("Video name cannot be empty")
+
+    # Check for path traversal attempts
+    if ".." in video_name or "/" in video_name or "\\" in video_name:
+        raise ValueError("Invalid video name: path traversal detected")
+
+    # Only allow alphanumeric, underscore, hyphen, and dot
+    if not re.match(r'^[a-zA-Z0-9_\-\.]+$', video_name):
+        raise ValueError("Invalid video name: contains illegal characters")
+
+    # Limit length
+    if len(video_name) > 255:
+        raise ValueError("Video name too long")
+
+    return video_name
+
+
+def validate_model_name(model_name: str) -> str:
+    """
+    Validate model name against allowed models.
+
+    Args:
+        model_name: The model name to validate
+
+    Returns:
+        The validated model name
+
+    Raises:
+        ValueError: If the model name is invalid
+    """
+    allowed_models = [
+        "Original",
+        "YoloPose",
+        "MediaPipePose",
+        "OpenPose",
+        "MaskAnyoneAPI-MediaPipe",
+        "MaskAnyoneAPI-OpenPose"
+    ]
+
+    if model_name not in allowed_models:
+        raise ValueError(f"Invalid model name. Must be one of: {', '.join(allowed_models)}")
+
+    return model_name
+
+
+def validate_file_exists(file_path: str) -> str:
+    """
+    Validate that a file exists and is within the allowed directory.
+
+    Args:
+        file_path: The file path to validate
+
+    Returns:
+        The validated file path
+
+    Raises:
+        FileNotFoundError: If the file doesn't exist
+        ValueError: If the path is outside allowed directory
+    """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File not found: {os.path.basename(file_path)}")
+
+    # Ensure the path is within /materials
+    resolved_path = Path(file_path).resolve()
+    materials_path = Path("/materials").resolve()
+
+    try:
+        resolved_path.relative_to(materials_path)
+    except ValueError:
+        raise ValueError("File path outside allowed directory")
+
+    return file_path
+
+# ============================================================================
+# Material Setup and Processing Functions
+# ============================================================================
 
 def setup_materials(folder_path:str):
     video_names = [name for name in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, name))]
