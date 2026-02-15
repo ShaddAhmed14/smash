@@ -59,7 +59,7 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name})
                 y: data[i].temporal_sentiment || [],
                 type: 'scatter',
                 mode: 'lines',
-                name: data[i].title || `Video ${i+1}`,
+                name: data[i].title.split("/").pop().split("_transcript")[0] || `Video ${i+1}`,
                 marker: {
                     size: 6,
                 },

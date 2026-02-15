@@ -48,6 +48,7 @@ export default memo(function SpaceyTranscript() {
     }, []);
 
     useEffect(() => {
+        if (!selectedVideo) return;
         async function fetchTranscript() {
             const transcript_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + "/fetch_spacey?video_name=" + selectedVideo
             try {

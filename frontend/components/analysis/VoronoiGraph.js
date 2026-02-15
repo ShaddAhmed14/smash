@@ -95,10 +95,11 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
         4: 'rgba(0, 192, 192, 1)',
       }
 
+      let labels = data.filenames.map(filename => filename.split("_spectrogram")[0]) || []
       let dataPoints = {
         x: data.coords_2d.map(coord => coord[0]) || [],
         y: data.coords_2d.map(coord => coord[1]) || [],
-        text: data.filenames || [],
+        text: labels || [],
         customdata: data.labels || [],
         type: 'scatter',
         mode: 'markers',

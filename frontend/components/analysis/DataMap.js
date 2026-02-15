@@ -50,7 +50,7 @@ const DataMap = memo(function DataMap({plot_name}) {
         traces.push({
             x: topic.topic_docs.map(doc => doc[0]),
             y: topic.topic_docs.map(doc => doc[1]),
-            text: topic.label,
+            text: topic.label || [],
             type: 'scatter',
             mode: 'markers',
             marker: {size: 4, color: color},
@@ -79,18 +79,19 @@ const DataMap = memo(function DataMap({plot_name}) {
   const processedData = useMemo(() => {
       if (!data) return {}
       const colors = ['#8B5CF6', '#EC4899', '#EF4444', '#F59E0B', '#10B981', '#06B6D4', '#3B82F6', '#6366F1', '#A855F7', '#D946EF']
-      
+      let labels = data.titles.map(label => label.split("/").pop().split("_transcript")[0]) || []
+    
       let dataPoints = {
         x: data.reduced_embeddings.map(coord => coord[0]) || [],
         y: data.reduced_embeddings.map(coord => coord[1]) || [],
-        text: data.titles || [],
+        text: labels || [],
         type: 'scatter',
         mode: 'markers',
         marker: {
           color: 'lightgray',
           size: 3,
         },
-        hovertemplate: '%{text}<extra></extra>',
+        hovertemplate: 'Name: %{text}<extra></extra>',
       }
       const [all_traces, annotations] = getColoredCluster(data.topic_data, colors)
 

@@ -65,7 +65,7 @@ const AverageAudioFeatures = memo(function AverageAudioFeatures({plot_name}) {
                 color: pointsColor,
                 size: 5,
             },
-            hovertemplate: "Pitch: %{x}<br>Volume: %{y}<br>Tempo: %{z}<br>Title: %{text}<extra></extra>"
+            hovertemplate: "Pitch: %{x}<br>Volume: %{y}<br>Tempo: %{z}<br>Name: %{text}<extra></extra>"
         }
         return [returnData]
     }, [data])

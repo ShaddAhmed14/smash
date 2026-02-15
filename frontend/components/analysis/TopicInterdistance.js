@@ -63,7 +63,8 @@ const TopicInterdistance = memo(function TopicInterdistance({plot_name}) {
             y: data.map(item => item.y) || [],
             text: data.map(item => item.Name) || [],
             customdata: data.map(item => [
-                item.Topic, item["Top Words"], item["Associated Videos"]
+                item.Topic, item["Top Words"], 
+                item["Associated Videos"].split("<br>").map(video => video.split("/").pop().split("_transcript")[0]).join("<br>")
             ]) || [],
             type: 'scatter',
             mode: 'markers',
@@ -71,7 +72,7 @@ const TopicInterdistance = memo(function TopicInterdistance({plot_name}) {
                 color: pointsColor,
                 size: marker_sizes,
             },
-            hovertemplate: "X: %{x}<br>Y: %{y}<br>Topic Number | Name: %{customdata[0]} | text<br>Top Words: %{customdata[1]}<br>Top Associated Videos: %{customdata[2]}<extra></extra>"
+            hovertemplate: "X: %{x}<br>Y: %{y}<br>Topic Number: %{customdata[0]}<br>Name: %{text}<br>Top Words: %{customdata[1]}<br>Top Associated Videos: %{customdata[2]}<extra></extra>"
         }
         return [returnData]
     }, [data])

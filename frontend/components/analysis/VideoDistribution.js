@@ -50,11 +50,13 @@ const VideoDistribution = memo(function VideoDistribution({plot_name}) {
         if (!data) return {}
         const styles = getComputedStyle(document.documentElement)
         const pointsColor = styles.getPropertyValue('--points-color')
+        let text = data.map(item => item.title) || []
+        text = text.map(title => title.split("/").pop().split("_transcript")[0]) // remove _transcript suffix
 
         let returnData = {
             x: data.map(item => item.x) || [],
             y: data.map(item => item.y) || [],
-            text: data.map(item => item.title) || [],
+            text: text || [],
             customdata: data.map(item => item.topics) || [],
             type: 'scatter',
             mode: 'markers',
@@ -62,7 +64,7 @@ const VideoDistribution = memo(function VideoDistribution({plot_name}) {
                 color: pointsColor,
                 size: 6,
             },
-            hovertemplate: "X: %{x}<br>Y: %{y}<br>Video: %{text}<br>Topics: %{customdata}"
+            hovertemplate: "X: %{x}<br>Y: %{y}<br>Name: %{text}<br>Topics: %{customdata}"
         }
         return [returnData]
     }, [data])
