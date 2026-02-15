@@ -32,14 +32,13 @@ const Transcript = ({videoName, currentTime}) => {
       })
       .then(fetchedData => setData(fetchedData))
       .catch(err => {
-        console.log("Fetch error:", err);
+        console.error("Fetch error:", err);
         setError(err.message || err.toString());
       })
   }, [])
 
   const processedTranscript = useMemo(() => {
     if (!data) return [];
-    console.log("Processing transcript data:", data);
     const segments = data.trim().split('\n\n');
     return segments.map(segment => {
       const lines = segment.split('\n');

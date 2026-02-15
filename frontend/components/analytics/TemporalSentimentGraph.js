@@ -44,7 +44,7 @@ const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name})
         setData(fetchedData)
     })
     .catch(err => {
-        console.log("Fetch error:", err);
+        console.error("Fetch error:", err);
         setError(err.message || err.toString());
       })
     }, [])

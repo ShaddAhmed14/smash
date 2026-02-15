@@ -182,7 +182,7 @@ export default memo(function SemanticNetworkTemplate({type}) {
         setData(fetchedData)
     })
     .catch(err => {
-        console.log("Fetch error:", err);
+        console.error("Fetch error:", err);
         setError(err.message || err.toString());
       })
     }, [url])

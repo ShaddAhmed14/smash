@@ -25,7 +25,7 @@ const KinematicFeatures = memo(function KinematicFeatures() {
           setData({"gesture_ids": fetchedData.gesture_ids, "features": fetchedData.features, "jitter_values": fetchedData.jitter_values})
       })
       .catch(err => {
-        console.log("Fetch error:", err);
+        console.error("Fetch error:", err);
         setError(err.message || err.toString());
       })
   }, [])

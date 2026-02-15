@@ -28,7 +28,6 @@ const VideoLibrary = memo(function VideoLibrary() {
       })
       .then(data => {
         setVideoMetadata({...data})
-        console.log("Fetched video metadata:", data);
       })
       .catch(error => {
         console.error("Error fetching metadata:", error);

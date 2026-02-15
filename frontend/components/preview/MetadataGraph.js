@@ -21,7 +21,7 @@ const MetadataGraph = memo(function MetadataGraph() {
       .then(data => {
         setVideoMetadata(data)})
       .catch(err => {
-        console.log("Fetch error:", err);
+        console.error("Fetch error:", err);
         setError(err.message || err.toString());
       })
   }, [])

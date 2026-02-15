@@ -5,7 +5,6 @@ import { GrGallery } from "react-icons/gr"
 import Link from "next/link"
 
 const VideoPlayer = memo(function VideoPlayer({videoName, videoRef, updateTime}) {
-  console.log("VideoPlayer render:", videoName)
   const [selectedModel, setSelectedModel] = useState("Original");
   const url = useMemo(() => process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_video/" + "?video_name=" + videoName + "&model_name=" + selectedModel, [videoName, selectedModel]) 
   const handleTimeUpdate = ((e) => {

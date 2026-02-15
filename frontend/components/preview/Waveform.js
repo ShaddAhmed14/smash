@@ -41,7 +41,7 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
       })
         .then(fetchedData => setData(fetchedData))
         .catch(err => {
-        console.log("Fetch error:", err);
+        console.error("Fetch error:", err);
         setError(err.message || err.toString());
       })
     }, [])
@@ -52,7 +52,6 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
             setError("No peaks data available")
             return {}
         }
-        console.log("Processing data for waveform:", data)
         const peaks = data.peaks
         const currentIndex = (currentTime / data.duration) * peaks.length
 

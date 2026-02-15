@@ -49,7 +49,7 @@ const DTW = memo(function DTW({plot_name}) {
         setDtwData(graph_data)
       })
       .catch(err => {
-        console.log("Fetch error:", err);
+        console.error("Fetch error:", err);
         setError(err.message || err.toString());
       })
 
