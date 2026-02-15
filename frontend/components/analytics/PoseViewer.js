@@ -105,7 +105,7 @@ const PoseViewer = memo(function PoseViewer() {
         {/* Controls */}
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[280px]">
-            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
+            <label className="block carbon-label-01 text-[color:var(--text-tertiary)] mb-1 uppercase tracking-wide">
               Video
             </label>
             <input
@@ -113,16 +113,14 @@ const PoseViewer = memo(function PoseViewer() {
               placeholder="Search videos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-9 px-3 text-sm border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-                         focus:outline-none focus:border-blue-500"
+              className="w-full h-8 px-3 carbon-body-01 border border-[color:var(--border-secondary)]
+                         bg-[color:var(--bg-primary)] text-[color:var(--text-primary)]
+                         focus:outline-none focus:border-[color:var(--button-primary)]"
             />
             <select
               value={selectedVideo}
               onChange={(e) => setSelectedVideo(e.target.value)}
-              className="w-full h-9 px-3 mt-1 text-sm border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-                         focus:outline-none focus:border-blue-500"
+              className="filter-select w-full mt-1"
             >
               <option value="">Select a video</option>
               {filteredVideos.slice(0, 50).map((video, idx) => (
@@ -135,10 +133,10 @@ const PoseViewer = memo(function PoseViewer() {
           <button
             onClick={processPose}
             disabled={!selectedVideo || processing}
-            className={`h-9 px-4 text-sm font-medium
+            className={`h-10 px-4 carbon-body-01 font-medium border cursor-pointer
               ${!selectedVideo || processing
-                ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
+                ? 'bg-[color:var(--bg-tertiary)] text-[color:var(--text-tertiary)] border-[color:var(--border-primary)] cursor-not-allowed'
+                : 'bg-[color:var(--button-primary)] hover:bg-[color:var(--button-primary-hover)] text-white border-[color:var(--button-primary)]'
               }`}
           >
             {processing ? 'Processing...' : 'Run Estimation'}
@@ -148,14 +146,14 @@ const PoseViewer = memo(function PoseViewer() {
         {/* Loading */}
         {(loading || processing) && (
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-500 border-t-transparent"></div>
-            <span className="ml-2 text-sm text-gray-500">{processing ? 'Running pose estimation...' : 'Loading...'}</span>
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-[color:var(--button-primary)] border-t-transparent"></div>
+            <span className="ml-2 carbon-body-01 text-[color:var(--text-secondary)]">{processing ? 'Running pose estimation...' : 'Loading...'}</span>
           </div>
         )}
 
         {/* Error */}
         {error && (
-          <div className="p-3 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 text-sm">
+          <div className="p-3 bg-[color:var(--bg-secondary)] border-l-4 border-[color:var(--custom-preview-dark)] carbon-body-01 text-[color:var(--text-primary)]">
             {error}
           </div>
         )}
@@ -165,7 +163,7 @@ const PoseViewer = memo(function PoseViewer() {
           <div className="space-y-4">
             {/* Image Viewer */}
             {samples.length > 0 && (
-              <div className="border border-gray-200 dark:border-gray-700 bg-gray-900">
+              <div className="border border-[color:var(--border-primary)] bg-[color:var(--bg-inverse)]">
                 {selectedSample && (
                   <img
                     src={`${API_URL}${selectedSample.url}`}
@@ -174,14 +172,14 @@ const PoseViewer = memo(function PoseViewer() {
                   />
                 )}
                 {/* Thumbnails */}
-                <div className="flex gap-1 p-2 bg-gray-800 overflow-x-auto">
+                <div className="flex gap-1 p-2 bg-[color:var(--bg-tertiary)] overflow-x-auto">
                   {samples.map((sample, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedSample(sample)}
-                      className={`flex-shrink-0 w-16 h-10 overflow-hidden border-2
+                      className={`flex-shrink-0 w-16 h-10 overflow-hidden border-2 cursor-pointer
                         ${selectedSample?.filename === sample.filename
-                          ? 'border-blue-500'
+                          ? 'border-[color:var(--button-primary)]'
                           : 'border-transparent opacity-60 hover:opacity-100'
                         }`}
                     >
@@ -197,35 +195,35 @@ const PoseViewer = memo(function PoseViewer() {
             )}
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-4 gap-px bg-gray-200 dark:bg-gray-700 border border-gray-200 dark:border-gray-700">
-              <div className="bg-white dark:bg-gray-800 p-3 text-center">
-                <div className="text-xl font-light text-gray-900 dark:text-gray-100">{stats.totalFrames}</div>
-                <div className="text-xs text-gray-500 uppercase">Frames</div>
+            <div className="grid grid-cols-4 gap-px bg-[color:var(--border-primary)] border border-[color:var(--border-primary)]">
+              <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+                <div className="carbon-heading-03 font-light text-[color:var(--text-primary)]">{stats.totalFrames}</div>
+                <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Frames</div>
               </div>
-              <div className="bg-white dark:bg-gray-800 p-3 text-center">
-                <div className="text-xl font-light text-gray-900 dark:text-gray-100">{stats.avgPersons}</div>
-                <div className="text-xs text-gray-500 uppercase">Avg</div>
+              <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+                <div className="carbon-heading-03 font-light text-[color:var(--text-primary)]">{stats.avgPersons}</div>
+                <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Avg</div>
               </div>
-              <div className="bg-white dark:bg-gray-800 p-3 text-center">
-                <div className="text-xl font-light text-gray-900 dark:text-gray-100">{stats.maxPersons}</div>
-                <div className="text-xs text-gray-500 uppercase">Max</div>
+              <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+                <div className="carbon-heading-03 font-light text-[color:var(--text-primary)]">{stats.maxPersons}</div>
+                <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Max</div>
               </div>
-              <div className="bg-white dark:bg-gray-800 p-3 text-center">
-                <div className="text-xl font-light text-gray-900 dark:text-gray-100">
+              <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+                <div className="carbon-heading-03 font-light text-[color:var(--text-primary)]">
                   {((stats.framesWithPeople / stats.totalFrames) * 100).toFixed(0)}%
                 </div>
-                <div className="text-xs text-gray-500 uppercase">Rate</div>
+                <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Rate</div>
               </div>
             </div>
 
             {/* Timeline */}
-            <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
-              <div className="text-xs text-gray-500 uppercase mb-2">Person Count Timeline</div>
+            <div className="border border-[color:var(--border-primary)] bg-[color:var(--bg-primary)] p-3">
+              <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase mb-2">Person Count Timeline</div>
               <div className="h-16 flex items-end gap-px">
                 {poseData.results.slice(0, 200).map((r, idx) => (
                   <div
                     key={idx}
-                    className="flex-1 bg-blue-500 hover:bg-blue-400"
+                    className="flex-1 bg-[color:var(--button-primary)] hover:bg-[color:var(--button-primary-hover)]"
                     style={{
                       height: `${Math.min(100, (r.num_persons / stats.maxPersons) * 100)}%`,
                       minHeight: r.num_persons > 0 ? '2px' : '0'
@@ -237,7 +235,7 @@ const PoseViewer = memo(function PoseViewer() {
             </div>
 
             {/* Metadata */}
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="carbon-label-01 text-[color:var(--text-tertiary)]">
               <span className="font-medium">FPS:</span> {poseData.fps?.toFixed(1)} |
               <span className="font-medium"> Model:</span> RTMPose Wholebody
             </div>
@@ -246,7 +244,7 @@ const PoseViewer = memo(function PoseViewer() {
 
         {/* Empty */}
         {!loading && !processing && !error && !selectedVideo && (
-          <div className="text-center py-12 text-gray-500 text-sm">
+          <div className="text-center py-12 carbon-body-01 text-[color:var(--text-tertiary)]">
             Select a video to view pose estimation results
           </div>
         )}

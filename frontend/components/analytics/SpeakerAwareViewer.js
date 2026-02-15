@@ -46,15 +46,15 @@ const SpeakerAwareViewer = memo(function SpeakerAwareViewer() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-500 border-t-transparent"></div>
-        <span className="ml-2 text-sm text-gray-500">Loading...</span>
+        <div className="animate-spin rounded-full h-6 w-6 border-2 border-[color:var(--button-primary)] border-t-transparent"></div>
+        <span className="ml-2 carbon-body-01 text-[color:var(--text-tertiary)]">Loading...</span>
       </div>
     )
   }
 
   if (!comparison) {
     return (
-      <div className="text-center py-12 text-gray-500 text-sm">
+      <div className="text-center py-12 text-[color:var(--text-tertiary)] carbon-body-01">
         No speaker-aware results available. Run speaker_aware_pose.py to generate data.
       </div>
     )
@@ -64,30 +64,30 @@ const SpeakerAwareViewer = memo(function SpeakerAwareViewer() {
     <div className="h-full overflow-y-auto">
       <div className="p-4 space-y-4">
         {/* Summary Stats */}
-        <div className="grid grid-cols-4 gap-px bg-gray-200 dark:bg-gray-700 border border-gray-200 dark:border-gray-700">
-          <div className="bg-white dark:bg-gray-800 p-3 text-center">
-            <div className="text-2xl font-light text-gray-900 dark:text-gray-100">
+        <div className="grid grid-cols-4 gap-px bg-[color:var(--border-primary)] border border-[color:var(--border-primary)]">
+          <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+            <div className="carbon-heading-04 font-light text-[color:var(--text-primary)]">
               {comparison.totals?.total_frames || 0}
             </div>
-            <div className="text-xs text-gray-500 uppercase">Total Frames</div>
+            <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Total Frames</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 p-3 text-center">
-            <div className="text-2xl font-light text-gray-900 dark:text-gray-100">
+          <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+            <div className="carbon-heading-04 font-light text-[color:var(--text-primary)]">
               {comparison.totals?.baseline_detections || 0}
             </div>
-            <div className="text-xs text-gray-500 uppercase">Baseline</div>
+            <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Baseline</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 p-3 text-center">
-            <div className="text-2xl font-light text-gray-900 dark:text-gray-100">
+          <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+            <div className="carbon-heading-04 font-light text-[color:var(--text-primary)]">
               {comparison.totals?.speaker_aware_detections || 0}
             </div>
-            <div className="text-xs text-gray-500 uppercase">Speaker-Aware</div>
+            <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Speaker-Aware</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 p-3 text-center">
-            <div className="text-2xl font-light text-green-600 dark:text-green-400">
+          <div className="bg-[color:var(--bg-primary)] p-3 text-center">
+            <div className="carbon-heading-04 font-light text-[color:var(--custom-analysis-dark)]">
               {comparison.totals?.overall_reduction_pct || 0}%
             </div>
-            <div className="text-xs text-gray-500 uppercase">Reduction</div>
+            <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase">Reduction</div>
           </div>
         </div>
 
@@ -97,10 +97,10 @@ const SpeakerAwareViewer = memo(function SpeakerAwareViewer() {
             <button
               key={idx}
               onClick={() => setSelectedVideo(video)}
-              className={`px-3 py-1.5 text-sm font-medium border ${
+              className={`px-3 py-1.5 carbon-body-01 font-medium border ${
                 selectedVideo?.video === video.video
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-500'
+                  ? 'bg-[color:var(--button-primary)] text-white border-[color:var(--button-primary)]'
+                  : 'bg-[color:var(--bg-primary)] text-[color:var(--text-secondary)] border-[color:var(--border-secondary)] hover:border-[color:var(--button-primary)]'
               }`}
             >
               {video.video.substring(0, 30)}...
@@ -113,70 +113,70 @@ const SpeakerAwareViewer = memo(function SpeakerAwareViewer() {
           <div className="space-y-4">
             {/* Preview Image */}
             {imageUrl && (
-              <div className="border border-gray-200 dark:border-gray-700 bg-gray-900">
+              <div className="border border-[color:var(--border-primary)] bg-[color:var(--bg-inverse)]">
                 <img
                   src={imageUrl}
                   alt="Speaker-aware pose preview"
                   className="w-full h-auto max-h-[50vh] object-contain"
                 />
-                <div className="p-2 text-xs text-gray-400 bg-gray-800">
+                <div className="p-2 carbon-label-01 text-[color:var(--text-tertiary)] bg-[color:var(--bg-tertiary)]">
                   Green box = identified speaker | Yellow skeleton = pose estimation on speaker only
                 </div>
               </div>
             )}
 
             {/* Video Stats */}
-            <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-              <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3 truncate">
+            <div className="border border-[color:var(--border-primary)] bg-[color:var(--bg-primary)] p-4">
+              <div className="carbon-body-01 font-medium text-[color:var(--text-primary)] mb-3 truncate">
                 {selectedVideo.video}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-xs text-gray-500 uppercase mb-1">Baseline</div>
-                  <div className="text-lg text-gray-900 dark:text-gray-100">
+                  <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase mb-1">Baseline</div>
+                  <div className="carbon-heading-03 text-[color:var(--text-primary)]">
                     {selectedVideo.baseline?.total} detections
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="carbon-body-01 text-[color:var(--text-tertiary)]">
                     {selectedVideo.baseline?.avg_per_frame} avg/frame
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-gray-500 uppercase mb-1">Speaker-Aware</div>
-                  <div className="text-lg text-gray-900 dark:text-gray-100">
+                  <div className="carbon-label-01 text-[color:var(--text-tertiary)] uppercase mb-1">Speaker-Aware</div>
+                  <div className="carbon-heading-03 text-[color:var(--text-primary)]">
                     {selectedVideo.speaker_aware?.total} detections
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="carbon-body-01 text-[color:var(--text-tertiary)]">
                     {selectedVideo.speaker_aware?.avg_per_frame} avg/frame
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="mt-4 pt-4 border-t border-[color:var(--border-primary)]">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Reduction</span>
-                  <span className={`text-xl font-medium ${
+                  <span className="carbon-body-01 text-[color:var(--text-secondary)]">Reduction</span>
+                  <span className={`carbon-heading-03 font-medium ${
                     selectedVideo.reduction_pct > 50
-                      ? 'text-green-600 dark:text-green-400'
+                      ? 'text-[color:var(--custom-analysis-dark)]'
                       : selectedVideo.reduction_pct > 0
-                      ? 'text-yellow-600 dark:text-yellow-400'
-                      : 'text-gray-600 dark:text-gray-400'
+                      ? 'text-[color:var(--custom-analytics-dark)]'
+                      : 'text-[color:var(--text-secondary)]'
                   }`}>
                     {selectedVideo.reduction_pct}%
                   </span>
                 </div>
                 {/* Visual bar */}
-                <div className="mt-2 h-3 bg-gray-200 dark:bg-gray-700 relative">
+                <div className="mt-2 h-3 bg-[color:var(--border-primary)] relative">
                   <div
-                    className="h-full bg-blue-500 absolute left-0"
+                    className="h-full bg-[color:var(--button-primary)] absolute left-0"
                     style={{ width: `${100 - selectedVideo.reduction_pct}%` }}
                   />
                   <div
-                    className="h-full bg-green-500 absolute right-0"
+                    className="h-full bg-[color:var(--custom-analysis-dark)] absolute right-0"
                     style={{ width: `${selectedVideo.reduction_pct}%` }}
                   />
                 </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between carbon-label-01 text-[color:var(--text-tertiary)] mt-1">
                   <span>Processed ({100 - selectedVideo.reduction_pct}%)</span>
                   <span>Saved ({selectedVideo.reduction_pct}%)</span>
                 </div>
@@ -184,9 +184,9 @@ const SpeakerAwareViewer = memo(function SpeakerAwareViewer() {
             </div>
 
             {/* Method Explanation */}
-            <div className="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 text-sm">
-              <div className="font-medium text-gray-900 dark:text-gray-100 mb-2">How it works</div>
-              <ol className="list-decimal list-inside space-y-1 text-gray-600 dark:text-gray-400">
+            <div className="border border-[color:var(--border-primary)] bg-[color:var(--bg-secondary)] p-4 carbon-body-01">
+              <div className="font-medium text-[color:var(--text-primary)] mb-2">How it works</div>
+              <ol className="list-decimal list-inside space-y-1 text-[color:var(--text-secondary)]">
                 <li>Face detection identifies all faces in frame</li>
                 <li>Speaker heuristic scores each face by size (40%), center position (35%), confidence (25%)</li>
                 <li>Pose estimation runs only on the highest-scoring face region</li>

@@ -43,7 +43,9 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
 
     const processedData = useMemo(() => {
         if (!data || data == null) return {}
-        
+        const styles = getComputedStyle(document.documentElement)
+        const pointsColor = styles.getPropertyValue('--button-primary').trim() || '#0f62fe'
+
         let returnData = {
             x: data.max_pitch || [],
             y: data.max_volume || [],
@@ -52,7 +54,7 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
             type: 'scatter3d',
             mode: 'markers',
             marker: {
-                color: 'blue',
+                color: pointsColor,
                 size: 5,
             },
             hovertemplate: "Pitch: %{x}<br>Volume: %{y}<br>Tempo: %{z}<br>Title: %{text}<extra></extra>"

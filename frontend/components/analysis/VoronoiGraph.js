@@ -75,7 +75,7 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
                 y: polyY,
                 fill: 'toself',
                 fillcolor: labelToColor[parseInt(label)],
-                line: {color: 'black'},
+                line: {color: labelToColor[parseInt(label)]},
                 opacity: 0.2,
                 type: 'scatter',
                 mode: 'lines',
@@ -88,12 +88,13 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
 }
   const processedData = useMemo(() => {
       if (!data) return {}
+      const styles = getComputedStyle(document.documentElement)
       const labelToColor = {
-        0: 'rgba(101, 0, 0, 1)',
-        1: 'rgba(0, 118, 0, 1)',
-        2: 'rgba(0, 0, 95, 1)',
-        3: 'rgba(177, 177, 0, 1)',
-        4: 'rgba(0, 192, 192, 1)',
+        0: styles.getPropertyValue('--custom-preview-dark').trim() || '#E05A7A',
+        1: styles.getPropertyValue('--custom-analysis-dark').trim() || '#3ddbd9',
+        2: styles.getPropertyValue('--button-primary').trim() || '#0f62fe',
+        3: styles.getPropertyValue('--custom-analytics-dark').trim() || '#FFC166',
+        4: styles.getPropertyValue('--points-color').trim() || '#9f16b4',
       }
 
       let labels = data.filenames.map(filename => filename.split("_spectrogram")[0]) || []

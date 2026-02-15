@@ -86,13 +86,14 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
             fillcolor: `${customRedDark}100`,
 
         }
+        const buttonPrimary = styles.getPropertyValue('--button-primary').trim() || '#0f62fe'
         let timeLine = {
             x: [currentIndex, currentIndex],
             y: [-Math.max(...peaks), Math.max(...peaks)],
             type: 'scatter',
             mode: 'lines',
             line: {
-                color: 'blue',
+                color: buttonPrimary,
                 width: 2,
             },
             hoverinfo: 'skip',
@@ -103,8 +104,8 @@ const Waveform = memo(function Waveform({videoName, currentTime}) {
 
     return (
       <div className="flex flex-col">
-        <div className="bg-secondary border border-primary flex flex-row items-center justify-between px-4 py-3">
-            <p className="text-[0.75rem] font-semibold uppercase tracking-[0.02em] text-secondary">Audio Waveform</p>
+        <div className="bg-[color:var(--bg-secondary)] border border-[color:var(--border-primary)] flex flex-row items-center justify-between px-4 py-3">
+            <p className="carbon-label-01 font-semibold uppercase tracking-[0.02em] text-[color:var(--text-secondary)]">Audio Waveform</p>
         </div>
         <div className="p-2 w-full h-[85%]">
             {error ? <p className="text-md">Error loading waveform: {error.toString()}</p>
