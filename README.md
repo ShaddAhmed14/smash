@@ -12,12 +12,14 @@ Analytics Module
 ![smash_analytics_gif](https://github.com/user-attachments/assets/9bd0d9e4-b32c-4209-824f-ed2044b2fc54)
 
 ## Features
-- Maskbench -> Model Results Video
-- EnvisionHgDetector -> DTW Analysis | 
-- Using Videos -> Wavs | Thumbnails
-- Using Wavs -> Spectograms | Transcripts | Average Audio Features | Radial Graph
-- Using Transcripts -> Video Cluster | Topic Interdistance | Data Map | Temporal Sentiment Analysis | Spacy Analysis | Semantic Network Analysis
-- Using Spectograms -> Voronoi Graph
+- Comparison of Pose Estimators (YoloPose, MediapipePose, Openpose, [MaskAnyone](https://github.com/MaskAnyone/MaskAnyone)) using [Maskbench](https://github.com/maskbench/maskbench) 
+- Gesture Segmentation and DTW Analysis using [EnvisionHGDetector](https://github.com/WimPouw/envisionhgdetector/tree/main)
+- Sentiment Analysis using [ntlk SentinmentIntensityAnalyzer](https://www.nltk.org/howto/sentiment.html)
+- [Spacy Analysis](https://spacy.io/usage/visualizers/)
+- Topic Interdistance, Video Clustering and Data Map using [BERTopic](https://maartengr.github.io/BERTopic/index.html)
+- Audio Spectogram Clustering using [DinoV3](https://github.com/facebookresearch/dinov3)
+- Transcrip generation using [OpenAI Whisper](https://github.com/openai/whisper)
+- Semantic Network using [TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html) and [SBERT](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) and Co-Occurance Network
 
 ## 📦 Installation
 
