@@ -2,13 +2,16 @@
 
 ## Overview
 
-Preview Module
+### Preview Module
+
 ![smash_preview_gif](https://github.com/user-attachments/assets/bfb08a1d-25da-467a-bbb8-a210aca1b1a5)
 
-Analysis Module
+### Analysis Module
+
 ![smash_analysis_gif](https://github.com/user-attachments/assets/891b9658-8ca9-4a4e-92b6-04b6baa14b82)
 
-Analytics Module
+### Analytics Module
+
 ![smash_analytics_gif](https://github.com/user-attachments/assets/9bd0d9e4-b32c-4209-824f-ed2044b2fc54)
 
 ## Features
@@ -120,3 +123,4 @@ Go back and make multiple commits whenever possible. Part of the benefit of Conv
 
 # ⚖️ License
 This project is licensed under the Mozilla Public License 2.0 (MPL 2.0). By using, modifying, or distributing this code, you agree to the terms of the MPL 2.0.
+
