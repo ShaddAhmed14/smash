@@ -23,6 +23,7 @@ from semantic_network_analysis import setup_semantic_network_analysis
 from prosody_analysis import setup_prosody_analysis
 from pause_filler_analysis import setup_pause_filler_analysis
 from facial_expression_analysis import setup_facial_expression_analysis
+from visual_embedding_analysis import setup_visual_embedding_analysis
 
 '''
 def batch_create_wav(video_folder_path, output_path):
@@ -399,5 +400,6 @@ setup_semantic_network_analysis()
 setup_prosody_analysis()
 setup_pause_filler_analysis()
 setup_facial_expression_analysis()
+setup_visual_embedding_analysis()
 run_envisionhgdetector()
 generate_metadata()

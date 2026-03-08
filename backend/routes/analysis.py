@@ -165,3 +165,23 @@ def fetch_average_facial_expressions():
         return JSONResponse(content={"message": "Average facial expression data not found"}, status_code=404)
     return FileResponse(file_path, media_type="application/json", filename="average_facial_expressions.json")
 
+
+# --- Visual embeddings (DINOv2 ViT) ---
+
+@router.get("/fetch_visual_embeddings")
+def fetch_visual_embeddings(video_name: str):
+    """Return per-video visual embeddings and variability score."""
+    file_path = os.path.join(MATERIALS_FOLDER, video_name, f"{video_name}_visual_embeddings.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Visual embeddings not found"}, status_code=404)
+    return FileResponse(file_path, media_type="application/json", filename=f"{video_name}_visual_embeddings.json")
+
+
+@router.get("/fetch_visual_similarity_map")
+def fetch_visual_similarity_map():
+    """Return cross-corpus visual similarity map (PCA + clusters + Voronoi)."""
+    file_path = os.path.join(MATERIALS_FOLDER, "visual_similarity_map.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Visual similarity map not found"}, status_code=404)
+    return FileResponse(file_path, media_type="application/json", filename="visual_similarity_map.json")
+
