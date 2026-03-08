@@ -18,6 +18,7 @@ from .schema import (
     get_engine,
     get_session,
 )
+from .ingest import ingest_corpus, ingest_video_folder
 
 __all__ = [
     "SCHEMA_VERSION",
@@ -38,4 +39,6 @@ __all__ = [
     "create_tables",
     "get_engine",
     "get_session",
+    "ingest_corpus",
+    "ingest_video_folder",
 ]

@@ -4,4 +4,5 @@ dotenv
 librosa
 pandas
 python-dotenv
+numpy
 sqlalchemy
