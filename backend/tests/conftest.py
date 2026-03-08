@@ -49,6 +49,20 @@ def materials_dir():
         (root / "average_audio_features.json").write_text(json.dumps({"data": []}))
         (root / "max_audio_features.json").write_text(json.dumps({"data": []}))
         (root / "spectrogram_voronoi_data.json").write_text(json.dumps({"data": []}))
+        (root / "average_prosody_features.json").write_text(json.dumps({
+            "titles": ["TestVideo001", "TestVideo002"],
+            "avg_F0semitoneFrom27.5Hz_sma3nz": [25.0, 28.0],
+        }))
+        (root / "average_facial_expressions.json").write_text(json.dumps({
+            "titles": ["TestVideo001"],
+            "dominant_emotions": ["happiness"],
+            "avg_happiness": [0.65],
+        }))
+        (root / "visual_similarity_map.json").write_text(json.dumps({
+            "titles": ["TestVideo001", "TestVideo002"],
+            "coords_2d": [[0.1, 0.2], [-0.3, 0.5]],
+            "labels": [0, 1],
+        }))
         (root / "tfidf.json").write_text(json.dumps({"nodes": [], "edges": []}))
         (root / "sbert.json").write_text(json.dumps({"nodes": [], "edges": []}))
 
@@ -89,7 +103,54 @@ def materials_dir():
             )
             (vdir / f"{name}_waveform.json").write_text(json.dumps({"data": [0.1, 0.2]}))
             (vdir / f"{name}_peaks.json").write_text(json.dumps({"peaks": [0.5]}))
-            (vdir / f"{name}_audio_features.json").write_text(json.dumps({"tempo": 120}))
+            (vdir / f"{name}_audio_features.json").write_text(json.dumps({
+                "tempo": 120,
+                "time": [0.0, 0.5, 1.0],
+                "pitch": [220.0, 0.0, 245.5],
+                "volume": [-20.5, -18.3, -22.1],
+                "sample_rate": 44100,
+                "duration": 1.5,
+            }))
+            (vdir / f"{name}_prosody.json").write_text(json.dumps({
+                "time": [0.0, 0.02],
+                "contours": {"F0semitoneFrom27.5Hz_sma3nz": [25.0, 26.5]},
+                "functionals": {"F0semitoneFrom27.5Hz_sma3nz_amean": 25.75},
+            }))
+            (vdir / f"{name}_pauses_fillers.json").write_text(json.dumps({
+                "pauses": [{"start": 5.2, "end": 6.0, "duration": 0.8}],
+                "fillers": [{"word": "um", "start": 3.0, "end": 3.3}],
+                "speech_rates": [{"start": 0.0, "end": 5.0, "wpm": 145.2}],
+                "audio_silences": [],
+                "summary": {
+                    "total_pauses": 1,
+                    "total_fillers": 1,
+                    "avg_pause_duration": 0.8,
+                    "max_pause_duration": 0.8,
+                    "filler_rate_per_minute": 4.0,
+                    "avg_speech_rate_wpm": 145.2,
+                    "total_words": 12,
+                    "total_duration_s": 10.0,
+                    "filler_word_counts": {"um": 1},
+                },
+            }))
+            (vdir / f"{name}_facial_expressions.json").write_text(json.dumps({
+                "frames": [0, 12],
+                "emotions": {"happiness": [0.65, 0.70], "anger": [0.01, 0.02]},
+                "action_units": {"AU06": [0.45, 0.50], "AU12": [0.55, 0.60]},
+                "summary": {
+                    "faces_detected": 2,
+                    "total_frames_analysed": 24,
+                    "dominant_emotion": "happiness",
+                    "emotion_means": {"happiness": 0.675, "anger": 0.015},
+                    "au_means": {"AU06": 0.475, "AU12": 0.575},
+                },
+            }))
+            (vdir / f"{name}_visual_embeddings.json").write_text(json.dumps({
+                "n_frames": 20,
+                "embedding_dim": 384,
+                "mean_embedding": [0.01] * 384,
+                "visual_variability": 0.034,
+            }))
             (vdir / f"{name}_spectrogram.png").write_bytes(png_header)
             (vdir / f"{name}_kinematic_features.csv").write_text(
                 "gesture_id,video_id,feature_a\ng1,v1,0.5\n"
