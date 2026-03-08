@@ -145,3 +145,23 @@ def fetch_pauses_fillers(video_name: str):
         return JSONResponse(content={"message": "Pauses/fillers data not found"}, status_code=404)
     return FileResponse(file_path, media_type="application/json", filename=f"{video_name}_pauses_fillers.json")
 
+
+# --- Facial expressions (py-feat) ---
+
+@router.get("/fetch_facial_expressions")
+def fetch_facial_expressions(video_name: str):
+    """Return emotion predictions, Action Units, and summary for a video."""
+    file_path = os.path.join(MATERIALS_FOLDER, video_name, f"{video_name}_facial_expressions.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Facial expression data not found"}, status_code=404)
+    return FileResponse(file_path, media_type="application/json", filename=f"{video_name}_facial_expressions.json")
+
+
+@router.get("/fetch_average_facial_expressions")
+def fetch_average_facial_expressions():
+    """Return cross-corpus average facial expression features."""
+    file_path = os.path.join(MATERIALS_FOLDER, "average_facial_expressions.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Average facial expression data not found"}, status_code=404)
+    return FileResponse(file_path, media_type="application/json", filename="average_facial_expressions.json")
+

@@ -10,6 +10,7 @@ RUN pip install envisionhgdetector
 RUN pip install bertopic transformers librosa nltk openai-whisper
 RUN pip install sentence-transformers networkx pyvis scikit-learn
 RUN pip install opensmile
+RUN pip install py-feat
 
 # Install spacy and download language models
 RUN pip install spacy
