@@ -106,11 +106,42 @@ def fetch_kinematic_features(video_name: str):
     file_path = os.path.join(MATERIALS_FOLDER, video_name,  f"{video_name}_kinematic_features.csv")
     if not os.path.exists(file_path):
         return JSONResponse(content={"message": "Kinematic features file not found"}, status_code=404)
-    
+
     df = pd.read_csv(file_path)
     jitter_values = [0.2 * (np.random.random() - 0.5) for _ in range(len(df['gesture_id']))]
     df = df.drop(columns=['gesture_id', 'video_id'])
     df = df.to_dict(orient='list')
     data = {'x': jitter_values, 'y': df}
     return JSONResponse(content=data)
+
+
+# --- Prosody features (openSMILE eGeMAPS) ---
+
+@router.get("/fetch_prosody")
+def fetch_prosody(video_name: str):
+    """Return frame-level prosody contours and summary statistics for a video."""
+    file_path = os.path.join(MATERIALS_FOLDER, video_name, f"{video_name}_prosody.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Prosody features not found"}, status_code=404)
+    return FileResponse(file_path, media_type="application/json", filename=f"{video_name}_prosody.json")
+
+
+@router.get("/fetch_average_prosody")
+def fetch_average_prosody():
+    """Return cross-corpus average prosody features."""
+    file_path = os.path.join(MATERIALS_FOLDER, "average_prosody_features.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Average prosody features not found"}, status_code=404)
+    return FileResponse(file_path, media_type="application/json", filename="average_prosody_features.json")
+
+
+# --- Pauses and fillers ---
+
+@router.get("/fetch_pauses_fillers")
+def fetch_pauses_fillers(video_name: str):
+    """Return pause, filler, and speech rate data for a video."""
+    file_path = os.path.join(MATERIALS_FOLDER, video_name, f"{video_name}_pauses_fillers.json")
+    if not os.path.exists(file_path):
+        return JSONResponse(content={"message": "Pauses/fillers data not found"}, status_code=404)
+    return FileResponse(file_path, media_type="application/json", filename=f"{video_name}_pauses_fillers.json")
 

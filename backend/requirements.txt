@@ -3,3 +3,4 @@ uvicorn
 dotenv
 librosa
 pandas
+python-dotenv
