@@ -420,6 +420,11 @@ def ingest_video_folder(session: Session, folder: Path) -> Video | None:
     video_name = folder.name
     video = _get_or_create_video(session, video_name)
 
+    # Try to extract language code from folder name (e.g. "AliceSmith_en" → "en")
+    parts = video_name.rsplit("_", 1)
+    if len(parts) == 2 and len(parts[1]) == 2 and parts[1].isalpha():
+        video.language = parts[1].lower()
+
     modules_ingested = []
 
     if ingest_audio_features(session, video, folder):

@@ -20,7 +20,7 @@ import numpy as np
 from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from config import MATERIALS_FOLDER
+import config
 from database.schema import (
     AudioFeatures,
     CorpusMetadata,
@@ -41,13 +41,11 @@ from database.schema import (
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/export", tags=["export"])
 
-DB_PATH = str(Path(MATERIALS_FOLDER) / "smash.db")
-
-
 def _get_db_session():
     """Get a database session, creating tables if needed."""
     try:
-        engine = get_engine(DB_PATH)
+        db_path = str(Path(config.MATERIALS_FOLDER) / "smash.db")
+        engine = get_engine(db_path)
         return get_session(engine)
     except Exception as e:
         logger.warning(f"Database not available: {e}")
@@ -662,7 +660,7 @@ def export_video_data(
 ):
     """Legacy: export raw JSON analysis files for a single video."""
     import os
-    video_folder = os.path.join(MATERIALS_FOLDER, video_name)
+    video_folder = os.path.join(config.MATERIALS_FOLDER, video_name)
     if not os.path.isdir(video_folder):
         return JSONResponse(content={"message": "Video not found"}, status_code=404)
 
@@ -702,7 +700,7 @@ def export_corpus_summary(
     import os
 
     video_folders = sorted(
-        d for d in _glob.glob(os.path.join(MATERIALS_FOLDER, "*"))
+        d for d in _glob.glob(os.path.join(config.MATERIALS_FOLDER, "*"))
         if os.path.isdir(d)
     )
 
