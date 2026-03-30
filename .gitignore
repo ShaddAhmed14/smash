@@ -39,6 +39,23 @@ out/
 htmlcov/
 .pytest_cache/
 
+# NWO report templates (private)
+Format_*.docx
+Format_*.xlsx
+format_*.xlsx
+"Format voortgangsverslag.docx"
+Format\ voortgangsverslag.docx
+
+# Local data / models / materials
+setup/models/
+setup/smash_materials/
+setup/smash_dataset_seamless/
+setup/seamless_samples/
+setup/trimmed_videos/
+setup/pose_test/
+setup/pose_test_saudi/
+smash_materials/
+
 # Misc
 *.pem
 *.log
