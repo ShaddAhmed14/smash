@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, memo } from "react"
 import SpaceyTranscriptDependancyTree from "./SpaceyTranscriptDependancyTree"
+import { API_ROUTES } from '../../lib/api'
 
 export default memo(function SpaceyTranscript() {
     const [transcript, setTranscript] = useState(null);
@@ -27,7 +28,7 @@ export default memo(function SpaceyTranscript() {
         'TIME': '#ffd6e8'
         }
     useEffect(() => {
-        const list_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + `/fetch_spacey_list`
+        const list_url = API_ROUTES.ANALYTICS + `/fetch_spacy_list`
         fetch(list_url)
         .then(response => {
         return response.json().then(fetchedData => {
@@ -50,7 +51,7 @@ export default memo(function SpaceyTranscript() {
     useEffect(() => {
         if (!selectedVideo) return;
         async function fetchTranscript() {
-            const transcript_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + "/fetch_spacey?video_name=" + selectedVideo
+            const transcript_url = API_ROUTES.ANALYTICS + "/fetch_spacy?video_name=" + selectedVideo
             try {
                 const response = await fetch(transcript_url);
                 if (!response.ok) {

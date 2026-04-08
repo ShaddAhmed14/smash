@@ -1,6 +1,7 @@
 'use client'
 import {useEffect, useState, memo, useMemo} from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const MaxAudioFeatures = memo(function MaxAudioFeatures() {
     const [data, setData] = useState(null)
@@ -29,7 +30,7 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
     }
 
     useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_max_audio_features"
+        const url = API_ROUTES.ANALYSIS + "/fetch_max_audio_features"
         fetch(url)
             .then(response => response.json())
             .then(fetchedData => {
@@ -42,7 +43,9 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
 
     const processedData = useMemo(() => {
         if (!data || data == null) return {}
-        
+        const styles = getComputedStyle(document.documentElement)
+        const pointsColor = styles.getPropertyValue('--button-primary').trim() || '#0f62fe'
+
         let returnData = {
             x: data.max_pitch || [],
             y: data.max_volume || [],
@@ -51,7 +54,7 @@ const MaxAudioFeatures = memo(function MaxAudioFeatures() {
             type: 'scatter3d',
             mode: 'markers',
             marker: {
-                color: 'blue',
+                color: pointsColor,
                 size: 5,
             },
             hovertemplate: "Pitch: %{x}<br>Volume: %{y}<br>Tempo: %{z}<br>Title: %{text}<extra></extra>"

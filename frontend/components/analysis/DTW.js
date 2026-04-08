@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, memo, useMemo, useCallback } from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const DTW = memo(function DTW({plot_name}) {
   const [dtwData, setDtwData] = useState(null)
@@ -27,8 +28,8 @@ const DTW = memo(function DTW({plot_name}) {
     }
   }
 
-  let url = process.env.NEXT_PUBLIC_BACKEND_URL  + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_gesture_segment?video_name="
-  let dtw_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_dtw"
+  let url = API_ROUTES.ANALYSIS + "/fetch_gesture_segment?video_name="
+  let dtw_url = API_ROUTES.ANALYSIS + "/fetch_dtw"
 
   useEffect(() => {
     fetch(dtw_url)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useMemo } from "react"
+import { API_ROUTES } from '../../lib/api'
 
 const Transcript = ({videoName, currentTime}) => {
   const transcriptRef = useRef(null);
@@ -21,7 +22,7 @@ const Transcript = ({videoName, currentTime}) => {
   }
   
   useEffect(() => {
-      const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName
+      const url = API_ROUTES.PREVIEW + "/fetch_transcript/" + "?video_name=" + videoName
       fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -104,8 +105,8 @@ const Transcript = ({videoName, currentTime}) => {
   return (
         <div className="flex flex-col">
           {/* Panel */}
-          <div className="bg-secondary border border-primary flex flex-row items-center justify-between px-4 py-3">
-            <p className="text-[0.75rem] font-semibold uppercase tracking-[0.02em] text-secondary">Transcript</p>
+          <div className="bg-[color:var(--bg-secondary)] border border-[color:var(--border-primary)] flex flex-row items-center justify-between px-4 py-3">
+            <p className="carbon-label-01 font-semibold uppercase tracking-[0.02em] text-[color:var(--text-secondary)]">Transcript</p>
           </div>
           {/* Transcript Content */}
           {
@@ -119,10 +120,10 @@ const Transcript = ({videoName, currentTime}) => {
                 <div
                   key={segment.id}
                   data-segment-id={segment.id}
-                  className={`flex flex-row items-center gap-4 py-2 h-12 px-3 cursor-pointer transition-all duration-150 hover:bg-secondary ${
-                    currentSegmentId === segment.id && 'bg-secondary border-l-2 border-(--custom-preview-dark)'}`}>
-                    <span className="text-tertiary text-[0.75rem] font-mono px-2 py-1">{formatTime(segment.start)}</span>
-                    <p className="text-[0.875rem]/1.5 text-nowrap">{segment.text}</p>
+                  className={`flex flex-row items-center gap-4 py-2 h-12 px-3 cursor-pointer transition-all duration-150 hover:bg-[color:var(--bg-secondary)] ${
+                    currentSegmentId === segment.id && 'bg-[color:var(--bg-secondary)] border-l-2 border-[color:var(--custom-preview-dark)]'}`}>
+                    <span className="text-[color:var(--text-tertiary)] carbon-label-01 font-mono px-2 py-1">{formatTime(segment.start)}</span>
+                    <p className="carbon-body-01 text-nowrap">{segment.text}</p>
                 </div>
               ))}
             </div> 

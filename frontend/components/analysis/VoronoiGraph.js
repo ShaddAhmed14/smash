@@ -1,13 +1,14 @@
 'use client'
 import { useState, useEffect, memo, useMemo } from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
-  let spectrogram_url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_spectrogram?video_name="
+  let spectrogram_url = API_ROUTES.ANALYSIS + "/fetch_spectrogram?video_name="
   const [data, setData] = useState(null)
   const [videos, setVideos] = useState([null, null])
   const [error, setError] = useState(null)
-  let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_audio_spectrogram_embeddings"
+  let url = API_ROUTES.ANALYSIS + "/fetch_audio_spectrogram_embeddings"
   const axis_layout = {showtickLabels: false, zeroline: false, showgrid: false, title:''}
   const layout={
     xaxis: axis_layout,
@@ -74,7 +75,7 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
                 y: polyY,
                 fill: 'toself',
                 fillcolor: labelToColor[parseInt(label)],
-                line: {color: 'black'},
+                line: {color: labelToColor[parseInt(label)]},
                 opacity: 0.2,
                 type: 'scatter',
                 mode: 'lines',
@@ -87,12 +88,13 @@ const VoronoiGraph = memo(function VoronoiGraph({plot_name}) {
 }
   const processedData = useMemo(() => {
       if (!data) return {}
+      const styles = getComputedStyle(document.documentElement)
       const labelToColor = {
-        0: 'rgba(101, 0, 0, 1)',
-        1: 'rgba(0, 118, 0, 1)',
-        2: 'rgba(0, 0, 95, 1)',
-        3: 'rgba(177, 177, 0, 1)',
-        4: 'rgba(0, 192, 192, 1)',
+        0: styles.getPropertyValue('--custom-preview-dark').trim() || '#E05A7A',
+        1: styles.getPropertyValue('--custom-analysis-dark').trim() || '#3ddbd9',
+        2: styles.getPropertyValue('--button-primary').trim() || '#0f62fe',
+        3: styles.getPropertyValue('--custom-analytics-dark').trim() || '#FFC166',
+        4: styles.getPropertyValue('--points-color').trim() || '#9f16b4',
       }
 
       let labels = data.filenames.map(filename => filename.split("_spectrogram")[0]) || []

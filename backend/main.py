@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import analysis, preview, analytics
+from routes import analysis, preview, analytics, export
 
 app = FastAPI()
 
@@ -15,6 +15,7 @@ app.add_middleware(
 app.include_router(preview.router)
 app.include_router(analysis.router)
 app.include_router(analytics.router)
+app.include_router(export.router)
 
 @app.get("/")
 def home():

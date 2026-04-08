@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+venv/
+ENV/
+.venv/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE / Editor
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Next.js
+.next/
+out/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# NWO report templates (private)
+Format_*.docx
+Format_*.xlsx
+format_*.xlsx
+"Format voortgangsverslag.docx"
+Format\ voortgangsverslag.docx
+
+# Local data / models / materials
+setup/models/
+setup/smash_materials/
+setup/smash_dataset_seamless/
+setup/seamless_samples/
+setup/trimmed_videos/
+setup/pose_test/
+setup/pose_test_saudi/
+smash_materials/
+
+# Misc
+*.pem
+*.log

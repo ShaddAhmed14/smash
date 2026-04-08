@@ -1,11 +1,12 @@
 'use client'
 import {useEffect, useState, useMemo, memo} from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const TemporalSentimentGraph = memo(function TemporalSentimentGraph({plot_name}) {
     const [data, setData] = useState(null)
     const [error, setError] = useState(null)
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + "/fetch_temporal_sentiment/"
+    const url = API_ROUTES.ANALYTICS + "/fetch_temporal_sentiment/"
 
     const layout={
         xaxis: {title: 'Segment Number', unifiedhovertext: {text: ''}},

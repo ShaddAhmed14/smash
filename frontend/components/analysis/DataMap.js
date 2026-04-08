@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, memo, useMemo } from 'react'
 import PlotTemplate from '../PlotTemplate'
+import { API_ROUTES } from '../../lib/api'
 
 const DataMap = memo(function DataMap({plot_name}) {
   const [data, setData] = useState(null)
@@ -21,7 +22,7 @@ const DataMap = memo(function DataMap({plot_name}) {
   }
 
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYSIS + "/fetch_data_map"
+    let url = API_ROUTES.ANALYSIS + "/fetch_data_map"
     fetch(url)
         .then(response => {
         return response.json().then(fetchedData => {
@@ -42,11 +43,11 @@ const DataMap = memo(function DataMap({plot_name}) {
   }, [])
 
  
-  const getColoredCluster = (topic_data, colors) => {
+  const getColoredCluster = (topic_data, colors, themeColors) => {
     const traces = []
     const annotations = []
     for (const topic of topic_data) {
-        const color = colors[topic.topic_id] || 'black'
+        const color = colors[topic.topic_id] || themeColors.textSecondary
         traces.push({
             x: topic.topic_docs.map(doc => doc[0]),
             y: topic.topic_docs.map(doc => doc[1]),
@@ -65,11 +66,11 @@ const DataMap = memo(function DataMap({plot_name}) {
             arrowhead: 2,
             arrowsize:1,
             arrowwidth:1,
-            ax:50, 
+            ax:50,
             ay:-50,
-            arrowcolor:'#666',
-            font: {size:11, color:'#333'},
-            bgcolor:'white',
+            arrowcolor: themeColors.textTertiary,
+            font: {size:11, color: themeColors.textPrimary},
+            bgcolor: themeColors.bgPrimary,
             borderpad:4
         })
         }
@@ -78,9 +79,17 @@ const DataMap = memo(function DataMap({plot_name}) {
 
   const processedData = useMemo(() => {
       if (!data) return {}
+      const styles = getComputedStyle(document.documentElement)
+      const themeColors = {
+        bgPrimary: styles.getPropertyValue('--bg-primary').trim() || '#ffffff',
+        textPrimary: styles.getPropertyValue('--text-primary').trim() || '#161616',
+        textSecondary: styles.getPropertyValue('--text-secondary').trim() || '#525252',
+        textTertiary: styles.getPropertyValue('--text-tertiary').trim() || '#8d8d8d',
+        borderPrimary: styles.getPropertyValue('--border-primary').trim() || '#e0e0e0',
+      }
       const colors = ['#8B5CF6', '#EC4899', '#EF4444', '#F59E0B', '#10B981', '#06B6D4', '#3B82F6', '#6366F1', '#A855F7', '#D946EF']
       let labels = data.titles.map(label => label.split("/").pop().split("_transcript")[0]) || []
-    
+
       let dataPoints = {
         x: data.reduced_embeddings.map(coord => coord[0]) || [],
         y: data.reduced_embeddings.map(coord => coord[1]) || [],
@@ -88,12 +97,12 @@ const DataMap = memo(function DataMap({plot_name}) {
         type: 'scatter',
         mode: 'markers',
         marker: {
-          color: 'lightgray',
+          color: themeColors.borderPrimary,
           size: 3,
         },
         hovertemplate: 'Name: %{text}<extra></extra>',
       }
-      const [all_traces, annotations] = getColoredCluster(data.topic_data, colors)
+      const [all_traces, annotations] = getColoredCluster(data.topic_data, colors, themeColors)
 
       const axis_layout = {showtickLabels: false, zeroline: false, showgrid: false, title:''}
       const layout={

@@ -1,14 +1,13 @@
 'use client'
 import {useState, useEffect, memo, useMemo} from 'react'
-import dynamic from 'next/dynamic'
 import PlotTemplate from '../PlotTemplate'
-
-const Plot = dynamic(() => import('react-plotly.js'), {ssr:false})
+import { API_ROUTES } from '../../lib/api'
 
 const MetadataGraph = memo(function MetadataGraph() {
   const [videoMetadata, setVideoMetadata] = useState(null)
+  const [error, setError] = useState(null)
   useEffect(() => {
-    let url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_PREVIEW + "/fetch_metadata_graph"
+    let url = API_ROUTES.PREVIEW + "/fetch_metadata_graph"
     fetch(url)
         .then(response => {
         return response.json().then(fetchedData => {

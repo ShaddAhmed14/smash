@@ -3,6 +3,7 @@ import { SigmaContainer, useLoadGraph, useSigma } from '@react-sigma/core';
 import '@react-sigma/core/lib/style.css';
 import { MultiDirectedGraph as MultiGraphConstructor } from 'graphology';
 import Loader from '../Loader';
+import { API_ROUTES } from '../../lib/api';
 
 function GraphEvents({setHoveredNode, setSelectedNode}) {
   const sigma = useSigma();
@@ -166,7 +167,7 @@ function GraphLoader({data}) {
 export default memo(function SemanticNetworkTemplate({type}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null)
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL + process.env.NEXT_PUBLIC_ANALYTICS + `/fetch_semantic_network?type=${type}`
+  const url = API_ROUTES.ANALYTICS + `/fetch_semantic_network?type=${type}`
 
   useEffect(() => {
     fetch(url)

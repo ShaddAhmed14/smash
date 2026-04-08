@@ -11,7 +11,6 @@ const nextConfig: NextConfig = {
     return config
   },
   reactStrictMode: false,
-  standalone: true, // Enable standalone build
   output: 'standalone',
 
 }

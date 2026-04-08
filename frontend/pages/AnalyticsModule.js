@@ -5,26 +5,26 @@ import NavBar from '../components/NavBar'
 import Loader from '../components/Loader'
 
 const AnalyticsModule = memo(function AnalyticsModule() {
-  let components = ["Temporal Sentiment Graph", "Radial Graph", "Kinematic Features", "Spacy Analysis", "Semantic Network"]
-  
+  const components = ["Temporal Sentiment Graph", "Radial Graph", "Kinematic Features", "Spacy Analysis", "Semantic Network"]
+
   const [selectedPlot, setSelectedPlot] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const loadComponent = (name) => {
-  const componentsMapping = { // maps plot names to component import functions
+    const componentsMapping = {
       "Temporal Sentiment Graph": () => import('@/components/analytics/TemporalSentimentGraph'),
       "Radial Graph": () => import('@/components/analytics/RadialGraph'),
       "Kinematic Features": () => import('@/components/analytics/KinematicFeatures'),
       "Spacy Analysis": () => import('@/components/analytics/SpaceyTranscript'),
       "Semantic Network": () => import('@/components/analytics/SemanticNetwork'),
     }
-  return  componentsMapping[name];
+    return componentsMapping[name];
   }
 
-  const Component = selectedPlot ? dynamic(loadComponent(selectedPlot), 
+  const Component = selectedPlot ? dynamic(loadComponent(selectedPlot),
    { ssr: false, loading: () => <Loader name={selectedPlot}/> }) : null;
 
-  useEffect(() => { // simulate 5 second (5000ms) loading time
+  useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 3000);
@@ -39,20 +39,20 @@ const AnalyticsModule = memo(function AnalyticsModule() {
     <>
       <NavBar currentPage="Analytics" textColor={"--custom-analytics-dark"} />
       <div className="plot-option-pill-container">
-      <p className="text-h3">Select a plot to display:</p>
+        <p className="carbon-body-01 text-[color:var(--text-secondary)]">Select a plot to display:</p>
         {
           components.map((name, idx) => (
-            <p className={`plot-option-pill hover:bg-secondary ${selectedPlot === name ? 'bg-secondary font-semibold border-(--button-primary)' : 'border-(--bg-secondary)'}`} key={idx}
+            <p className={`plot-option-pill hover:bg-[color:var(--bg-secondary)] ${selectedPlot === name ? 'bg-[color:var(--bg-secondary)] font-semibold border-2 border-[color:var(--button-primary)]' : 'border border-[color:var(--border-primary)]'}`} key={idx}
             onClick={() => setSelectedPlot(name)}>{name}</p>
           ))
         }
       </div>
       {Component &&
         <div key={selectedPlot} className="module-container relative">
-          <p className="font-semibold text-[0.9375rem] border-b-2 border-(--custom-analytics-dark) py-3 px-4">{selectedPlot}</p>
+          <p className="carbon-heading-02 border-b-2 border-[color:var(--custom-analytics-dark)] py-3 px-4">{selectedPlot}</p>
           <Component plot_name={selectedPlot} />
         </div>
-        }
+      }
     </>
   )
 })
